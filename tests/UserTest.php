@@ -14,9 +14,9 @@ class UserTest extends TestCase
     public function testEmailFormat()
     {
         $john = new \App\Entity\User();
-        $john->setMailAdress("joe.cohen@gmail.com");
+        $john->setEmail("joe.cohen@gmail.com");
 
-        $result = filter_var($john->getMailAdress(), FILTER_VALIDATE_EMAIL);
+        $result = filter_var($john->getEmail(), FILTER_VALIDATE_EMAIL);
 
         self::assertNotFalse($result, "Email invalid !");
     }
