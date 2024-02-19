@@ -5,26 +5,9 @@
 {% endblock %}
 
 {% block body %}
-    {% if countOfProducts > 0 or sumOfAllProductPrices != 0 %}
-        <h3>
-            Bienvenue sur votre site, vous avez {{ countOfProducts }} produits, pour une valeur total
-            de {{ sumOfAllProductPrices }} € ! - <a href="/products">Aller voir</a>
-        </h3>
-    {% else %}
-        <h3>
-            Vous n'avez pas encore de produits
-        </h3>
 
-        <ul style="list-style: none; display: flex; justify-content: center; align-items: start">
-            <li>
-                <a href="/products">Ajoutez un produits</a>
-            </li>
-            <li>
-                <a href="/product/fake10">Créer 10 faux produits.</a>
-            </li>
-        </ul>
-
-    {% endif %}
-
+    <main class="container">
+        yo
+    </main>
 
 {% endblock %}

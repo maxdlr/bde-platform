@@ -12,7 +12,7 @@ class EnvironmentManager
         $loader = new FilesystemLoader(__DIR__ . '/../../templates');
         return new Environment($loader, [
             'cache' => __DIR__ . '/../../var/cache',
-            'debug' => $_ENV['APP_ENV'] === 'dev'
+            'debug' => true
         ]);
     }
 }

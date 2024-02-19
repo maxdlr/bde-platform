@@ -26,7 +26,6 @@ class EntityManager
         $conn = $this->databaseManager->connect();
         assert($conn instanceof mysqli);
 
-
         if (!$conn->query($sql))
             throw new Exception('Unable to execute sql query' . $conn->error);
 

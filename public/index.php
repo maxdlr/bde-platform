@@ -39,3 +39,4 @@ try {
     var_dump($e);
     echo "Erreur interne, veuillez contacter l'administrateur";
 }
+
