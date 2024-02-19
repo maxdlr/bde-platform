@@ -21,17 +21,24 @@ class EntityManager
     /**
      * @throws Exception
      */
-    public function executeRequest(string $sql): array
+    public function executeRequest(string $sql): array|bool
     {
         $conn = $this->databaseManager->connect();
         assert($conn instanceof mysqli);
 
-        if (!$conn->query($sql))
+        $query = $conn->query($sql);
+
+        if (!$query)
             throw new Exception('Unable to execute sql query' . $conn->error);
 
-        assert($conn->query($sql) instanceof mysqli_result);
+        assert($query instanceof mysqli_result || is_bool($query));
 
-        $results = $conn->query($sql)->fetch_all();
+        if (is_bool($query)) {
+            var_dump('Request completed successfully');
+            return true;
+        }
+
+        $results = $query->fetch_all();
 
         $extractedResults = [];
         foreach ($results as $result) {
