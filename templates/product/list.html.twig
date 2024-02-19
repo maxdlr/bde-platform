@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Listes des produits
+{% endblock %}
+
+{% block body %}
+
+    <h1>Ajouter un produit</h1>
+
+    <form action="/products" method="POST" enctype="multipart/form-data">
+
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; width: 50vw; margin: auto">
+            <label for="file-upload">
+                Ajouter une image
+                <input type="file" id="file-upload" name="uploadedFile">
+            </label>
+
+            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                <input type="text" id="name" name="name" placeholder="Name..." style="width: 100%">
+
+                <input id="price" name="price" placeholder="Price...  €" style="width: 100%;">
+            </div>
+            <textarea id="description" name="description" placeholder="Description..." style="width: 100%;"></textarea>
+            <input type="submit" name="newProductBtn" value="Créer" style="width: 100%;"/>
+        </div>
+
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>
+                    {{ message.type }} - {{ message.content }} -
+                    <a href="/products">
+                        <button>Rafraichir</button>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h1>Liste des produits</h1>
+
+    <ul style="list-style: none; display: flex; justify-content: center; align-items: start">
+        <li style="padding: 0 10px">
+            <a href="/product/fake10">Créer 10</a>
+        </li>
+        {% if products %}
+            <li style="padding: 0 10px">
+                <a href="/product/deleteAll">Tout supprimer</a>
+            </li>
+            <li style="padding: 0 10px">
+                <a href="/">Voir mon recap</a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <section style="display: flex; justify-content: center; align-items: start; flex-wrap: wrap;">
+        {% for product in products %}
+
+            <article class="product-item"
+                     style="
+                 max-width: 200px;
+                 align-items: center;
+                 border: 1px solid black;
+                 border-radius: 15px;"
+            >
+                <img
+                        src="../assets/images/{{ product.fileName }}"
+                        alt="{{ product.fileName }}"
+                        style="width: 100%; border-radius: 15px;"
+                >
+                <div style="padding: 0px 10px">
+                    <h3>{{ product.name }}</h3>
+                    <h4>{{ product.price }} €</h4>
+                    <p>{{ product.description }}</p>
+                </div>
+            </article>
+
+        {% else %}
+            <p>Vous n'avez pas encore de produits</p>
+        {% endfor %}
+    </section>
+{% endblock %}
+

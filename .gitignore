@@ -1,0 +1,8 @@
+vendor/
+.idea/
+*.local
+var/
+.env
+.env.local
+.env.*
+
