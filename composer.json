@@ -16,6 +16,7 @@
       "email": "mathieu.moyaerts.pro@gmail.com"
     }
   ],
+  "license": "Creative Commons Attribution-NonCommercial-ShareAlike 2.0 France",
   "scripts": {
     "ss": "php -S localhost:8000 -t public/ public/index.php",
     "tests": "./vendor/bin/phpunit tests"
