@@ -19,7 +19,7 @@
   "license": "CC-BY-NC-SA-2.0-FR",
   "scripts": {
     "ss": "php -S localhost:8000 -t public/ public/index.php",
-    "tests": "./vendor/bin/phpunit tests"
+    "tests": "./vendor/bin/phpunit tests --display-warnings --colors=always --columns max"
   },
   "config": {
     "process-timeout": 0

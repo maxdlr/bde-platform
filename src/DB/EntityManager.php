@@ -5,6 +5,7 @@ namespace App\DB;
 use Exception;
 use mysqli;
 use mysqli_result;
+use stdClass;
 
 class EntityManager
 {
@@ -21,7 +22,7 @@ class EntityManager
     /**
      * @throws Exception
      */
-    public function executeRequest(string $sql): array|bool
+    public function executeRequest(string $sql): array|bool|stdClass
     {
         $conn = $this->databaseManager->connect();
         assert($conn instanceof mysqli);
@@ -34,17 +35,9 @@ class EntityManager
         assert($query instanceof mysqli_result || is_bool($query));
 
         if (is_bool($query)) {
-            var_dump('Request completed successfully');
             return true;
         }
 
-        $results = $query->fetch_all();
-
-        $extractedResults = [];
-        foreach ($results as $result) {
-            $extractedResults[] = $result[0];
-        }
-
-        return $extractedResults;
+        return $query->fetch_all(MYSQLI_BOTH);
     }
 }
