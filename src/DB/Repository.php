@@ -116,7 +116,6 @@ abstract class Repository extends EntityManager
     }
 
 //    ------------- DELETE -------------------------------------------------------
-//DELETE FROM table_name WHERE condition;
 
     /**
      * @throws Exception
