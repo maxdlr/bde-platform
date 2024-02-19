@@ -8,17 +8,17 @@ class UserTest extends TestCase
 {
 
     /**
-     * Allows to check if the password entered by the user is equal to one hashed in db
+     * Allows to check the validity of user's email
      * @throws Exception
      */
-    public function testValidityMailAdressFormat()
+    public function testEmailFormat()
     {
         $john = new \App\Entity\User();
         $john->setMailAdress("joe.cohen@gmail.com");
 
         $result = filter_var($john->getMailAdress(), FILTER_VALIDATE_EMAIL);
 
-        self::assertNotFalse($result, "l'adresse mail est invalide !");
+        self::assertNotFalse($result, "Email invalid !");
     }
 
     /**

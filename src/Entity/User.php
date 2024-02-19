@@ -7,7 +7,7 @@ class User
     private int $id;
     private string $firstname;
     private string $name;
-    private string $mailAdress;
+    private string $email;
     private string $password;
     private string $role;
     private bool $isVerified;
@@ -23,9 +23,10 @@ class User
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): void
+    public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
+        return $this;
     }
 
     public function getName(): string
@@ -33,19 +34,21 @@ class User
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): static
     {
         $this->name = $name;
+        return $this;
     }
 
-    public function getMailAdress(): string
+    public function getEmail(): string
     {
-        return $this->mailAdress;
+        return $this->email;
     }
 
-    public function setMailAdress(string $mailAdress): void
+    public function setEmail(string $email): static
     {
-        $this->mailAdress = $mailAdress;
+        $this->email = $email;
+        return $this;
     }
 
     public function getPassword(): string
@@ -53,10 +56,11 @@ class User
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password): static
     {
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         $this->password = $hashPassword;
+        return $this;
     }
 
     public function getRole(): string
@@ -64,9 +68,10 @@ class User
         return $this->role;
     }
 
-    public function setRole(string $role): void
+    public function setRole(string $role): static
     {
         $this->role = $role;
+        return $this;
     }
 
     public function isVerified(): bool
@@ -74,9 +79,10 @@ class User
         return $this->isVerified;
     }
 
-    public function setIsVerified(bool $isVerified): void
+    public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+        return $this;
     }
 
     public function getSignedUpDate(): string
@@ -84,8 +90,9 @@ class User
         return $this->signedUpDate;
     }
 
-    public function setSignedUpDate(string $signedUpDate): void
+    public function setSignedUpDate(string $signedUpDate): static
     {
         $this->signedUpDate = $signedUpDate;
+        return $this;
     }
 }
