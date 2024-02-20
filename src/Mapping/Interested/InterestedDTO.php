@@ -3,10 +3,11 @@
 namespace App\Mapping\Interested;
 
 use App\Entity\Interested;
+use App\Mapping\DTO;
 use App\Mapping\DTOInterface;
 use Exception;
 
-class InterestedDTO implements DTOInterface
+class InterestedDTO extends DTO implements DTOInterface
 {
     // Data transfer class Database -> Object
     private array $from;

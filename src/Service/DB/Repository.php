@@ -2,17 +2,20 @@
 
 namespace App\Service\DB;
 
+use App\Mapping\DTO;
 use App\Service\DB\Utils\RepositoryUtil;
 use Exception;
 
 abstract class Repository extends EntityManager
 {
     protected ?string $tableName;
+    protected ?DTO $dto;
 
     public function __construct()
     {
         parent::__construct();
         $this->tableName = null;
+        $this->dto = null;
     }
 
 //    ------------- CREATE -------------------------------------------------------
@@ -37,10 +40,12 @@ abstract class Repository extends EntityManager
      */
     public function findAll(): null|array
     {
-        assert($this->isTableSet());
+        assert($this->isTableSet() && $this->isDtoSet());
 
         $sql = "select * from $this->tableName;";
-        return $this->executeRequest($sql);
+        $arrays = $this->executeRequest($sql);
+
+        return $this->toObject($arrays);
     }
 
     /**
@@ -53,8 +58,9 @@ abstract class Repository extends EntityManager
         $sql = 'select * from ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
         $sql .= ';';
+        $arrays = $this->executeRequest($sql);
 
-        return $this->executeRequest($sql);
+        return $this->toObject($arrays);
     }
 
     /**
@@ -68,9 +74,9 @@ abstract class Repository extends EntityManager
         $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
         $sql .= ' limit 1;';
 
-        $result = $this->executeRequest($sql);
+        $arrays = $this->executeRequest($sql);
 
-        return $result ? $result[0] : null;
+        return $arrays ? $this->toObject($arrays)[0] : null;
     }
 
 //    ------------- UPDATE -------------------------------------------------------
@@ -116,5 +122,27 @@ abstract class Repository extends EntityManager
         }
 
         return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function isDtoSet(): bool
+    {
+        if (is_null($this->dto)) {
+            throw new Exception('Table of repository is not set.');
+        }
+
+        return true;
+    }
+
+    private function toObject(array $arrays): array
+    {
+        $objects = [];
+        foreach ($arrays as $array) {
+            $objects[] = $this->dto->config($array)->process();
+        }
+
+        return $objects;
     }
 }

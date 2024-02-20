@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use App\Attribute\Entity;
+use App\Repository\ParticipantRepository;
+
+#[Entity(repositoryClass: ParticipantRepository::class)]
 class Participant
 {
     private int $id;

@@ -34,18 +34,18 @@ class ContainerManager
     public function buildContainer(): ContainerInterface
     {
         $container = new Container();
-//        $repositoriesFQCN = $this->getEntityRepositoriesFQCN($this->getEntityFileNames());
-//        $repositoryObjects = $this->getEntityRepositoryObjects($repositoriesFQCN);
+        $repositoriesFQCN = $this->getEntityRepositoriesFQCN($this->getEntityFileNames());
+        $repositoryObjects = $this->getEntityRepositoryObjects($repositoriesFQCN);
 
         try {
             $container
                 ->set(Environment::class, $this->twig)
                 ->set(EntityManager::class, $this->entityManager);
 
-//            for ($i = 0; $i < count($repositoriesFQCN); $i++) {
-//                $newRepo = new $repositoryObjects[$i]($this->entityManager);
-//                $container->set($repositoriesFQCN[$i], $newRepo);
-//            }
+            for ($i = 0; $i < count($repositoriesFQCN); $i++) {
+                $newRepo = new $repositoryObjects[$i]($this->entityManager);
+                $container->set($repositoriesFQCN[$i], $newRepo);
+            }
 
             return $container;
 
@@ -55,20 +55,20 @@ class ContainerManager
         }
     }
 
-//    /**
-//     * @throws Exception
-//     */
-//    private function getEntityRepositoriesFQCN(array $entityFileNames): array
-//    {
-//        $repositoryFQCNs = [];
-//        foreach ($entityFileNames as $name) {
-//            $entityInfo = new ReflectionClass("App\Entity\\" . $name);
-//            $entityClassAttribute = $entityInfo->getAttributes('Doctrine\ORM\Mapping\Entity')[0];
-//            ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
-//        }
-//
-//        return $repositoryFQCNs;
-//    }
+    /**
+     * @throws Exception
+     */
+    private function getEntityRepositoriesFQCN(array $entityFileNames): array
+    {
+        $repositoryFQCNs = [];
+        foreach ($entityFileNames as $name) {
+            $entityInfo = new ReflectionClass("App\Entity\\" . $name);
+            $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\Entity')[0];
+            ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
+        }
+
+        return $repositoryFQCNs;
+    }
 
     /**
      * @throws Exception

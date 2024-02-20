@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use App\Attribute\Entity;
+use App\Repository\EventRepository;
 use DateTime;
 
+#[Entity(repositoryClass: EventRepository::class)]
 class Event
 {
     private int $id;
