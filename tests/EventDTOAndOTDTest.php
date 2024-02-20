@@ -48,8 +48,13 @@ class EventDTOAndOTDTest extends TestCase
         self::assertSame($eventObject->getTag(), $event['tag']);
         self::assertSame($eventObject->getCapacity(), $event['capacity']);
         self::assertSame($eventObject->getOwnerId(), $event['owner_id']);
+
+        $eventRepository->delete($event);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCanProcessEventArray()
     {
         $event = new Event();
