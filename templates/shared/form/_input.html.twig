@@ -1,1 +1,18 @@
-<input type="{{ type }}" name="{{ name }}" required="{{ required }}" class="input-group">
+<div class="input-group mb-3 align-items-center">
+    <span
+            class="input-group-{{ type }}"
+            id="{{ name }}-addon"
+    >
+        {{ label|title }}
+    </span>
+
+    <input
+            type="{{ type }}"
+            name="{{ name }}"
+            required="{{ required }}"
+            placeholder="{{ placeholder }}"
+            class="form-control {{ type is same as 'datetime-local' or type is same as 'number' ? 'ms-3' : '' }}"
+            aria-label="{{ name }}"
+            aria-describedby="{{ name }}-addon"
+    >
+</div>

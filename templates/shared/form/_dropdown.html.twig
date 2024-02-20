@@ -1,0 +1,6 @@
+<select class="form-select" aria-label="Default select" name="{{ name }}" required="{{ required }}">
+    <option selected>{{ label }}</option>
+    {% for option in choices %}
+        <option value="{{ option }}">{{ option|title() }}</option>
+    {% endfor %}
+</select>

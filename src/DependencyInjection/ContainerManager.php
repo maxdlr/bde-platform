@@ -10,6 +10,7 @@ use Exception;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 
 class ContainerManager
 {
@@ -34,8 +35,10 @@ class ContainerManager
     public function buildContainer(): ContainerInterface
     {
         $container = new Container();
-        $repositoriesFQCN = $this->getEntityRepositoriesFQCN($this->getEntityFileNames());
+        $repositoriesFQCN = $this->getEntityRepositoriesFQCN($this->getEntityFileNames(), $this->getEnumFileNames());
         $repositoryObjects = $this->getEntityRepositoryObjects($repositoriesFQCN);
+
+        $this->twig->addExtension(new DebugExtension());
 
         try {
             $container
@@ -58,11 +61,17 @@ class ContainerManager
     /**
      * @throws Exception
      */
-    private function getEntityRepositoriesFQCN(array $entityFileNames): array
+    private function getEntityRepositoriesFQCN(array $entityFileNames, array $enumFileNames): array
     {
         $repositoryFQCNs = [];
         foreach ($entityFileNames as $name) {
             $entityInfo = new ReflectionClass("App\Entity\\" . $name);
+            $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\AsEntity')[0];
+            ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
+        }
+
+        foreach ($enumFileNames as $name) {
+            $entityInfo = new ReflectionClass("App\Enum\\" . $name);
             $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\AsEntity')[0];
             ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
         }
@@ -77,6 +86,13 @@ class ContainerManager
     {
         return $this->attributeManager->getPhpFileNamesFromDir(
             __DIR__ . '/../Entity'
+        );
+    }
+
+    private function getEnumFileNames(): array
+    {
+        return $this->attributeManager->getPhpFileNamesFromDir(
+            __DIR__ . '/../Enum'
         );
     }
 
