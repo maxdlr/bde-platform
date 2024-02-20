@@ -24,7 +24,8 @@ class EventDTO implements DTOInterface
      */
     public function process(): object
     {
-        assert(is_array($this->from));
+        if (!assert(is_array($this->from)))
+            throw new Exception('Wrong type, this is supposed to be an array');
 
         $event = new Event();
 

@@ -4,6 +4,7 @@ namespace App\Mapping\Event;
 
 use App\Entity\Event;
 use App\Mapping\OTDInterface;
+use Exception;
 
 class EventOTD implements OTDInterface
 {
@@ -16,9 +17,13 @@ class EventOTD implements OTDInterface
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function process(): array
     {
-        assert($this->from instanceof Event);
+        if (!assert($this->from instanceof Event))
+            throw new Exception('Wrong type, this is supposed to be an Event object');
 
         $event = $this->from;
 
