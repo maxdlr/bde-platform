@@ -23,7 +23,7 @@ class ParticipantOTD implements OTDInterface
     public function process(): array
     {
         if (!assert($this->from instanceof Participant))
-            throw new Exception('Wrong type, this is supposed to be an Event object');
+            throw new Exception('Wrong type, this is supposed to be an Participant object');
 
         $participant = $this->from;
 
