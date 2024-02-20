@@ -1,0 +1,48 @@
+{% set names = [] %}
+<table class="table">
+    <thead>
+    {% for item in items %}
+        <tr>
+            {% for name, value in item %}
+                {% if name not in names %}
+                    <th>{{ name }}</th>
+                    {% set names = names|merge([name]) %}
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </thead>
+
+    <tbody>
+    {% for item in items %}
+        <tr>
+            {% for name, value in item %}
+                <td>
+                    <div>{{ value }}</div>
+                </td>
+            {% endfor %}
+            <td>
+                <form action="/admin/{{ entityName }}/delete" method="POST" enctype="multipart/form-data">
+                    <input type="number" value="{{ item.id }}" name="idDelete" class="d-none">
+                    <button class="btn btn-danger rounded-pill" type="submit" name="deleteSubmit"
+                            value="delete-{{ entityName }}">
+                        Supprimer
+                    </button>
+                </form>
+            </td>
+            <td>
+                <form action="/admin/{{ entityName }}/edit" method="POST" enctype="multipart/form-data">
+                    <input type="number" value="{{ item.id }}" name="idEdit" class="d-none">
+                    <button class="btn btn-warning rounded-pill" type="submit" name="editSubmit"
+                            value="edit-{{ entityName }}">
+                        Modifier
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        Aucun {{ entityName }}
+    {% endfor %}
+
+    </tbody>
+</table>

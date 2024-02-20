@@ -29,6 +29,7 @@ class EventOTD extends OTD implements OTDInterface
         $event = $this->from;
 
         return [
+            'id' => $event->getId(),
             'name' => $event->getName(),
             'description' => $event->getDescription(),
             'startDate' => $event->getStartDate()->format('Y-m-d H:i:s'),

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use JetBrains\PhpStorm\NoReturn;
 use Twig\Environment;
 
@@ -26,7 +27,11 @@ abstract class AbstractController
         } else {
             var_dump($expression);
         }
-
         exit();
+    }
+
+    protected function getUser(): User
+    {
+        $this->dd($_SESSION);
     }
 }

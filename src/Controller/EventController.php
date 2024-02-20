@@ -32,7 +32,7 @@ class EventController extends AbstractController
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/events', name: 'app_events_index', httpMethod: ['GET'])]
+    #[Route('/events', name: 'app_event_index', httpMethod: ['GET'])]
     public function index(): string
     {
         $events = $this->eventRepository->findAll();
@@ -48,10 +48,10 @@ class EventController extends AbstractController
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/events/new', name: 'app_events_new', httpMethod: ['GET', 'POST'])]
+    #[Route('/event/new', name: 'app_event_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
-        if (isset($_POST['eventSubmit']) && $_POST['eventSubmit'] == 'newEvent') {
+        if (isset($_POST['eventSubmit']) && $_POST['eventSubmit'] == 'new-event') {
             $event = new Event();
             $eventRepository = new EventRepository();
 
@@ -77,7 +77,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/show', name: 'app_events_show', httpMethod: ['POST'])]
+    #[Route('/event/show', name: 'app_event_show', httpMethod: ['POST'])]
     public function show(): string
     {
         if (isset($_POST['showSubmit']) && $_POST['showSubmit'] == 'showEvent') {
@@ -90,15 +90,15 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/delete', name: 'app_events_delete', httpMethod: ['GET'])]
+    #[Route('/admin/event/delete', name: 'app_event_delete', httpMethod: ['GET', 'POST'])]
     public function delete(): void
     {
-        if (isset($_POST['deleteSubmit']) && $_POST['deleteSubmit'] == 'deleteEvent') {
+        if (isset($_POST['deleteSubmit']) && $_POST['deleteSubmit'] == 'delete-event') {
             $eventRepository = new EventRepository();
             $eventToDelete = $eventRepository->findOneBy(['id' => $_POST['idDelete']]);
 
             if ($eventRepository->delete($eventToDelete)) {
-                $this->redirect('/events');
+                $this->redirect('/admin/event/index');
             }
         }
     }

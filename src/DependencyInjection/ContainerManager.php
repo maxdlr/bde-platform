@@ -11,6 +11,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
+use Twig\TwigFilter;
 
 class ContainerManager
 {
@@ -27,6 +28,8 @@ class ContainerManager
         $this->entityManager = $this->databaseManager->getEntityManager();
         $this->environmentManager = new EnvironmentManager();
         $this->twig = $this->environmentManager->getTemplateEngine();
+
+
     }
 
     /**
