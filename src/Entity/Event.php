@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use DateTime;
+
 class Event
 {
     private int $id;
     private string $name;
     private string $description;
-    private string $startDate;
-    private string $endDate;
+    private DateTime $startDate;
+    private DateTime $endDate;
     private string $tag;
     private int $capacity;
     private int $ownerId;
@@ -42,24 +44,24 @@ class Event
 
     }
 
-    public function getStartDate(): string
+    public function getStartDate(): DateTime
     {
         return $this->startDate;
     }
 
-    public function setStartDate(string $startDate): static
+    public function setStartDate(DateTime $startDate): static
     {
         $this->startDate = $startDate;
         return $this;
 
     }
 
-    public function getEndDate(): string
+    public function getEndDate(): DateTime
     {
         return $this->endDate;
     }
 
-    public function setEndDate(string $endDate): static
+    public function setEndDate(DateTime $endDate): static
     {
         $this->endDate = $endDate;
         return $this;

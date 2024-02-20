@@ -4,7 +4,7 @@ namespace App\Mapping;
 
 interface OTDInterface
 {
-    public function config(): void;
+    public function config(object $from): static;
 
     public function process(): array;
 }
