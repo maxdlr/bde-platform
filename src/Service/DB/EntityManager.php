@@ -38,6 +38,6 @@ class EntityManager
             return true;
         }
 
-        return $query->fetch_all(MYSQLI_BOTH);
+        return $query->fetch_all(MYSQLI_ASSOC);
     }
 }

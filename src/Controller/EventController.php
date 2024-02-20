@@ -26,7 +26,7 @@ class EventController extends AbstractController
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/events', name: 'app_events', httpMethod: ['GET'])]
+    #[Route('/events', name: 'app_events_index', httpMethod: ['GET'])]
     public function index(): string
     {
         $events = $this->eventRepository->findAll();
@@ -35,4 +35,28 @@ class EventController extends AbstractController
             'events' => $events,
         ]);
     }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    #[Route('/events/new', name: 'app_events_new', httpMethod: ['GET'])]
+    public function new(): string
+    {
+        return $this->twig->render('event/new.html.twig');
+    }
+
+    #[Route('/events/edit', name: 'app_events_new', httpMethod: ['GET'])]
+    public function edit(): string
+    {
+
+    }
+
+    #[Route('/events/delete', name: 'app_events_new', httpMethod: ['GET'])]
+    public function delete(): string
+    {
+
+    }
+
 }

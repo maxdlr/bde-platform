@@ -63,7 +63,7 @@ class ContainerManager
         $repositoryFQCNs = [];
         foreach ($entityFileNames as $name) {
             $entityInfo = new ReflectionClass("App\Entity\\" . $name);
-            $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\Entity')[0];
+            $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\AsEntity')[0];
             ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
         }
 

@@ -66,7 +66,7 @@ abstract class Repository extends EntityManager
     /**
      * @throws Exception
      */
-    public function findOneBy(array $criteria): null|array
+    public function findOneBy(array $criteria): null|object
     {
         assert($this->isTableSet());
 

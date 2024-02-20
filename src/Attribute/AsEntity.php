@@ -5,10 +5,10 @@ namespace App\Attribute;
 use Attribute;
 
 #[Attribute]
-class Entity
+readonly class AsEntity
 {
     public function __construct(
-        private readonly string $repositoryClass,
+        private string $repositoryClass,
     )
     {
     }
