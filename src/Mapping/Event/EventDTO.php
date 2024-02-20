@@ -3,11 +3,12 @@
 namespace App\Mapping\Event;
 
 use App\Entity\Event;
+use App\Mapping\DTO;
 use App\Mapping\DTOInterface;
 use DateTime;
 use Exception;
 
-class EventDTO implements DTOInterface
+class EventDTO extends DTO implements DTOInterface
 {
     // Data transfer class Database -> Object
     private array $from;

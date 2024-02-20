@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Mapping;
+namespace App\Mapping\User;
 
 use App\Entity\User;
+use App\Mapping\DTO;
 use App\Mapping\DTOInterface;
 use Exception;
 
-class UserDTO implements DTOInterface
+class UserDTO extends DTO implements DTOInterface
 {
     private array $from;
 
@@ -16,7 +17,7 @@ class UserDTO implements DTOInterface
         return $this;
     }
 
-    public function process():object
+    public function process(): object
     {
         if (!assert(is_array($this->from)))
             throw new Exception('Wrong type, this is supposed to be an array');
@@ -31,7 +32,7 @@ class UserDTO implements DTOInterface
             ->setRole($this->from['role'])
             ->setIsVerified($this->from['isVerified'])
             ->setSignedUpDate($this->from['signedUpDate']);
-            
+
         return $user;
     }
 }
