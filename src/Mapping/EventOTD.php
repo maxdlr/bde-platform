@@ -2,7 +2,7 @@
 
 namespace App\Mapping;
 
-class EventOTD
+class EventOTD extends OTD implements OTDInterface
 {
     // Data transfer class Object -> Database
 
