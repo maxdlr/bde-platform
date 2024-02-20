@@ -56,6 +56,8 @@ class EventController extends AbstractController
             $eventOtd = new EventOTD();
             $eventRepository = new EventRepository();
 
+            array_map('trim', $_POST);
+
             $event
                 ->setName($_POST['name'])
                 ->setDescription($_POST['description'])
@@ -65,7 +67,7 @@ class EventController extends AbstractController
                 ->setCapacity($_POST['capacity'])
                 ->setOwnerId(1);
 
-            if ($eventRepository->insertOne($eventOtd->config($event)->process())) {
+            if ($eventRepository->insertOne($event)) {
                 $this->redirect('/events');
             }
         }
@@ -76,7 +78,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/edit', name: 'app_events_new', httpMethod: ['GET'])]
+    #[Route('/events/edit', name: 'app_events_new', httpMethod: ['GET', 'POST'])]
     public function edit(): string
     {
 

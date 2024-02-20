@@ -1,5 +1,6 @@
 <?php
 
+use App\Entity\Event;
 use App\Repository\EventRepository;
 use App\Service\DB\DatabaseManager;
 use App\Service\DB\Entity;
@@ -42,19 +43,19 @@ class DatabaseTest extends TestCase
     public function testCanFindAll()
     {
         $eventRepository = new EventRepository();
+        $event = new Event();
         $faker = Factory::create();
 
         $name = $faker->word();
 
-        $event = [
-            'name' => $name,
-            'description' => $faker->paragraph(),
-            'startDate' => $faker->dateTime()->format('Y-m-d H:i:s'),
-            'endDate' => $faker->dateTime()->format('Y-m-d H:i:s'),
-            'tag' => $faker->word(),
-            'capacity' => $faker->randomNumber(2),
-            'owner_id' => 1,
-        ];
+        $event
+            ->setName($name)
+            ->setDescription($faker->paragraph())
+            ->setStartDate($faker->dateTime())
+            ->setEndDate($faker->dateTime())
+            ->setTag($faker->word())
+            ->setCapacity($faker->randomNumber(2))
+            ->setOwnerId(1);
 
         for ($i = 0; $i < 50; $i++) {
             $eventRepository->insertOne($event);
@@ -64,7 +65,7 @@ class DatabaseTest extends TestCase
 
         self::assertNotNull($eventObjects);
         self::assertIsArray($eventObjects);
-        self::assertInstanceOf(Entity::class, $eventObjects[rand(0, count($eventObjects))]);
+        self::assertInstanceOf(Entity::class, $eventObjects[rand(0, count($eventObjects) - 1)]);
 
         $eventRepository->delete(['name' => $name]);
     }
@@ -79,29 +80,30 @@ class DatabaseTest extends TestCase
 
         $name = $faker->word();
         $description = $faker->paragraph();
-        $startDate = $faker->dateTime()->format('Y-m-d H:i:s');
-        $endDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $startDate = $faker->dateTime();
+        $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = 1;
 
-        $event = [
-            'name' => $name,
-            'description' => $description,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'tag' => $tag,
-            'capacity' => $capacity,
-            'owner_id' => $owner_id,
-        ];
+        $event = new Event();
+        $event
+            ->setName($name)
+            ->setDescription($description)
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
+            ->setTag($tag)
+            ->setCapacity($capacity)
+            ->setOwnerId($owner_id);
+
         $eventRepository->insertOne($event);
 
         $read = $eventRepository->findOneBy(['name' => $name]);
 
         self::assertSame($name, $read->getName());
         self::assertSame($description, $read->getDescription());
-        self::assertSame($startDate, $read->getStartDate()->format('Y-m-d H:i:s'));
-        self::assertSame($endDate, $read->getEndDate()->format('Y-m-d H:i:s'));
+        self::assertSame($startDate->format('Y-m-d H:i:s'), $read->getStartDate()->format('Y-m-d H:i:s'));
+        self::assertSame($endDate->format('Y-m-d H:i:s'), $read->getEndDate()->format('Y-m-d H:i:s'));
         self::assertSame($tag, $read->getTag());
         self::assertSame($capacity, (int)$read->getCapacity());
         self::assertSame($owner_id, (int)$read->getOwnerId());
@@ -119,36 +121,36 @@ class DatabaseTest extends TestCase
 
         $name = $faker->word();
         $description = $faker->paragraph();
-        $startDate = $faker->dateTime()->format('Y-m-d H:i:s');
-        $endDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $startDate = $faker->dateTime();
+        $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = 1;
 
-        $event = [
-            'name' => $name,
-            'description' => $description,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'tag' => $tag,
-            'capacity' => $capacity,
-            'owner_id' => $owner_id,
-        ];
+        $event = new Event();
+        $event
+            ->setName($name)
+            ->setDescription($description)
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
+            ->setTag($tag)
+            ->setCapacity($capacity)
+            ->setOwnerId($owner_id);
 
         for ($i = 0; $i < 50; $i++) {
             $eventRepository->insertOne($event);
         }
 
-        $events = $eventRepository->findBy($event);
+        $events = $eventRepository->findBy(['name' => $name]);
 
         foreach ($events as $eventItem) {
-            assertSame($event['name'], $eventItem->getName());
-            assertSame($event['description'], $eventItem->getDescription());
-            assertSame($event['startDate'], $eventItem->getStartDate()->format('Y-m-d H:i:s'));
-            assertSame($event['endDate'], $eventItem->getEndDate()->format('Y-m-d H:i:s'));
-            assertSame($event['tag'], $eventItem->getTag());
-            assertSame($event['capacity'], $eventItem->getCapacity());
-            assertSame($event['owner_id'], $eventItem->getOwnerId());
+            assertSame($event->getName(), $eventItem->getName());
+            assertSame($event->getDescription(), $eventItem->getDescription());
+            assertSame($event->getStartDate()->format('Y-m-d H:i:s'), $eventItem->getStartDate()->format('Y-m-d H:i:s'));
+            assertSame($event->getEndDate()->format('Y-m-d H:i:s'), $eventItem->getEndDate()->format('Y-m-d H:i:s'));
+            assertSame($event->getTag(), $eventItem->getTag());
+            assertSame($event->getCapacity(), $eventItem->getCapacity());
+            assertSame($event->getOwnerId(), $eventItem->getOwnerId());
         }
 
         self::assertCount(50, $events);
@@ -166,24 +168,25 @@ class DatabaseTest extends TestCase
 
         $name = $faker->word();
         $description = $faker->paragraph();
-        $startDate = $faker->dateTime()->format('Y-m-d H:i:s');
-        $endDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $startDate = $faker->dateTime();
+        $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = 1;
 
-        $event = [
-            'name' => $name,
-            'description' => $description,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'tag' => $tag,
-            'capacity' => $capacity,
-            'owner_id' => $owner_id,
-        ];
+        $event = new Event();
+        $event
+            ->setName($name)
+            ->setDescription($description)
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
+            ->setTag($tag)
+            ->setCapacity($capacity)
+            ->setOwnerId($owner_id);
+
         $eventRepository->insertOne($event);
 
-        $eventRepository->update(['description' => 'new description'], ['name' => $name]);
+        $eventRepository->update(['description' => 'new description'], $event);
 
         $read = $eventRepository->findOneBy(['name' => $name]);
 
@@ -203,25 +206,26 @@ class DatabaseTest extends TestCase
 
         $name = $faker->word();
         $description = $faker->paragraph();
-        $startDate = $faker->dateTime()->format('Y-m-d H:i:s');
-        $endDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $startDate = $faker->dateTime();
+        $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = 1;
 
-        $event = [
-            'name' => $name,
-            'description' => $description,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'tag' => $tag,
-            'capacity' => $capacity,
-            'owner_id' => $owner_id,
-        ];
+        $event = new Event();
+        $event
+            ->setName($name)
+            ->setDescription($description)
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
+            ->setTag($tag)
+            ->setCapacity($capacity)
+            ->setOwnerId($owner_id);
+
         $eventRepository->insertOne($event);
 
         $eventRepository->delete($event);
 
-        self::assertNull($eventRepository->findOneBy($event));
+        self::assertNull($eventRepository->findOneBy(['name' => $name]));
     }
 }
