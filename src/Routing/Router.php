@@ -31,6 +31,7 @@ readonly class Router
         string $httpMethod
     ): string
     {
+
         $route = $this->getRoute($uri, $httpMethod);
         if ($route === null)
             throw new RouteNotFoundException("La page n'existe pas");
@@ -42,9 +43,19 @@ readonly class Router
 
         // Method
         $method = $route->getControllerMethod();
-        $methodParams = $this->getMethodParams($controllerClass . '::' . $method);
+        // If the controller is "item()", we retrieve the id contained in the url and pass it to its parameters
+        if($method == "detail") {
+            $tabUri = explode('/', $uri);
+            $idProductUri = intval(end($tabUri));
+        }
 
-        return $controllerInstance->$method(...$methodParams);
+
+        $methodParams = $this->getMethodParams($controllerClass . '::' . $method);
+        if(isset($idProductUri)) {
+            return $controllerInstance->$method($idProductUri, ...$methodParams);
+        } else {
+            return $controllerInstance->$method(...$methodParams);
+        }
     }
 
     /**
@@ -52,8 +63,15 @@ readonly class Router
      */
     private function getRoute(string $uri, string $httpMethod): ?Route
     {
+        $regExpr = "/\{(\w+)\}/";
+        $regExpr2 = "#/events/(\d+)#";
+
 
         foreach ($this->extractRoutesFromAttributes() as $savedRoute) {
+            // Check if request's url is in "/events/{id}" format, with {id} set to an integer
+            if(preg_match($regExpr, $savedRoute->getUri()) && preg_match($regExpr2, $uri)) {
+                return $savedRoute;
+            }
 
             if ($savedRoute->getUri() === $uri && in_array($httpMethod, $savedRoute->getHttpMethod())) {
                 return $savedRoute;
@@ -118,10 +136,10 @@ readonly class Router
         foreach ($methodParameters as $param) {
             $paramType = $param->getType();
             $paramTypeFQCN = $paramType->getName();
-            try {
+            if($method === "App\Controller\EventController::detail" && $paramTypeFQCN === "int") {
+                continue;
+            } else {
                 $params[] = $this->container->get($paramTypeFQCN);
-            } catch (ContainerExceptionInterface $e) {
-                var_dump($e);
             }
         }
 

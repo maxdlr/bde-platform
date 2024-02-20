@@ -59,4 +59,18 @@ class EventController extends AbstractController
 
     }
 
+
+    #[Route('/events/{id}', name: 'app_event_detail', httpMethod: ['GET'])]
+    public function detail(int $idEvent, EventRepository $eventRepository): string
+    {
+
+        if($eventRepository->findOneBy(['id' => $idEvent])) {
+            return $this->twig->render('event/detail.html.twig', [
+                'event' => $eventRepository->findOneBy(['id' => $idEvent])
+            ]);
+        } else {
+            return $this->twig->render('404.html.twig');
+        }
+    }
+
 }
