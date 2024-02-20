@@ -24,10 +24,10 @@ CREATE TABLE user
 (
     id         int          NOT NULL AUTO_INCREMENT,
     firstname  varchar(255) not null,
-    lastname   varchar(255) not null,
+    name   varchar(255) not null,
     email      varchar(255) not null UNIQUE,
     password   varchar(255) not null,
-    roles      varchar(255) not null,
+    role      varchar(255) not null,
     isVerified boolean      not null,
     signedUpOn dateTime     not null,
 
@@ -55,7 +55,7 @@ CREATE TABLE participant
 
 );
 
-INSERT INTO user (firstname, lastname, email, password, roles, isVerified, signedUpOn)
+INSERT INTO user (firstname, name, email, password, role, isVerified, signedUpOn)
 VALUES
     ('John', 'Doe', 'john.doe@example.com', 'password', 'admin', 1, NOW()),
     ('Jane', 'Smith', 'jane.smith@example.com', 'password', 'BDE Members', 1, NOW()),
