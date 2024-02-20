@@ -1,8 +1,8 @@
 <?php
 
-use App\Entity\Entity;
 use App\Repository\EventRepository;
 use App\Service\DB\DatabaseManager;
+use App\Service\DB\Entity;
 use App\Service\DB\EntityManager;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;

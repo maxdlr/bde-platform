@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Service\DB;
 
 abstract class Entity
 {

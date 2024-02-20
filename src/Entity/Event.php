@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Attribute\AsEntity;
 use App\Repository\EventRepository;
+use App\Service\DB\Entity;
 use DateTime;
 
 #[AsEntity(repositoryClass: EventRepository::class)]

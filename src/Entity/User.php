@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Attribute\AsEntity;
 use App\Repository\UserRepository;
+use App\Service\DB\Entity;
 
 #[AsEntity(repositoryClass: UserRepository::class)]
 class User extends Entity
