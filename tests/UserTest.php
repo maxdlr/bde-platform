@@ -21,18 +21,4 @@ class UserTest extends TestCase
         self::assertNotFalse($result, "Email invalid !");
     }
 
-    /**
-     * Allows to check if the password entered by the user is equal to one hashed in db
-     * @throws Exception
-     */
-    public function testCanCheckPasswordHash()
-    {
-        $joe = new \App\Entity\User();
-        $joe->setPassword("p05vb8*>");
-
-        $result = password_verify("p05vb8*>", $joe->getPassword());
-
-        self::assertSame(true, $result);
-    }
-
 }

@@ -15,7 +15,6 @@ class EventDTOAndOTDTest extends TestCase
     public function testCanProcessEventObject()
     {
         $eventRepository = new EventRepository();
-        $eventDto = new EventDTO();
         $faker = Factory::create();
 
         $name = $faker->word();

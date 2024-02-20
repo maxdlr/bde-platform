@@ -25,6 +25,7 @@ class UserDTO extends DTO implements DTOInterface
         $user = new User;
 
         $user
+            ->setId($this->from['id'])
             ->setFirstname($this->from['firstname'])
             ->setName($this->from['name'])
             ->setEmail($this->from['email'])

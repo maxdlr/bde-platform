@@ -26,14 +26,16 @@ class UserOTD implements OTDInterface
         
         $user = $this->from;
 
+        $passwordHash = password_hash($user->getPassword(), PASSWORD_DEFAULT);
+
         $arrayUser = [
             'name' => $user->getName(),
             'firstname' => $user->getFirstName(),
-            'password' => $user->getPassword(),
+            'password' => $passwordHash,
             'email' => $user->getEmail(),
             'role' => $user->getRole(),
-            'isVerified' => $user->isVerified(),
-            'signedUpOn' => $user->getSignedUpDate()
+            'isVerified' => $user->getIsVerified(),
+            'signedUpDate' => $user->getSignedUpDate()
         ];
         return $arrayUser;
     }
