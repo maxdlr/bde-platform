@@ -26,7 +26,7 @@ class EventDTOAndOTDTest extends TestCase
         $capacity = $faker->randomNumber(2);
         $owner_id = 1;
 
-        $event = [
+        $eventArray = [
             'name' => $name,
             'description' => $description,
             'startDate' => $startDate,
@@ -35,21 +35,21 @@ class EventDTOAndOTDTest extends TestCase
             'capacity' => $capacity,
             'owner_id' => $owner_id,
         ];
-        $eventRepository->insertOne($event);
+        $eventRepository->insertOne($eventArray);
 
-        $eventObject = $eventDto->config($event)->process();
+        $eventObject = $eventRepository->findOneBy($eventArray);
 
         self::assertInstanceOf(Event::class, $eventObject);
 
-        self::assertSame($eventObject->getName(), $event['name']);
-        self::assertSame($eventObject->getDescription(), $event['description']);
-        self::assertSame($eventObject->getStartDate()->format('Y-m-d H:i:s'), $event['startDate']);
-        self::assertSame($eventObject->getEndDate()->format('Y-m-d H:i:s'), $event['endDate']);
-        self::assertSame($eventObject->getTag(), $event['tag']);
-        self::assertSame($eventObject->getCapacity(), $event['capacity']);
-        self::assertSame($eventObject->getOwnerId(), $event['owner_id']);
+        self::assertSame($eventObject->getName(), $eventArray['name']);
+        self::assertSame($eventObject->getDescription(), $eventArray['description']);
+        self::assertSame($eventObject->getStartDate()->format('Y-m-d H:i:s'), $eventArray['startDate']);
+        self::assertSame($eventObject->getEndDate()->format('Y-m-d H:i:s'), $eventArray['endDate']);
+        self::assertSame($eventObject->getTag(), $eventArray['tag']);
+        self::assertSame($eventObject->getCapacity(), $eventArray['capacity']);
+        self::assertSame($eventObject->getOwnerId(), $eventArray['owner_id']);
 
-        $eventRepository->delete($event);
+        $eventRepository->delete($eventArray);
     }
 
     /**

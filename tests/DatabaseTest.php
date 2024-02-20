@@ -1,5 +1,6 @@
 <?php
 
+use App\Entity\Entity;
 use App\Repository\EventRepository;
 use App\Service\DB\DatabaseManager;
 use App\Service\DB\EntityManager;
@@ -59,17 +60,11 @@ class DatabaseTest extends TestCase
             $eventRepository->insertOne($event);
         }
 
-        $events = $eventRepository->findAll();
+        $eventObjects = $eventRepository->findAll();
 
-        foreach ($events as $eventItem) {
-            self::assertArrayHasKey('name', $eventItem);
-            self::assertArrayHasKey('description', $eventItem);
-            self::assertArrayHasKey('startDate', $eventItem);
-            self::assertArrayHasKey('endDate', $eventItem);
-            self::assertArrayHasKey('tag', $eventItem);
-            self::assertArrayHasKey('capacity', $eventItem);
-            self::assertArrayHasKey('owner_id', $eventItem);
-        }
+        self::assertNotNull($eventObjects);
+        self::assertIsArray($eventObjects);
+        self::assertInstanceOf(Entity::class, $eventObjects[rand(0, count($eventObjects))]);
 
         $eventRepository->delete(['name' => $name]);
     }
@@ -103,13 +98,13 @@ class DatabaseTest extends TestCase
 
         $read = $eventRepository->findOneBy(['name' => $name]);
 
-        self::assertSame($name, $read['name']);
-        self::assertSame($description, $read['description']);
-        self::assertSame($startDate, $read['startDate']);
-        self::assertSame($endDate, $read['endDate']);
-        self::assertSame($tag, $read['tag']);
-        self::assertSame($capacity, (int)$read['capacity']);
-        self::assertSame($owner_id, (int)$read['owner_id']);
+        self::assertSame($name, $read->getName());
+        self::assertSame($description, $read->getDescription());
+        self::assertSame($startDate, $read->getStartDate()->format('Y-m-d H:i:s'));
+        self::assertSame($endDate, $read->getEndDate()->format('Y-m-d H:i:s'));
+        self::assertSame($tag, $read->getTag());
+        self::assertSame($capacity, (int)$read->getCapacity());
+        self::assertSame($owner_id, (int)$read->getOwnerId());
 
         $eventRepository->delete($event);
     }
@@ -147,13 +142,13 @@ class DatabaseTest extends TestCase
         $events = $eventRepository->findBy($event);
 
         foreach ($events as $eventItem) {
-            self::assertArrayHasKey('name', $eventItem);
-            self::assertArrayHasKey('description', $eventItem);
-            self::assertArrayHasKey('startDate', $eventItem);
-            self::assertArrayHasKey('endDate', $eventItem);
-            self::assertArrayHasKey('tag', $eventItem);
-            self::assertArrayHasKey('capacity', $eventItem);
-            self::assertArrayHasKey('owner_id', $eventItem);
+            assertSame($event['name'], $eventItem->getName());
+            assertSame($event['description'], $eventItem->getDescription());
+            assertSame($event['startDate'], $eventItem->getStartDate()->format('Y-m-d H:i:s'));
+            assertSame($event['endDate'], $eventItem->getEndDate()->format('Y-m-d H:i:s'));
+            assertSame($event['tag'], $eventItem->getTag());
+            assertSame($event['capacity'], $eventItem->getCapacity());
+            assertSame($event['owner_id'], $eventItem->getOwnerId());
         }
 
         self::assertCount(50, $events);
@@ -192,8 +187,8 @@ class DatabaseTest extends TestCase
 
         $read = $eventRepository->findOneBy(['name' => $name]);
 
-        assertSame($name, $read['name']);
-        assertSame('new description', $read['description']);
+        assertSame($name, $read->getName());
+        assertSame('new description', $read->getDescription());
 
         $eventRepository->delete(['name' => $name]);
     }

@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Attribute\Entity;
+use App\Attribute\AsEntity;
 use App\Repository\EventRepository;
 use DateTime;
 
-#[Entity(repositoryClass: EventRepository::class)]
-class Event
+#[AsEntity(repositoryClass: EventRepository::class)]
+class Event extends Entity
 {
     private int $id;
     private string $name;
@@ -21,6 +21,12 @@ class Event
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): string

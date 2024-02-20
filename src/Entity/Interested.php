@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Attribute\Entity;
+use App\Attribute\AsEntity;
 use App\Repository\InterestedRepository;
 
-#[Entity(repositoryClass: InterestedRepository::class)]
-class Interested
+#[AsEntity(repositoryClass: InterestedRepository::class)]
+class Interested extends Entity
 {
     private int $id;
     private int $eventId;

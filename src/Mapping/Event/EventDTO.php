@@ -31,6 +31,7 @@ class EventDTO extends DTO implements DTOInterface
         $event = new Event();
 
         $event
+            ->setId($this->from['id'])
             ->setName($this->from['name'])
             ->setDescription($this->from['description'])
             ->setStartDate(new DateTime($this->from['startDate']))

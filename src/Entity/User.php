@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Attribute\Entity;
+use App\Attribute\AsEntity;
 use App\Repository\UserRepository;
 
-#[Entity(repositoryClass: UserRepository::class)]
-class User
+#[AsEntity(repositoryClass: UserRepository::class)]
+class User extends Entity
 {
     private int $id;
     private string $firstname;
