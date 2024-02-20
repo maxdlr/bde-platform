@@ -61,14 +61,14 @@ class DatabaseTest extends TestCase
 
         $events = $eventRepository->findAll();
 
-        foreach ($events as $event) {
-            self::assertArrayHasKey('name', $event);
-            self::assertArrayHasKey('description', $event);
-            self::assertArrayHasKey('startDate', $event);
-            self::assertArrayHasKey('endDate', $event);
-            self::assertArrayHasKey('tag', $event);
-            self::assertArrayHasKey('capacity', $event);
-            self::assertArrayHasKey('owner_id', $event);
+        foreach ($events as $eventItem) {
+            self::assertArrayHasKey('name', $eventItem);
+            self::assertArrayHasKey('description', $eventItem);
+            self::assertArrayHasKey('startDate', $eventItem);
+            self::assertArrayHasKey('endDate', $eventItem);
+            self::assertArrayHasKey('tag', $eventItem);
+            self::assertArrayHasKey('capacity', $eventItem);
+            self::assertArrayHasKey('owner_id', $eventItem);
         }
 
         $eventRepository->delete(['name' => $name]);
@@ -77,7 +77,7 @@ class DatabaseTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testCanCreateAndRead()
+    public function testCanCreateAndFindOneBy()
     {
         $eventRepository = new EventRepository();
         $faker = Factory::create();
@@ -110,6 +110,53 @@ class DatabaseTest extends TestCase
         self::assertSame($tag, $read['tag']);
         self::assertSame($capacity, (int)$read['capacity']);
         self::assertSame($owner_id, (int)$read['owner_id']);
+
+        $eventRepository->delete($event);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testCanCreateAndFindBy()
+    {
+        $eventRepository = new EventRepository();
+        $faker = Factory::create();
+
+        $name = $faker->word();
+        $description = $faker->paragraph();
+        $startDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $endDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $tag = $faker->word();
+        $capacity = $faker->randomNumber(2);
+        $owner_id = 1;
+
+        $event = [
+            'name' => $name,
+            'description' => $description,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'tag' => $tag,
+            'capacity' => $capacity,
+            'owner_id' => $owner_id,
+        ];
+
+        for ($i = 0; $i < 50; $i++) {
+            $eventRepository->insertOne($event);
+        }
+
+        $events = $eventRepository->findBy($event);
+
+        foreach ($events as $eventItem) {
+            self::assertArrayHasKey('name', $eventItem);
+            self::assertArrayHasKey('description', $eventItem);
+            self::assertArrayHasKey('startDate', $eventItem);
+            self::assertArrayHasKey('endDate', $eventItem);
+            self::assertArrayHasKey('tag', $eventItem);
+            self::assertArrayHasKey('capacity', $eventItem);
+            self::assertArrayHasKey('owner_id', $eventItem);
+        }
+
+        self::assertCount(50, $events);
 
         $eventRepository->delete($event);
     }

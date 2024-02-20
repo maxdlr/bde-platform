@@ -46,6 +46,20 @@ abstract class Repository extends EntityManager
     /**
      * @throws Exception
      */
+    public function findBy(array $criteria): null|array
+    {
+        assert($this->isTableSet());
+
+        $sql = 'select * from ' . $this->tableName;
+        $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
+        $sql .= ';';
+
+        return $this->executeRequest($sql);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function findOneBy(array $criteria): null|array
     {
         assert($this->isTableSet());
