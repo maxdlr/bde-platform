@@ -24,6 +24,16 @@
                             <p>du {{ event.startDate|date("d/m/y H:i") }} au {{ event.endDate|date("d/m/y H:i") }}</p>
                         </div>
                     </div>
+                    <form action="/events/show" method="POST" enctype="multipart/form-data">
+                        <input type="number" value="{{ event.id }}" name="idShow" class="d-none">
+                        <button class="btn btn-warning" type="submit" name="showSubmit" value="showEvent">Voir
+                        </button>
+                    </form>
+                    <form action="/events/delete" method="POST" enctype="multipart/form-data">
+                        <input type="number" value="{{ event.id }}" name="idDelete" class="d-none">
+                        <button class="btn btn-danger" type="submit" name="deleteSubmit" value="deleteEvent">Supprimer
+                        </button>
+                    </form>
                 </article>
 
             {% endfor %}

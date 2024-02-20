@@ -53,7 +53,6 @@ class EventController extends AbstractController
     {
         if (isset($_POST['eventSubmit']) && $_POST['eventSubmit'] == 'newEvent') {
             $event = new Event();
-            $eventOtd = new EventOTD();
             $eventRepository = new EventRepository();
 
             array_map('trim', $_POST);
@@ -78,16 +77,29 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/edit', name: 'app_events_new', httpMethod: ['GET', 'POST'])]
-    public function edit(): string
+    #[Route('/events/show', name: 'app_events_show', httpMethod: ['POST'])]
+    public function show(): string
     {
+        if (isset($_POST['showSubmit']) && $_POST['showSubmit'] == 'showEvent') {
+            $eventRepository = new EventRepository();
+            $event = $eventRepository->findOneBy(['id' => $_POST['idShow']]);
+        }
 
+        return $this->twig->render('event/show.html.twig', [
+            'event' => $event,
+        ]);
     }
 
-    #[Route('/events/delete', name: 'app_events_new', httpMethod: ['GET'])]
-    public function delete(): string
+    #[Route('/events/delete', name: 'app_events_delete', httpMethod: ['GET'])]
+    public function delete(): void
     {
+        if (isset($_POST['deleteSubmit']) && $_POST['deleteSubmit'] == 'deleteEvent') {
+            $eventRepository = new EventRepository();
+            $eventToDelete = $eventRepository->findOneBy(['id' => $_POST['idDelete']]);
 
+            if ($eventRepository->delete($eventToDelete)) {
+                $this->redirect('/events');
+            }
+        }
     }
-
 }

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Modifier evenement
+{% endblock %}
+
+{% block body %}
+    <article class="p-3">
+        <div class="card-header d-flex justify-content-between align-items-start">
+            <h2 class="fs-2">{{ event.name }} --- {{ event.id }}</h2>
+            <button class="bg-primary border border-0 px-4 py-3 text-light fw-bold rounded-pill">
+                {{ event.tag }}
+            </button>
+        </div>
+        <div class="card-body">
+            <p>{{ event.description }}</p>
+            <p class="fw-bold">{{ event.capacity }} personnes maximum !</p>
+            <div>
+                <p>du {{ event.startDate|date("d/m/y H:i") }} au {{ event.endDate|date("d/m/y H:i") }}</p>
+            </div>
+        </div>
+    </article>
+
+{% endblock %}
