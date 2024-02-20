@@ -3,7 +3,7 @@
 namespace App\Entity;
 class Event
 {
-    private int $id;
+	  private int $id;
     private string $name;
     private string $description;
     private string $startDate;
@@ -12,7 +12,7 @@ class Event
     private int $capacity;
     private int $ownerId;
 
-    public function getId()
+  public function getId()
 	{
 		return $this->id;
 	}
@@ -22,9 +22,8 @@ class Event
 	}
 	public function setName(string $name): static
 	{
-		$this->name = $name;
-        return $this;
-
+     $this->name = $name;
+     return $this;
 	}
 	public function getDescription()
 	{
@@ -33,9 +32,9 @@ class Event
 	public function setDescription(string $description): static
 	{
 		$this->description = $description;
-        return $this;
-
+    return $this;
 	}
+  
 	public function getStartDate()
 	{
 		return $this->startDate;
@@ -43,8 +42,7 @@ class Event
 	public function setStartDate(string $startDate): static
 	{
 		$this->startDate = $startDate;
-        return $this;
-
+    return $this;
 	}
 	public function getEndDate()
 	{
@@ -53,8 +51,7 @@ class Event
 	public function setEndDate(string $endDate): static
 	{
 		$this->endDate = $endDate;
-        return $this;
-
+    return $this;
 	}
 	public function getTag()
 	{
@@ -63,8 +60,7 @@ class Event
 	public function setTag(string $tag): static
 	{
 		$this->tag = $tag;
-        return $this;
-
+    return $this;
 	}
 	public function getCapacity()
 	{
@@ -73,7 +69,7 @@ class Event
 	public function setCapacity(int $capacity): static
 	{
 		$this->capacity = $capacity;
-        return $this;
+    return $this;
 	}
 	public function getOwnerId()
 	{
@@ -82,7 +78,7 @@ class Event
 	public function setOwnerId(int $ownerId): static
 	{
 		$this->ownerId = $ownerId;
-        return $this;
+    return $this;
 	}
 
 }

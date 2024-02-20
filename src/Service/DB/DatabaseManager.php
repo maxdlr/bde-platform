@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DB;
+namespace App\Service\DB;
 
 use Exception;
 use mysqli;
@@ -46,7 +46,7 @@ class DatabaseManager
     {
         $dotenv = new Dotenv();
         try {
-            $dotenv->loadEnv(__DIR__ . '/../../.env');
+            $dotenv->loadEnv(__DIR__ . '/../../../.env');
         } catch (Exception $e) {
             var_dump($e);
         }
