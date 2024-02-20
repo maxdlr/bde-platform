@@ -3,8 +3,8 @@
 namespace App\DependencyInjection;
 
 use App\Attribute\AttributeManager;
-use App\DB\DatabaseManager;
-use App\DB\EntityManager;
+use App\Service\DB\DatabaseManager;
+use App\Service\DB\EntityManager;
 use App\Service\EnvironmentManager;
 use Exception;
 use Psr\Container\ContainerInterface;

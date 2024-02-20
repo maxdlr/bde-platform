@@ -1,8 +1,8 @@
 <?php
 
-use App\DB\DatabaseManager;
-use App\DB\EntityManager;
 use App\Repository\EventRepository;
+use App\Service\DB\DatabaseManager;
+use App\Service\DB\EntityManager;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 use function PHPUnit\Framework\assertSame;
@@ -180,6 +180,6 @@ class DatabaseTest extends TestCase
 
         $eventRepository->delete($event);
 
-        self::assertEmpty($eventRepository->findOneBy($event));
+        self::assertNull($eventRepository->findOneBy($event));
     }
 }

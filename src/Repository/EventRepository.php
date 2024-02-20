@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\DB\Repository;
+use App\Service\DB\Repository;
 
 class EventRepository extends Repository
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DB;
+namespace App\Service\DB;
 
 use Exception;
 use mysqli;
