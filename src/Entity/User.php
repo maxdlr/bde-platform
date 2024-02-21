@@ -9,7 +9,7 @@ use App\Service\DB\Entity;
 #[AsEntity(repositoryClass: UserRepository::class)]
 class User extends Entity
 {
-    private int $id;
+    private ?int $id = null;
     private string $firstname;
     private string $lastname;
     private string $email;
@@ -17,6 +17,19 @@ class User extends Entity
     private string $roles;
     private bool $isVerified;
     private string $signedUpOn;
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'firstname' => $this->getFirstName(),
+            'lastname' => $this->getLastname(),
+            'email' => $this->getEmail(),
+            'roles' => $this->getRoles(),
+            'isVerified' => $this->isVerified(),
+            'signedUpOn' => $this->getSignedUpOn()
+        ];
+    }
 
     public function setId(int $id): User
     {

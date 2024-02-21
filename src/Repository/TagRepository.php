@@ -8,10 +8,10 @@ class TagRepository
 {
     public function findAll(): array
     {
-        $tagsObject = TagEnum::cases();
+        $tagsEnumCase = TagEnum::cases();
 
         $tags = [];
-        foreach ($tagsObject as $tag) {
+        foreach ($tagsEnumCase as $tag) {
             $tags[] = $tag->value;
         }
         return $tags;

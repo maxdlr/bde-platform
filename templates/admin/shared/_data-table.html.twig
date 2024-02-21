@@ -18,13 +18,22 @@
         <tr>
             {% for name, value in item %}
                 <td>
-                    <div>{{ value }}</div>
+                    {% if value is same as true %}
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" checked="{{ value }}"
+                                   disabled>
+                        </div>
+                    {% elseif value is not iterable %}
+                        <div>{{ value }}</div>
+                    {% endif %}
+
+
                 </td>
             {% endfor %}
             <td>
                 <form action="/admin/{{ entityName }}/delete" method="POST" enctype="multipart/form-data">
-                    <input type="number" value="{{ item.id }}" name="idDelete" class="d-none">
-                    <button class="btn btn-danger rounded-pill" type="submit" name="deleteSubmit"
+                    <input type="number" value="{{ item.id }}" name="delete-{{ entityName }}-input" class="d-none">
+                    <button class="btn btn-danger rounded-pill" type="submit" name="delete-{{ entityName }}-submit"
                             value="delete-{{ entityName }}">
                         Supprimer
                     </button>
@@ -32,8 +41,8 @@
             </td>
             <td>
                 <form action="/admin/{{ entityName }}/edit" method="POST" enctype="multipart/form-data">
-                    <input type="number" value="{{ item.id }}" name="idEdit" class="d-none">
-                    <button class="btn btn-warning rounded-pill" type="submit" name="editSubmit"
+                    <input type="number" value="{{ item.id }}" name="edit-{{ entityName }}-input" class="d-none">
+                    <button class="btn btn-warning rounded-pill" type="submit" name="edit-{{ entityName }}-submit"
                             value="edit-{{ entityName }}">
                         Modifier
                     </button>

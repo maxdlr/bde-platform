@@ -11,5 +11,7 @@
             placeholder="{{ placeholder }}"
             class="form-control align-self-stretch"
             aria-label="{{ name }}"
-    ></textarea>
+    >
+        {{ value ? value : '' }}
+    </textarea>
 </div>

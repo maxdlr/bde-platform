@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Créer un nouvel evenement
+    Modifier un evenement
 {% endblock %}
 
 {% block body %}
-    {{ dump(dump) }}
+
+    {{ dump(item.tag) }}
 
     <main class="container">
-        <h1 class="my-5">Créer un nouvel evenement.</h1>
+        <h1 class="my-5">Modifier un evenement.</h1>
 
         <form action="/event/new" method="POST" enctype="multipart/form-data">
 
@@ -22,7 +23,7 @@
                             type: 'text',
                             name: 'name',
                             required: true,
-                            placeholder: "Nom"
+                            value: item.name
                         }) }}
 
                         {{ include('shared/form/_input.html.twig', {
@@ -30,7 +31,8 @@
                             type: 'number',
                             name: 'capacity',
                             required: true,
-                            placeholder: "Capacité maximum"
+                            placeholder: "Capacité maximum",
+                            value: item.capacity
                         }) }}
                     </div>
 
@@ -40,7 +42,8 @@
                         type: 'datetime-local',
                         name: 'startDate',
                         required: true,
-                        placeholder: "Début"
+                        placeholder: "Début",
+                        value: item.startDate|date('Y-m-d H:i:s')
                     }) }}
 
                     {{ include('shared/form/_input.html.twig', {
@@ -48,15 +51,16 @@
                         type: 'datetime-local',
                         name: 'endDate',
                         required: true,
-                        placeholder: "Fin"
+                        placeholder: "Fin",
+                        value: item.endDate|date('Y-m-d H:i:s')
                     }) }}
-
 
                     {{ include('shared/form/_dropdown.html.twig', {
                         choices: tags,
                         label: 'Catégorie',
                         name: 'tag',
-                        required: true
+                        required: true,
+                        value: item.tag
                     }) }}
                 </div>
                 <div>
@@ -65,14 +69,13 @@
                         type: 'text',
                         name: 'description',
                         required: true,
-                        placeholder: "Description"
+                        placeholder: "Description",
+                        value: item.description
                     }) }}
                     <button class="btn btn-primary" type="submit" name="eventSubmit" value="new-event">Enregistrer
                     </button>
                 </div>
             </div>
-
-
         </form>
     </main>
 

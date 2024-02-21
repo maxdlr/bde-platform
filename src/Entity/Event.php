@@ -10,7 +10,7 @@ use DateTime;
 #[AsEntity(repositoryClass: EventRepository::class)]
 class Event extends Entity
 {
-    private int $id;
+    private ?int $id = null;
     private string $name;
     private string $description;
     private DateTime $startDate;
@@ -18,6 +18,20 @@ class Event extends Entity
     private string $tag;
     private int $capacity;
     private int $ownerId;
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'startDate' => $this->getStartDate()->format('Y-m-d H:i:s'),
+            'endDate' => $this->getEndDate()->format('Y-m-d H:i:s'),
+            'tag' => $this->getTag(),
+            'capacity' => $this->getCapacity(),
+            'owner_id' => $this->getOwnerId()
+        ];
+    }
 
     public function getId(): int
     {

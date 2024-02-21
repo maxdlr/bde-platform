@@ -1,18 +1,36 @@
-<div class="input-group mb-3 align-items-center">
+{% if type is not same as 'checkbox' %}
+
+
+    <div class="input-group mb-3 align-items-center {{ class is same as 'form-check-input' ? 'form-check form-switch' : '' }}">
     <span
-            class="input-group-{{ type }}"
+            class=" input-group-{{ type }}"
             id="{{ name }}-addon"
     >
         {{ label|title }}
     </span>
 
-    <input
-            type="{{ type }}"
-            name="{{ name }}"
-            required="{{ required }}"
-            placeholder="{{ placeholder }}"
-            class="form-control {{ type is same as 'datetime-local' or type is same as 'number' ? 'ms-3' : '' }}"
-            aria-label="{{ name }}"
-            aria-describedby="{{ name }}-addon"
-    >
-</div>
+        <input
+                type="{{ type }}"
+                name="{{ name }}"
+                required="{{ required }}"
+                placeholder="{{ placeholder }}"
+                class="form-control {{ type is same as 'datetime-local' or type is same as 'number' or type is same as 'email' ? 'ms-3' : '' }} {{ class }}"
+                aria-label="{{ name }}"
+                aria-describedby="{{ name }}-addon"
+                value="{{ value|default('') }}"
+        >
+    </div>
+
+{% endif %}
+
+
+{% if type is same as 'checkbox' %}
+    <div class="form-check form-switch">
+        <input class="form-check-input {{ class }}" type="checkbox" role="switch" id="{{ name }}" checked="{{ value }}"
+               name="{{ name }}" required="{{ required }}">
+        <label class="form-check-label" for="{{ name }}">{{ label }}</label>
+    </div>
+
+{% endif %}
+
+

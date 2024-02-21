@@ -28,7 +28,6 @@ class UserOTD extends OTD implements OTDInterface
         $user = $this->from;
 
         $arrayUser = [
-            'id' => $user->getId(),
             'lastname' => $user->getLastname(),
             'firstname' => $user->getFirstName(),
             'password' => $user->getPassword(),
