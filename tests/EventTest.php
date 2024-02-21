@@ -306,7 +306,7 @@ class EventTest extends TestCase
 
         assertSame('oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo ', $result->getDescription());
 
-        $eventRepository->delete(['name' => $event->getDescription()]);
+        $eventRepository->delete(['description' => $event->getDescription()]);
     }
 
     public function testCanCreateWithTag()
