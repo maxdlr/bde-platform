@@ -5,28 +5,42 @@ namespace App\Entity;
 use App\Attribute\AsEntity;
 use App\Repository\UserRepository;
 use App\Service\DB\Entity;
+use DateTime;
 
 #[AsEntity(repositoryClass: UserRepository::class)]
 class User extends Entity
 {
-    private int $id;
+    private ?int $id = null;
     private string $firstname;
-    private string $name;
+    private string $lastname;
     private string $email;
     private string $password;
-    private string $role;
+    private string $roles;
     private bool $isVerified;
-    private string $signedUpOn;
+    private DateTime $signedUpOn;
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'firstname' => $this->getFirstName(),
+            'lastname' => $this->getLastname(),
+            'email' => $this->getEmail(),
+            'roles' => $this->getRoles(),
+            'isVerified' => $this->getIsVerified(),
+            'signedUpOn' => $this->getSignedUpOn()
+        ];
+    }
+
+    public function setId(int $id): User
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getFirstname(): string
@@ -40,14 +54,14 @@ class User extends Entity
         return $this;
     }
 
-    public function getName(): string
+    public function getLastname(): string
     {
-        return $this->name;
+        return $this->lastname;
     }
 
-    public function setName(string $name): static
+    public function setLastname(string $lastname): static
     {
-        $this->name = $name;
+        $this->lastname = $lastname;
         return $this;
     }
 
@@ -73,14 +87,14 @@ class User extends Entity
         return $this;
     }
 
-    public function getRole(): string
+    public function getRoles(): string
     {
-        return $this->role;
+        return $this->roles;
     }
 
-    public function setRole(string $role): static
+    public function setRoles(string $roles): static
     {
-        $this->role = $role;
+        $this->roles = $roles;
         return $this;
     }
 
@@ -95,12 +109,12 @@ class User extends Entity
         return $this;
     }
 
-    public function getSignedUpOn(): string
+    public function getSignedUpOn(): DateTime
     {
         return $this->signedUpOn;
     }
 
-    public function setSignedUpOn(string $signedUpOn): static
+    public function setSignedUpOn(DateTime $signedUpOn): static
     {
         $this->signedUpOn = $signedUpOn;
         return $this;

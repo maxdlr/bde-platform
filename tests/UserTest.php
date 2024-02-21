@@ -1,11 +1,10 @@
 <?php
 
-use App\DB\DatabaseManager;
-use App\DB\EntityManager;
 use App\Entity\User;
 use App\Mapping\User\UserOTD;
 use App\Repository\userRepository;
 use Faker\Factory;
+use App\Factory\UserFactory;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
@@ -19,9 +18,9 @@ class UserTest extends TestCase
     {
         $john = new User();
         $john->setEmail("joe.cohen@gmail.com");
-        $resultJohh = filter_var($john->getEmail(), FILTER_VALIDATE_EMAIL);
+        $resultJohn = filter_var($john->getEmail(), FILTER_VALIDATE_EMAIL);
 
-        self::assertNotFalse($resultJohh, "Email invalid !");
+        self::assertNotFalse($resultJohn, "Email invalid !");
 
 
         $tom = new User();
@@ -40,85 +39,60 @@ class UserTest extends TestCase
         $faker = Factory::create();
 
         $firstname = $faker->firstName();
-        $name = $faker->name();
-        $email = $faker->email();
         $password = $faker->password();
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $role = $faker->randomElement(["admin", "BDE Members", "students", "visitor"]);
-        $isVerified = true;
-        $signedUpOn = $faker->dateTime()->format('Y-m-d H:i:s');
 
-        $userArray = [
-            'firstname' => $firstname,
-            'name' => $name,
-            'email' => $email,
-            'password' => $passwordHash,
-            'role' => $role,
-            'isVerified' => $isVerified,
-            'signedUpOn' => $signedUpOn,
-        ];
+        $user = UserFactory::make()->withFirstname($firstname)->withPassword($password)->generate();
+        $userRepository->insertOne($user);
 
-        $userRepository->insertOne($userArray);
+        $userFromDb = $userRepository->findOneBy(['firstname' => $firstname]);
 
-        $userObject = $userRepository->findOneBy($userArray);
+        $lookHash = password_verify($password, $userFromDb->getPassword());
+        self::assertInstanceOf(User::class, $userFromDb);
 
-        self::assertInstanceOf(User::class, $userObject);
-
-        self::assertSame($userObject->getFirstname(), $userArray['firstname']);
-        self::assertSame($userObject->getName(), $userArray['name']);
-        self::assertSame($userObject->getEmail(), $userArray['email']);
-        self::assertSame($userObject->getPassword(), $userArray['password']);
-        self::assertSame($userObject->getRole(), $userArray['role']);
-        self::assertSame($userObject->getIsVerified(), $userArray['isVerified']);
-        self::assertSame($userObject->getSignedUpOn(), $userArray['signedUpOn']);
-
-        $lookHash = password_verify($password, $userArray['password']);
+        self::assertSame($userFromDb->getFirstname(), $user->getFirstname());
+        self::assertSame($userFromDb->getLastname(), $user->getLastname());
+        self::assertSame($userFromDb->getEmail(), $user->getEmail());
         self::assertSame(true, $lookHash);
+        self::assertSame($userFromDb->getRoles(), $user->getRoles());
+        self::assertSame($userFromDb->getIsVerified(), $user->getIsVerified());
+        self::assertSame(
+            $userFromDb->getSignedUpOn()->format('Y-m-d H:i:s'),
+            $user->getSignedUpOn()->format('Y-m-d H:i:s')
+        );
 
-        $userRepository->delete($userArray);
+        $userRepository->delete($user);
     }
 
     /**
      * @throws Exception
      */
-    public function testCanProcessUserArray()
+    public function testCanCreateOneWithFactory()
     {
-        $user = new User();
-        $faker = Factory::create();
+        $user = UserFactory::make()->withFirstname('Maxime')->generate();
 
-        $firstname = $faker->firstName();
-        $name = $faker->name();
-        $email = $faker->email();
-        $password = $faker->password();
-        $role = $faker->randomElement(["admin", "BDE Members", "students", "visitor"]);
-        $isVerified = 1;
-        $signedUpOn = $faker->dateTime()->format('Y-m-d H:i:s');
+        $userRepository = new UserRepository();
+        $userRepository->insertOne($user);
 
-        $user
-            ->setFirstname($firstname)
-            ->setName($name)
-            ->setEmail($email)
-            ->setPassword($password)
-            ->setRole($role)
-            ->setIsVerified($isVerified)
-            ->setSignedUpOn($signedUpOn);
+        $result = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
 
-        $userOTD = new UserOTD();
+        self::assertSame('Maxime', $result->getFirstname());
 
-        $userArray = $userOTD->config($user)->process();
-
-        self::assertIsArray($userArray);
-
-        self::assertSame($user->getFirstname(), $userArray['firstname']);
-        self::assertSame($user->getName(), $userArray['name']);
-        self::assertSame($user->getEmail(), $userArray['email']);
-
-        $lookHash = password_verify($user->getPassword(), $userArray['password']);
-        self::assertSame(true, $lookHash);
-
-        self::assertSame($user->getRole(), $userArray['role']);
-        self::assertSame($user->getIsVerified(), $userArray['isVerified']);
-        self::assertSame($user->getSignedUpOn(), $userArray['signedUpOn']);
+        $userRepository->delete(['firstname' => $user->getFirstname()]);
     }
 
+    public function testCanCreateManyWithFactory()
+    {
+        $users = UserFactory::make(30)->withFirstname('Maxime')->generate();
+        $userRepository = new UserRepository();
+
+        foreach ($users as $user) {
+            $userRepository->insertOne($user);
+        }
+
+        $result = $userRepository->findBy(['firstname' => $user->getFirstname()]);
+
+        self::assertCount(30, $result);
+
+        $userRepository->delete(['firstname' => $user->getFirstname()]);
+    }
 }

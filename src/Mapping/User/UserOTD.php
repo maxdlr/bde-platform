@@ -3,10 +3,11 @@
 namespace App\Mapping\User;
 
 use App\Entity\User;
+use App\Mapping\OTD;
 use App\Mapping\OTDInterface;
 use Exception;
 
-class UserOTD implements OTDInterface
+class UserOTD extends OTD implements OTDInterface
 {
     private object $from;
 
@@ -26,17 +27,19 @@ class UserOTD implements OTDInterface
         
         $user = $this->from;
 
-        $passwordHash = password_hash($user->getPassword(), PASSWORD_DEFAULT);
-
-        $arrayUser = [
-            'name' => $user->getName(),
+        return [
+            'lastname' => $user->getLastname(),
             'firstname' => $user->getFirstName(),
-            'password' => $passwordHash,
+            'password' => $this->hashPassword($user->getPassword()),
             'email' => $user->getEmail(),
-            'role' => $user->getRole(),
+            'roles' => $user->getRoles(),
             'isVerified' => $user->getIsVerified(),
-            'signedUpOn' => $user->getSignedUpOn()
+            'signedUpOn' => $user->getSignedUpOn()->format('Y-m-d H:i:s')
         ];
-        return $arrayUser;
+    }
+
+    private function hashPassword(string $plainPassword)
+    {
+        return password_hash($plainPassword, PASSWORD_DEFAULT);
     }
 }

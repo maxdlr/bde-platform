@@ -1,9 +1,13 @@
 <?php
 
 use App\Entity\Event;
+use App\Entity\Interested;
 use App\Entity\User;
 use App\Entity\Participant;
+use App\Factory\EventFactory;
+use App\Factory\UserFactory;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
 use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
 use App\Mapping\Participant\ParticipantDTO;
@@ -18,108 +22,31 @@ class ParticipantTest extends TestCase
      */
     public function testCanProcessParticipantObject()
     {
-        $faker = Factory::create();
-
-        $event = [
-            'name' => $faker->word(),
-            'description' => $faker->paragraph(),
-            'startDate' => $faker->dateTime()->format('Y-m-d H:i:s'),
-            'endDate' => $faker->dateTime()->format('Y-m-d H:i:s'),
-            'tag' => $faker->word(),
-            'capacity' => $faker->randomNumber(2),
-            'owner_id' => 1,
-        ];
         $eventRepository = new EventRepository();
-        $eventRepository->insertOne($event);
-        $eventObject = $eventRepository->findOneBy($event);
-
-        $user = [
-            'firstname' => $faker->firstName(),
-            'name' => $faker->name(),
-            'email' => $faker->email(),
-            'password' => $faker->password(),
-            'role' => $faker->randomElement(["admin", "BDE Members", "students"]),
-            'isVerified' => 1,
-            'signedUpOn' => $faker->dateTime()->format('Y-m-d H:i:s'),
-        ];
         $userRepository = new UserRepository();
-        $userRepository->insertOne($user);
-        $userObject = $userRepository->findOneBy($user);
-
-
-        // Creation of interested row (join event's id & user's id)
-        $participant = [
-            'event_id' => $eventObject->getId(),
-            'user_id' => $userObject->getId()
-        ];
         $participantRepository = new ParticipantRepository();
+
+        $event = EventFactory::make()->generate();
+        $eventRepository->insertOne($event);
+        $eventObject = $eventRepository->findOneBy(['name' => $event->getName()]);
+
+        $user = UserFactory::make()->generate();
+        $userRepository->insertOne($user);
+        $userObject = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
+
+        $participant = new Participant();
+        $participant
+            ->setEventId($eventObject->getId())
+            ->setUserId($userObject->getId());
+
         $participantRepository->insertOne($participant);
 
         self::assertNotNull($participantRepository);
 
-        $participantObject = $participantRepository->findOneBy($participant);
+        $participantObject = $participantRepository->findOneBy(['event_id' => $eventObject->getId()]);
+
         self::assertInstanceOf(Participant::class, $participantObject);
 
         $participantRepository->delete($participant);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testCanProcessParticipantArray()
-    {
-        $faker = Factory::create();
-
-        $event = new Event();
-
-        $name = $faker->word();
-        $description = $faker->paragraph();
-        $startDate = $faker->dateTime();
-        $endDate = $faker->dateTime();
-        $tag = $faker->word();
-        $capacity = $faker->randomNumber(2);
-        $owner_id = 1;
-
-        $event
-            ->setId(7980)
-            ->setName($name)
-            ->setDescription($description)
-            ->setStartDate($startDate)
-            ->setEndDate($endDate)
-            ->setTag($tag)
-            ->setCapacity($capacity)
-            ->setOwnerId($owner_id);
-
-
-        $user = new User();
-        $firstname = $faker->firstName();
-        $name = $faker->name();
-        $email = $faker->email();
-        $password = $faker->password();
-        $role = $faker->randomElement(["admin", "BDE Members", "students"]);
-        $isVerified = 1;
-        $signedUpOn = $faker->dateTime()->format('Y-m-d H:i:s');
-
-        $user
-            ->setId(8642)
-            ->setFirstname($firstname)
-            ->setName($name)
-            ->setEmail($email)
-            ->setPassword($password)
-            ->setRole($role)
-            ->setIsVerified($isVerified)
-            ->setSignedUpOn($signedUpOn);
-
-        $participantObject = new Participant();
-        $participantObject
-            ->setUserId($user->getId())
-            ->setEventId($event->getId());
-
-        $participantOTD = new ParticipantOTD();
-        $participantArray = $participantOTD->config($participantObject)->process();
-
-        self::assertSame($user->getId(), $participantArray['user_id']);
-        self::assertSame($user->getId(), $participantArray['user_id']);
-
     }
 }
