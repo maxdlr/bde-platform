@@ -28,7 +28,7 @@ class User extends Entity
             'email' => $this->getEmail(),
             'roles' => $this->getRoles(),
             'isVerified' => $this->getIsVerified(),
-            'signedUpOn' => $this->getSignedUpOn()
+            'signedUpOn' => $this->getSignedUpOn()->format('Y-m-d H:i:s')
         ];
     }
 

@@ -63,7 +63,7 @@ class AdminEventController extends AbstractController
     #[Route('/admin/event/new', name: 'app_admin_event_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
-        if (isset($_POST['edit-event-submit']) && $_POST['edit-event-submit'] == 'new-event') {
+        if (isset($_POST['new-event-submit']) && $_POST['new-event-submit'] == 'new-event') {
             $event = new Event();
             $eventRepository = new EventRepository();
 

@@ -1,14 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Les evenements
+    Liste des évènemenents
 {% endblock %}
 
 {% block body %}
     <main class="container-fluid">
-        <h1>Evenements</h1>
+        <h1></h1>
 
-        <a href="/admin/event/new">Créer un nouvel évènement</a>
+        {% if entityName == 'user' %}
+            <a href="/{{ entityName }}/new">Ajouter un utilisateur</a>
+        {% else %}
+            <a href="/admin/{{ entityName }}/new">Créer un nouvel évènement</a>
+        {% endif %}
 
         {{ include('admin/shared/_data-table.html.twig', {
             items: items,

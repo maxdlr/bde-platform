@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Inscription
+{% endblock %}
+
+{% block body %}
+
+    <main class="container">
+        <h1 class="my-5">Inscrivez-vous pour profiter de tous nos évènements géniaux !</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="row row-cols-sm-2">
+
+                <div>
+                    <div class="d-flex gap-2">
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Prénom',
+                            type: 'text',
+                            name: 'firstname',
+                            required: true,
+                            placeholder: "Saisissez votre prénom"
+                        }) }}
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Nom',
+                            type: 'text',
+                            name: 'lastname',
+                            required: true,
+                            placeholder: "Saisissez votre nom"
+                        }) }}
+                    </div>
+
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Adresse mail',
+                        type: 'email',
+                        name: 'email',
+                        required: true,
+                        placeholder: "Saisissez votre adresse mail"
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Mot de passe',
+                        type: 'password',
+                        name: 'password',
+                        required: true,
+                        placeholder: "Saisissez votre mot de passe"
+                    }) }}
+
+                    <button class="mt-4 btn btn-primary" type="submit" name="create-user-submit" value="new-user">Enregistrer</button>
+                </div>
+            </div>
+        </form>
+
+        <a class="d-block mt-5" href="/">Retour</a>
+    </main>
+
+{% endblock %}

@@ -6,10 +6,8 @@
 
 {% block body %}
 
-    {{ dump(item.tag) }}
-
     <main class="container">
-        <h1 class="my-5">Modifier un evenement.</h1>
+        <h1 class="my-5">Modifier un utilisateur</h1>
 
         <form method="POST" enctype="multipart/form-data">
 
@@ -66,14 +64,14 @@
                     label: 'Vérifié',
                     type: 'checkbox',
                     name: 'isVerified',
-                    required: true,
+                    required: false,
                     value: item.isVerified,
                     class: 'form-check-input'
                 }) }}
             </div>
 
             <div>
-                <button class="btn btn-primary" type="submit" name="eventSubmit" value="new-event">Enregistrer
+                <button class="btn btn-primary" type="submit" name="update-user-submit" value="update-user">Enregistrer
                 </button>
             </div>
         </form>
