@@ -24,10 +24,19 @@ class EventFilter
     {
         switch($value) {
             case "name":
-                usort(self::$events, function ($a, $b)
-        {
-            return strcmp($a->getName(),  $b->getName());
-        });
+                if(!$reverse)
+                {
+                    usort(self::$events, function ($a, $b)
+                    {
+                        return strcmp($a->getName(),  $b->getName());
+                    });
+                }
+                else {
+                    usort(self::$events, function ($a, $b)
+                    {
+                        return strcmp($b->getName(), $a->getName());
+                    });
+                }
             break;
             case "date":
                 if(!$reverse)
@@ -43,6 +52,21 @@ class EventFilter
                         return strcasecmp($a->getStartDate()->format('Y-m-d'),$b->getStartDate()->format('Y-m-d'));
                     });
                 }
+                break;
+            case "owner":
+                if(!$reverse)
+                {
+                    usort(self::$events, function($a, $b)
+                    {
+                        return strcmp(strval($a->getOwnerId()), strval($b->getOwnerId()));
+                    });
+                }
+            else {
+                usort(self::$events, function($a, $b)
+                {
+                    return strcmp(strval($b->getOwnerId()), strval($a->getOwnerId()));
+                });
+            }
                 break;
             default:
                 throw new \Exception("Merci de renseigner un champ à tri");
