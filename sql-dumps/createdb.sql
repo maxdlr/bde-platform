@@ -1,4 +1,4 @@
-set FOREIGN_KEY_CHECKS=0;
+set FOREIGN_KEY_CHECKS = 0;
 
 DROP DATABASE IF EXISTS bde_platform;
 CREATE DATABASE IF NOT EXISTS bde_platform;
@@ -28,7 +28,7 @@ CREATE TABLE user
     email      varchar(255) not null UNIQUE,
     password   varchar(255) not null,
     roles      varchar(255) not null,
-    isVerified boolean      not null,
+    isVerified boolean,
     signedUpOn dateTime     not null,
 
     PRIMARY KEY (id)
@@ -54,51 +54,4 @@ CREATE TABLE participant
     CONSTRAINT participant_user FOREIGN KEY (user_id) REFERENCES user (id)
 
 );
-
-INSERT INTO user (firstname, lastname, email, password, roles, isVerified, signedUpOn)
-VALUES ('John', 'Doe', 'john.doe@example.com', 'password', 'admin', 1, NOW()),
-       ('Jane', 'Smith', 'jane.smith@example.com', 'password', 'manager', 1, NOW()),
-       ('Michael', 'Johnson', 'michael.johnson@example.com', 'password', 'student', 1, NOW()),
-       ('William', 'Taylor', 'william.taylor@example.com', 'password', 'admin', 1, NOW()),
-       ('Olivia', 'Martinez', 'olivia.martinez@example.com', 'password', 'manager', 1, NOW()),
-       ('James', 'Anderson', 'james.anderson@example.com', 'password', 'student', 1, NOW()),
-       ('Benjamin', 'Hernandez', 'benjamin.hernandez@example.com', 'password', 'admin', 1, NOW()),
-       ('Mia', 'Wilson', 'mia.wilson@example.com', 'password', 'manager', 1, NOW()),
-       ('Ethan', 'Moore', 'ethan.moore@example.com', 'password', 'student', 1, NOW()),
-       ('Alexander', 'Lopez', 'alexander.lopez@example.com', 'password', 'admin', 1, NOW()),
-       ('Isabella', 'Perez', 'isabella.perez@example.com', 'password', 'manager', 1, NOW()),
-       ('Jacob', 'Lee', 'jacob.lee@example.com', 'password', 'student', 1, NOW()),
-       ('Michael', 'Gonzalez', 'michael.gonzalez@example.com', 'password', 'admin', 1, NOW()),
-       ('Emma', 'Harris', 'emma.harris@example.com', 'password', 'manager', 1, NOW()),
-       ('Elijah', 'Clark', 'elijah.clark@example.com', 'password', 'student', 1, NOW()),
-       ('Logan', 'Allen', 'logan.allen@example.com', 'password', 'admin', 1, NOW()),
-       ('Abigail', 'Young', 'abigail.young@example.com', 'password', 'manager', 1, NOW()),
-       ('Daniel', 'Wright', 'daniel.wright@example.com', 'password', 'student', 1, NOW()),
-       ('Mason', 'Scott', 'mason.scott@example.com', 'password', 'admin', 1, NOW()),
-       ('Evelyn', 'Green', 'evelyn.green@example.com', 'password', 'manager', 1, NOW()),
-       ('William', 'Baker', 'william.baker@example.com', 'password', 'student', 1, NOW()),
-       ('Lucas', 'Nelson', 'lucas.nelson@example.com', 'password', 'admin', 1, NOW());
--- Insérer des événements avec des données aléatoires
-INSERT INTO event (name, description, startDate, endDate, tag, capacity, owner_id)
-VALUES ('Fête de lancement du projet', 'Célébration du lancement du nouveau projet de l\'entreprise',
-        '2024-03-01 18:00:00', '2024-03-01 22:00:00', 'soirée', 50, 29),
-       ('Séminaire sur le leadership', 'Conférence sur le développement du leadership dans le monde des affaires',
-        '2024-03-10 09:00:00', '2024-03-10 17:00:00', 'culture', 100, 9),
-       ('Tournoi de football inter-entreprises', 'Compétition de football entre différentes entreprises de la région',
-        '2024-03-15 14:00:00', '2024-03-15 18:00:00', 'gaming', 80, 1),
-       ('Soirée cinéma en plein air', 'Projection de films en plein air pour toute la famille', '2024-03-20 19:00:00',
-        '2024-03-20 23:00:00', 'séjour', 120, 5),
-       ('Conférence sur l\'innovation technologique',
-        'Présentation des dernières innovations technologiques et leur impact', '2024-03-25 10:00:00',
-        '2024-03-25 16:00:00', 'sport', 150, 9),
-       ('Atelier de développement personnel', 'Atelier interactif sur le développement personnel et professionnel',
-        '2024-03-30 13:00:00', '2024-03-30 17:00:00', 'atelier', 50, 13),
-       ('Exposition d\'art local', 'Exposition d\'œuvres d\'art réalisées par des artistes locaux',
-        '2024-04-05 11:00:00', '2024-04-05 19:00:00', 'hackathon', 70, 17),
-       ('Journée porte ouverte', 'Visite guidée des installations de l\'entreprise et présentation des activités',
-        '2024-04-10 09:00:00', '2024-04-10 15:00:00', 'soirée', 200, 21),
-       ('Séance de yoga en plein air', 'Session de yoga relaxante en plein air pour tous les niveaux',
-        '2024-04-15 08:00:00', '2024-04-15 10:00:00', 'culture', 40, 25),
-       ('Soirée karaoké', 'Soirée karaoké avec des chansons populaires et beaucoup de plaisir', '2024-04-20 20:00:00',
-        '2024-04-21 00:00:00', 'gaming', 80, 29);
 
