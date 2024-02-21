@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Mapping\User;
 
@@ -20,17 +20,19 @@ class UserOTD extends OTD implements OTDInterface
     /**
      * @throws Exception
      */
-    public function process(): array
+    public function process(bool $encrypt = true): array
     {
         if (!assert($this->from instanceof User))
             throw new Exception('Wrong type, this is supposed to be an User object');
-        
+
         $user = $this->from;
+
+        $hashedPassword = $encrypt ? $this->hashPassword($user->getPassword()) : $user->getPassword();
 
         return [
             'lastname' => $user->getLastname(),
             'firstname' => $user->getFirstName(),
-            'password' => $this->hashPassword($user->getPassword()),
+            'password' => $hashedPassword,
             'email' => $user->getEmail(),
             'roles' => $user->getRoles(),
             'isVerified' => $user->getIsVerified(),

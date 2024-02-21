@@ -92,7 +92,7 @@ abstract class Repository extends EntityManager
     {
         assert($this->isTableSet() && $this->isDataTransferSet());
 
-        $criteria = $mixed instanceof Entity ? $this->toDbModel($mixed) : $mixed;
+        $criteria = $mixed instanceof Entity ? $this->toDbModel($mixed, false) : $mixed;
 
         $sql = 'update ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('set', $columnAndValues);
@@ -156,10 +156,10 @@ abstract class Repository extends EntityManager
         return $objects;
     }
 
-    private function toDbModel(array|object $objects): array
+    private function toDbModel(array|object $objects, bool $encrypt = true): array
     {
         if ($objects instanceof Entity) {
-            return $this->otd->config($objects)->process();
+            return $this->otd->config($objects)->process($encrypt);
         }
 
         $arrays = [];

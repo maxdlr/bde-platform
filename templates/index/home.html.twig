@@ -1,13 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Tableau de bord
+    Les évenements du BDE
 {% endblock %}
 
 {% block body %}
 
-    <main class="container">
-        yo
+    <main class="container my-5">
+        <section class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2">
+            {% for event in events %}
+                <article class="p-3">
+                    <div class="card-header d-flex justify-content-between align-items-start">
+                        <h2 class="fs-2">{{ event.name|capitalize }}</h2>
+                        <button class="btn btn-outline-info fw-bold rounded-pill">
+                            {{ event.tag|capitalize }}
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ event.description }}</p>
+                        <p class="fw-bold">{{ event.capacity }} personnes maximum !</p>
+                        <div>
+                            <p>du {{ event.startDate|date("d/m/y H:i") }}
+                                au {{ event.endDate|date("d/m/y H:i") }}</p>
+                        </div>
+                    </div>
+                </article>
+
+            {% endfor %}
+        </section>
     </main>
 
 {% endblock %}

@@ -104,7 +104,7 @@ class EventFactory
         $userRepository->insertOne(
             UserFactory::make()->withFirstname($username)->generate()
         );
-        
+
         $user = $userRepository->findOneBy(['firstname' => $username]);
 
         $event
@@ -112,7 +112,7 @@ class EventFactory
             ->setDescription($faker->paragraph())
             ->setStartDate($faker->dateTime())
             ->setEndDate($faker->dateTime())
-            ->setTag($faker->word())
+            ->setTag($faker->randomElement(TagEnum::cases())->value)
             ->setCapacity($faker->randomNumber(2))
             ->setOwnerId($user->getId());
 

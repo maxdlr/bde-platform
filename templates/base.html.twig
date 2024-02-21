@@ -14,13 +14,9 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-<header>
-
-</header>
-<body>
+{{ include('shared/_nav.html.twig') }}
 {% block body %}
 {% endblock %}
-</body>
 <script src="main.js"></script>
 </body>
 </html>

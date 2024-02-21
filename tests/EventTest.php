@@ -3,40 +3,15 @@
 use App\Entity\Event;
 use App\Enum\RoleEnum;
 use App\Factory\EventFactory;
-use App\Factory\UserFactory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use App\Service\DB\Entity;
-use App\Service\DB\EntityManager;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
-use function PHPUnit\Framework\assertIsArray;
 use function PHPUnit\Framework\assertSame;
 
 class EventTest extends TestCase
 {
-    public function testCreateUsers()
-    {
-        $userRepository = new UserRepository();
-        $users = UserFactory::make(10)->generate();
-        foreach ($users as $user) {
-            $userRepository->insertOne($user);
-        }
-
-        assertIsArray($users);
-    }
-
-    public function testCreateEvents()
-    {
-        $eventRepository = new EventRepository();
-        $events = EventFactory::make(10)->generate();
-        foreach ($events as $event) {
-            $eventRepository->insertOne($event);
-        }
-
-        assertIsArray($events);
-    }
-
     /**
      * @throws Exception
      */
@@ -57,7 +32,10 @@ class EventTest extends TestCase
                 ->setEndDate($faker->dateTime())
                 ->setTag($faker->word())
                 ->setCapacity($faker->randomNumber(2))
-                ->setOwnerId($faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId());
+                ->setOwnerId($faker->randomElement(
+                    $userRepository->findBy(
+                        ['roles' => RoleEnum::ROLE_MANAGER->value]
+                    ))->getId());
 
             $eventRepository->insertOne($event);
         }
