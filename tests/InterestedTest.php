@@ -2,21 +2,20 @@
 
 use App\Entity\Event;
 use App\Entity\User;
-use App\Entity\Participant;
+use App\Entity\Interested;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
-use App\Repository\ParticipantRepository;
-use App\Mapping\Participant\ParticipantDTO;
-use App\Mapping\Participant\ParticipantOTD;
+use App\Repository\InterestedRepository;
+use App\Mapping\Interested\InterestedOTD;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 
-class ParticipantDTOAndOTDTest extends TestCase
+class InterestedTest extends TestCase
 {
     /**
      * @throws Exception
      */
-    public function testCanProcessParticipantObject()
+    public function testCanProcessInterestedObject()
     {
         $faker = Factory::create();
 
@@ -40,7 +39,7 @@ class ParticipantDTOAndOTDTest extends TestCase
             'password' => $faker->password(),
             'role' => $faker->randomElement(["admin", "BDE Members", "students"]),
             'isVerified' => 1,
-            'signedUpDate' => $faker->dateTime()->format('Y-m-d H:i:s'),
+            'signedUpOn' => $faker->dateTime()->format('Y-m-d H:i:s'),
         ];
         $userRepository = new UserRepository();
         $userRepository->insertOne($user);
@@ -48,25 +47,25 @@ class ParticipantDTOAndOTDTest extends TestCase
 
 
         // Creation of interested row (join event's id & user's id)
-        $participant = [
+        $interested = [
             'event_id' => $eventObject->getId(),
             'user_id' => $userObject->getId()
         ];
-        $participantRepository = new ParticipantRepository();
-        $participantRepository->insertOne($participant);
+        $interestedRepository = new InterestedRepository();
+        $interestedRepository->insertOne($interested);
 
-        self::assertNotNull($participantRepository);
+        self::assertNotNull($interestedRepository);
 
-        $participantObject = $participantRepository->findOneBy($participant);
-        self::assertInstanceOf(Participant::class, $participantObject);
+        $interestedObject = $interestedRepository->findOneBy($interested);
+        self::assertInstanceOf(Interested::class, $interestedObject);
 
-        $participantRepository->delete($participant);
+        $interestedRepository->delete($interested);
     }
 
     /**
      * @throws Exception
      */
-    public function testCanProcessParticipantArray()
+    public function testCanProcessInterestedArray()
     {
         $faker = Factory::create();
 
@@ -81,7 +80,7 @@ class ParticipantDTOAndOTDTest extends TestCase
         $owner_id = 1;
 
         $event
-            ->setId(7980)
+            ->setId(7610)
             ->setName($name)
             ->setDescription($description)
             ->setStartDate($startDate)
@@ -98,28 +97,28 @@ class ParticipantDTOAndOTDTest extends TestCase
         $password = $faker->password();
         $role = $faker->randomElement(["admin", "BDE Members", "students"]);
         $isVerified = 1;
-        $signedUpDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $signedUpOn = $faker->dateTime()->format('Y-m-d H:i:s');
 
         $user
-            ->setId(8642)
+            ->setId(8951)
             ->setFirstname($firstname)
             ->setName($name)
             ->setEmail($email)
             ->setPassword($password)
             ->setRole($role)
             ->setIsVerified($isVerified)
-            ->setSignedUpDate($signedUpDate);
+            ->setSignedUpOn($signedUpOn);
 
-        $participantObject = new Participant();
-        $participantObject
+        $interestedObject = new Interested();
+        $interestedObject
             ->setUserId($user->getId())
             ->setEventId($event->getId());
 
-        $participantOTD = new ParticipantOTD();
-        $participantArray = $participantOTD->config($participantObject)->process();
+        $interestedOTD = new InterestedOTD();
+        $interestedArray = $interestedOTD->config($interestedObject)->process();
 
-        self::assertSame($user->getId(), $participantArray['user_id']);
-        self::assertSame($user->getId(), $participantArray['user_id']);
+        self::assertSame($user->getId(), $interestedArray['user_id']);
+        self::assertSame($user->getId(), $interestedArray['user_id']);
 
     }
 }

@@ -29,7 +29,7 @@ CREATE TABLE user
     password   varchar(255) not null,
     role      varchar(255) not null,
     isVerified boolean      not null,
-    signedUpDate dateTime     not null,
+    signedUpOn dateTime     not null,
 
     PRIMARY KEY (id)
 );
@@ -55,7 +55,7 @@ CREATE TABLE participant
 
 );
 
-INSERT INTO user (firstname, name, email, password, role, isVerified, signedUpDate)
+INSERT INTO user (firstname, name, email, password, role, isVerified, signedUpOn)
 VALUES
     ('John', 'Doe', 'john.doe@example.com', 'password', 'admin', 1, NOW()),
     ('Jane', 'Smith', 'jane.smith@example.com', 'password', 'BDE Members', 1, NOW()),

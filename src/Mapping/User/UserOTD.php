@@ -35,7 +35,7 @@ class UserOTD implements OTDInterface
             'email' => $user->getEmail(),
             'role' => $user->getRole(),
             'isVerified' => $user->getIsVerified(),
-            'signedUpDate' => $user->getSignedUpDate()
+            'signedUpOn' => $user->getSignedUpOn()
         ];
         return $arrayUser;
     }

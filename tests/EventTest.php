@@ -7,7 +7,7 @@ use App\Repository\EventRepository;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 
-class EventDTOAndOTDTest extends TestCase
+class EventTest extends TestCase
 {
     /**
      * @throws Exception

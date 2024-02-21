@@ -16,7 +16,7 @@ class User extends Entity
     private string $password;
     private string $role;
     private bool $isVerified;
-    private string $signedUpDate;
+    private string $signedUpOn;
 
     public function getId(): int
     {
@@ -95,14 +95,14 @@ class User extends Entity
         return $this;
     }
 
-    public function getSignedUpDate(): string
+    public function getSignedUpOn(): string
     {
-        return $this->signedUpDate;
+        return $this->signedUpOn;
     }
 
-    public function setSignedUpDate(string $signedUpDate): static
+    public function setSignedUpOn(string $signedUpOn): static
     {
-        $this->signedUpDate = $signedUpDate;
+        $this->signedUpOn = $signedUpOn;
         return $this;
     }
 }

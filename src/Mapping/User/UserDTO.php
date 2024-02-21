@@ -32,7 +32,7 @@ class UserDTO extends DTO implements DTOInterface
             ->setPassword($this->from['password'])
             ->setRole($this->from['role'])
             ->setIsVerified($this->from['isVerified'])
-            ->setSignedUpDate($this->from['signedUpDate']);
+            ->setSignedUpOn($this->from['signedUpOn']);
 
         return $user;
     }
