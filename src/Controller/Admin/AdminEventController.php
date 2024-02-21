@@ -9,6 +9,7 @@ use App\Repository\EventRepository;
 use App\Repository\TagRepository;
 use App\Repository\UserRepository;
 use DateTime;
+use Exception;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -30,6 +31,7 @@ class AdminEventController extends AbstractController
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws Exception
      */
     #[Route('/admin/event/index', name: 'app_admin_event_index', httpMethod: ['GET', 'POST'])]
     public function index(): string
@@ -39,15 +41,16 @@ class AdminEventController extends AbstractController
 
         $eventsWithOwners = [];
         foreach ($events as $event) {
+
             $eventsWithOwners[] = [
                 ...$event,
                 'owner' => $this->userRepository->findOneBy(
                         ['id' => $event['owner_id']]
-                    )->getfirstName()
+                    )->getFirstname()
                     . ' '
                     . $this->userRepository->findOneBy(
                         ['id' => $event['owner_id']]
-                    )->getlastName()
+                    )->getLastname()
             ];
         }
 
