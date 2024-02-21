@@ -15,14 +15,4 @@ class UserController extends AbstractController
     {
         parent::__construct($twig);
     }
-
-    #[Route('/admin/users', name: 'app_users', httpMethod: ['GET'])]
-    public function index()
-    {
-        $users = $this->userRepository->findAll();
-
-        return $this->twig->render('user/index.html.twig', [
-            'users' => $users,
-        ]);
-    }
 }
