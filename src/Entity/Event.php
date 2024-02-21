@@ -19,6 +19,31 @@ class Event extends Entity
     private int $capacity;
     private int $ownerId;
 
+    private string $fileName;
+    private float $fileSize;
+
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): Event
+    {
+        $this->fileName = $fileName;
+        return $this;
+    }
+
+    public function getFileSize(): float
+    {
+        return $this->fileSize;
+    }
+
+    public function setFileSize(float $fileSize): Event
+    {
+        $this->fileSize = $fileSize;
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
@@ -29,7 +54,9 @@ class Event extends Entity
             'endDate' => $this->getEndDate()->format('Y-m-d H:i:s'),
             'tag' => $this->getTag(),
             'capacity' => $this->getCapacity(),
-            'owner_id' => $this->getOwnerId()
+            'owner_id' => $this->getOwnerId(),
+            'fileName' => $this->getFileName(),
+            'fileSize' => $this->getFileSize()
         ];
     }
 

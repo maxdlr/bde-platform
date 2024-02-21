@@ -6,11 +6,21 @@ use App\Entity\Event;
 use App\Entity\Interested;
 use App\Entity\User;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
 use App\Repository\UserRepository;
 use Faker\Factory;
 
 class InterestedFactory
 {
+
+    static public function random(): Interested
+    {
+        $faker = Factory::create();
+        $interestedRepository = new InterestedRepository();
+        $interesteds = $interestedRepository->findAll();
+        return $faker->randomElement($interesteds);
+
+    }
 
     static private Interested|array $interested;
 
@@ -54,29 +64,19 @@ class InterestedFactory
     static private function mountObjectBase(): Interested
     {
         $faker = Factory::create();
-
-        $username = $faker->userName();
         $userRepository = new UserRepository();
-
-        foreach (UserFactory::make(10)->withFirstname($username)->generate() as $user) {
-            $userRepository->insertOne($user);
-        }
-
-        $users = $userRepository->findBy(['firstname' => $username]);
-
-        $name = $faker->word();
         $eventRepository = new EventRepository();
-
-        foreach (EventFactory::make(10)->withName($name)->generate() as $event) {
-            $eventRepository->insertOne($event);
-        }
-
-        $events = $eventRepository->findBy(['name' => $name]);
-
         $interested = new Interested();
+
+        $users = $userRepository->findAll();
+        $user = $faker->randomElement($users);
+
+        $events = $eventRepository->findAll();
+        $event = $faker->randomElement($events);
+
         $interested
-            ->setUserId($faker->randomElement($users)->getId())
-            ->setEventId($faker->randomElement($events)->getId());
+            ->setUserId($user->getId())
+            ->setEventId($event->getId());
 
         return $interested;
     }

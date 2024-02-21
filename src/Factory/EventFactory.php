@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Enum\TagEnum;
+use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Faker\Factory;
@@ -12,6 +13,15 @@ use Faker\Factory;
 class EventFactory
 {
     static private Event|array $event;
+
+    static public function random(): Event
+    {
+        $faker = Factory::create();
+        $eventRepository = new EventRepository();
+        $events = $eventRepository->findAll();
+        return $faker->randomElement($events);
+
+    }
 
     static public function generate(): Event|array
     {
@@ -46,6 +56,22 @@ class EventFactory
     {
         self::distribute(
             fn(Event $event) => $event->setDescription($description)
+        );
+        return new static;
+    }
+
+    static public function withFileName(string $fileName): static
+    {
+        self::distribute(
+            fn(Event $event) => $event->setFileName($fileName)
+        );
+        return new static;
+    }
+
+    static public function withFileSize(string $fileSize): static
+    {
+        self::distribute(
+            fn(Event $event) => $event->setFileName($fileSize)
         );
         return new static;
     }
@@ -95,17 +121,11 @@ class EventFactory
     static private function mountObjectBase(): Event
     {
         $userRepository = new UserRepository();
-
-        $faker = Factory::create();
         $event = new Event();
-        $username = $faker->userName();
+        $faker = Factory::create();
 
-
-        $userRepository->insertOne(
-            UserFactory::make()->withFirstname($username)->generate()
-        );
-
-        $user = $userRepository->findOneBy(['firstname' => $username]);
+        $users = $userRepository->findAll();
+        $user = $faker->randomElement($users);
 
         $event
             ->setName($faker->domainWord())
@@ -114,7 +134,9 @@ class EventFactory
             ->setEndDate($faker->dateTime())
             ->setTag($faker->randomElement(TagEnum::cases())->value)
             ->setCapacity($faker->randomNumber(2))
-            ->setOwnerId($user->getId());
+            ->setOwnerId($user->getId())
+            ->setFileName($faker->imageUrl())
+            ->setFileSize($faker->randomFloat(2));
 
         return $event;
     }

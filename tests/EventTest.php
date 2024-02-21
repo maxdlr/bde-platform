@@ -35,7 +35,9 @@ class EventTest extends TestCase
                 ->setOwnerId($faker->randomElement(
                     $userRepository->findBy(
                         ['roles' => RoleEnum::ROLE_MANAGER->value]
-                    ))->getId());
+                    ))->getId())
+                ->setFileName($faker->imageUrl())
+                ->setFileSize($faker->randomFloat(2));
 
             $eventRepository->insertOne($event);
         }
@@ -65,6 +67,8 @@ class EventTest extends TestCase
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
+        $fileSize = $faker->randomFloat(2);
+        $fileName = $faker->imageUrl();
 
         $event = new Event();
         $event
@@ -75,7 +79,9 @@ class EventTest extends TestCase
             ->setEndDate($endDate)
             ->setTag($tag)
             ->setCapacity($capacity)
-            ->setOwnerId($owner_id);
+            ->setOwnerId($owner_id)
+            ->setFileName($fileName)
+            ->setFileSize($fileSize);
         $eventRepository->insertOne($event);
 
         $read = $eventRepository->findOneBy(['name' => $name]);
@@ -87,6 +93,8 @@ class EventTest extends TestCase
         self::assertSame($tag, $read->getTag());
         self::assertSame($capacity, (int)$read->getCapacity());
         self::assertSame($owner_id, (int)$read->getOwnerId());
+        self::assertSame($fileSize, $read->getFileSize());
+        self::assertSame($fileName, $read->getFileName());
 
         $eventRepository->delete($event);
     }
@@ -106,6 +114,8 @@ class EventTest extends TestCase
         $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
+        $fileSize = $faker->randomFloat(2);
+        $fileName = $faker->imageUrl();
 
         for ($i = 0; $i < 10; $i++) {
             $event = new Event();
@@ -117,7 +127,9 @@ class EventTest extends TestCase
                 ->setEndDate($endDate)
                 ->setTag($tag)
                 ->setCapacity($capacity)
-                ->setOwnerId($faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId());
+                ->setOwnerId($faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId())
+                ->setFileName($fileName)
+                ->setFileSize($fileSize);
             $eventRepository->insertOne($event);
         }
 
@@ -130,6 +142,8 @@ class EventTest extends TestCase
             assertSame($event->getEndDate()->format('Y-m-d H:i:s'), $eventItem->getEndDate()->format('Y-m-d H:i:s'));
             assertSame($event->getTag(), $eventItem->getTag());
             assertSame($event->getCapacity(), $eventItem->getCapacity());
+            assertSame($event->getFileSize(), $eventItem->getFileSize());
+            assertSame($event->getFileName(), $eventItem->getFileName());
         }
 
         self::assertCount(10, $events);
@@ -153,6 +167,8 @@ class EventTest extends TestCase
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
+        $fileSize = $faker->randomFloat(2);
+        $fileName = $faker->imageUrl();
 
         $event = new Event();
         $event
@@ -163,7 +179,9 @@ class EventTest extends TestCase
             ->setEndDate($endDate)
             ->setTag($tag)
             ->setCapacity($capacity)
-            ->setOwnerId($owner_id);
+            ->setOwnerId($owner_id)
+            ->setFileName($fileName)
+            ->setFileSize($fileSize);
 
         $eventRepository->insertOne($event);
 
@@ -193,6 +211,8 @@ class EventTest extends TestCase
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
+        $fileSize = $faker->randomFloat(2);
+        $fileName = $faker->imageUrl();
 
         $event = new Event();
         $event
@@ -202,7 +222,9 @@ class EventTest extends TestCase
             ->setEndDate($endDate)
             ->setTag($tag)
             ->setCapacity($capacity)
-            ->setOwnerId($owner_id);
+            ->setOwnerId($owner_id)
+            ->setFileName($fileName)
+            ->setFileSize($fileSize);
 
         $eventRepository->insertOne($event);
 
@@ -223,6 +245,8 @@ class EventTest extends TestCase
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
         $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
+        $fileSize = $faker->randomFloat(2);
+        $fileName = $faker->imageUrl();
 
         $event = new Event();
         $event
@@ -233,7 +257,9 @@ class EventTest extends TestCase
             ->setEndDate($endDate)
             ->setTag($tag)
             ->setCapacity($capacity)
-            ->setOwnerId($owner_id);
+            ->setOwnerId($owner_id)
+            ->setFileName($fileName)
+            ->setFileSize($fileSize);
 
         $event = $event->toArray();
 
@@ -245,21 +271,21 @@ class EventTest extends TestCase
      */
     public function testCanCreateOneEventWithFactory()
     {
-        $event = EventFactory::make()->withName('Maxime')->generate();
+        $event = EventFactory::make()->withName('maximeTest')->generate();
 
         $eventRepository = new EventRepository();
         $eventRepository->insertOne($event);
 
         $result = $eventRepository->findOneBy(['name' => $event->getName()]);
 
-        assertSame('Maxime', $result->getName());
+        assertSame('maximeTest', $result->getName());
 
         $eventRepository->delete(['name' => $event->getName()]);
     }
 
     public function testCanCreateManyWithFactory()
     {
-        $events = EventFactory::make(30)->withName('Maxime')->generate();
+        $events = EventFactory::make(30)->withName('robertTest')->generate();
         $eventRepository = new EventRepository();
 
         foreach ($events as $event) {

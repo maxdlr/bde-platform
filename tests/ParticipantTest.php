@@ -22,28 +22,21 @@ class ParticipantTest extends TestCase
      */
     public function testCanProcessParticipantObject()
     {
-        $eventRepository = new EventRepository();
-        $userRepository = new UserRepository();
         $participantRepository = new ParticipantRepository();
 
-        $event = EventFactory::make()->generate();
-        $eventRepository->insertOne($event);
-        $eventObject = $eventRepository->findOneBy(['name' => $event->getName()]);
-
-        $user = UserFactory::make()->generate();
-        $userRepository->insertOne($user);
-        $userObject = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
+        $event = EventFactory::random();
+        $user = UserFactory::random();
 
         $participant = new Participant();
         $participant
-            ->setEventId($eventObject->getId())
-            ->setUserId($userObject->getId());
+            ->setEventId($event->getId())
+            ->setUserId($user->getId());
 
         $participantRepository->insertOne($participant);
 
         self::assertNotNull($participantRepository);
 
-        $participantObject = $participantRepository->findOneBy(['event_id' => $eventObject->getId()]);
+        $participantObject = $participantRepository->findOneBy(['event_id' => $event->getId()]);
 
         self::assertInstanceOf(Participant::class, $participantObject);
 

@@ -19,6 +19,12 @@
                 <p>du {{ event.startDate|date("d/m/y H:i") }} au {{ event.endDate|date("d/m/y H:i") }}</p>
             </div>
         </div>
+
+        //todo
+        //implement user id
+        <form action="/event/new/participant/{{ user.id }}">
+            <button class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</button>
+        </form>
     </article>
 
 {% endblock %}

@@ -14,6 +14,8 @@ CREATE TABLE event
     endDate     datetime      NOT NULL,
     tag         varchar(255)  NOT NULL,
     capacity    int           NOT NULL,
+    fileName    varchar(100),
+    fileSize    double,
     owner_id    int           NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT event_owner FOREIGN KEY (owner_id) REFERENCES user (id)

@@ -7,26 +7,58 @@
 {% block body %}
 
     <main class="container my-5">
-        <section class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2">
+        <section class="row row-cols-1 row-cols-lg-2 g-3">
             {% for event in events %}
-                <article class="p-3">
-                    <div class="card-header d-flex justify-content-between align-items-start">
-                        <h2 class="fs-2">{{ event.name|capitalize }}</h2>
-                        <button class="btn btn-outline-info fw-bold rounded-pill">
-                            {{ event.tag|capitalize }}
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <p>{{ event.description }}</p>
-                        <p class="fw-bold">{{ event.capacity }} personnes maximum !</p>
-                        <div>
-                            <p>du {{ event.startDate|date("d/m/y H:i") }}
-                                au {{ event.endDate|date("d/m/y H:i") }}</p>
+                <article class="p-2">
+
+                    <div class="border border-2 rounded-3 p-4">
+
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h2 class="fs-2">{{ event.name|capitalize }}</h2>
+                            <button class="btn btn-outline-info fw-bold rounded-pill">
+                                {{ event.tag|capitalize }}
+                            </button>
+                        </div>
+
+                        <div class="row row-cols-2">
+                            <div class="rounded-3">
+                                <img src="{{ event.filename }}" alt="image de l'evenement {{ event.name }}"
+                                     class="img-fluid rounded-5">
+                                <div class="bg-dark text-light rounded-3 px-3 py-3 bg-opacity-50 my-4">
+                                    <h5>Save the date !!</h5>
+                                    <div>
+                                        <div class="fw-bold">
+                                            <span>Du {{ event.startDate|date("d/m/y") }}</span>
+                                            <span> à </span>
+                                            <span>{{ event.startDate|date('H:i') }}</span>
+                                        </div>
+                                        <div>
+                                            <span> au </span>
+                                            <span>{{ event.endDate|date("d/m/y") }}</span>
+                                            <span> à </span>
+                                            <span>{{ event.endDate|date('H:i') }}</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column justify-content-evenly">
+                                <p>{{ event.description }}</p>
+
+                                <div>
+                                    <span class="fs-2 fw-bolder">{{ event.capacity }}</span>
+                                    <span>/</span>
+                                    <span>{{ capacities[loop.index0][0] is same as event.id ? capacities[loop.index0][1] }}</span>
+                                    <span> places restantes</span>
+                                </div>
+                                <a href="/event/show/{{ event.id }}" class="btn btn-primary rounded-pill">
+                                    Voir
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <a href="/event/show/{{ event.id }}" class="btn btn-primary">
-                        Voir
-                    </a>
+
                 </article>
 
             {% endfor %}
