@@ -43,16 +43,14 @@ readonly class Router
 
         // Method
         $method = $route->getControllerMethod();
-        // If the controller is "item()", we retrieve the id contained in the url and pass it to its parameters
-        if($method == "detail") {
-            $tabUri = explode('/', $uri);
-            $idProductUri = intval(end($tabUri));
+        // Get the id passed in the uri if the controller road contains "{id}"
+        if (str_contains($route->getUri(), "{id}")) {
+            $idElementInUri = substr($uri, strrpos($uri, "/") + 1);
         }
 
-
         $methodParams = $this->getMethodParams($controllerClass . '::' . $method);
-        if(isset($idProductUri)) {
-            return $controllerInstance->$method($idProductUri, ...$methodParams);
+        if(isset($idElementInUri)) {
+            return $controllerInstance->$method($idElementInUri, ...$methodParams);
         } else {
             return $controllerInstance->$method(...$methodParams);
         }
@@ -63,17 +61,17 @@ readonly class Router
      */
     private function getRoute(string $uri, string $httpMethod): ?Route
     {
-        $regExpr = "/\{(\w+)\}/";
-        $regExpr2 = "#/events/(\d+)#";
+        $uriWithoutID = substr($uri, 0, strrpos($uri, "/"));
 
+        $regExpr2 = "#".$uriWithoutID."\/(\d+)#";
+
+        $uriNew = $uriWithoutID."/{id}";
 
         foreach ($this->extractRoutesFromAttributes() as $savedRoute) {
             // Check if request's url is in "/events/{id}" format, with {id} set to an integer
-            if(preg_match($regExpr, $savedRoute->getUri()) && preg_match($regExpr2, $uri)) {
+            if ($savedRoute->getUri() === $uriNew && preg_match($regExpr2, $uri)) {
                 return $savedRoute;
-            }
-
-            if ($savedRoute->getUri() === $uri && in_array($httpMethod, $savedRoute->getHttpMethod())) {
+            } elseif ($savedRoute->getUri() === $uri && in_array($httpMethod, $savedRoute->getHttpMethod())){
                 return $savedRoute;
             }
         }
@@ -129,6 +127,7 @@ readonly class Router
      */
     private function getMethodParams(string $method): array
     {
+
         $methodInfos = new ReflectionMethod($method);
         $methodParameters = $methodInfos->getParameters();
 
@@ -136,7 +135,7 @@ readonly class Router
         foreach ($methodParameters as $param) {
             $paramType = $param->getType();
             $paramTypeFQCN = $paramType->getName();
-            if($method === "App\Controller\EventController::detail" && $paramTypeFQCN === "int") {
+            if($paramTypeFQCN === "int") {
                 continue;
             } else {
                 $params[] = $this->container->get($paramTypeFQCN);

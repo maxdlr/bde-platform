@@ -68,6 +68,7 @@ abstract class Repository extends EntityManager
      */
     public function findOneBy(array $criteria): null|object
     {
+
         assert($this->isTableSet());
 
         $sql = 'select * from ' . $this->tableName;
