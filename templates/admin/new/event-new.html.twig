@@ -53,7 +53,7 @@
 
                     {{ include('shared/form/_dropdown.html.twig', {
                         choices: tags,
-                        label: 'Catégorie',
+                        label: '-- Choisissez une catégorie --',
                         name: 'tag',
                         required: true
                     }) }}
@@ -71,6 +71,8 @@
                 </div>
             </div>
         </form>
+
+        <a class="mt-5" href="/admin/event/index">Retour</a>
     </main>
 
 {% endblock %}

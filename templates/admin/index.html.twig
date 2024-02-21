@@ -8,6 +8,8 @@
     <main class="container-fluid">
         <h1>Evenements</h1>
 
+        <a href="/admin/event/new">Créer un nouvel évènement</a>
+
         {{ include('admin/shared/_data-table.html.twig', {
             items: items,
             entityName: entityName

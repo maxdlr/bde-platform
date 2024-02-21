@@ -81,7 +81,7 @@ VALUES ('John', 'Doe', 'john.doe@example.com', 'password', 'admin', 1, NOW()),
 -- Insérer des événements avec des données aléatoires
 INSERT INTO event (name, description, startDate, endDate, tag, capacity, owner_id)
 VALUES ('Fête de lancement du projet', 'Célébration du lancement du nouveau projet de l\'entreprise',
-        '2024-03-01 18:00:00', '2024-03-01 22:00:00', 'soirée', 50, 29),
+        '2024-03-01 18:00:00', '2024-03-01 22:00:00', 'soirée', 50, 7),
        ('Séminaire sur le leadership', 'Conférence sur le développement du leadership dans le monde des affaires',
         '2024-03-10 09:00:00', '2024-03-10 17:00:00', 'culture', 100, 9),
        ('Tournoi de football inter-entreprises', 'Compétition de football entre différentes entreprises de la région',
@@ -96,9 +96,9 @@ VALUES ('Fête de lancement du projet', 'Célébration du lancement du nouveau p
        ('Exposition d\'art local', 'Exposition d\'œuvres d\'art réalisées par des artistes locaux',
         '2024-04-05 11:00:00', '2024-04-05 19:00:00', 'hackathon', 70, 17),
        ('Journée porte ouverte', 'Visite guidée des installations de l\'entreprise et présentation des activités',
-        '2024-04-10 09:00:00', '2024-04-10 15:00:00', 'soirée', 200, 21),
+        '2024-04-10 09:00:00', '2024-04-10 15:00:00', 'soirée', 200, 14),
        ('Séance de yoga en plein air', 'Session de yoga relaxante en plein air pour tous les niveaux',
-        '2024-04-15 08:00:00', '2024-04-15 10:00:00', 'culture', 40, 25),
+        '2024-04-15 08:00:00', '2024-04-15 10:00:00', 'culture', 40, 20),
        ('Soirée karaoké', 'Soirée karaoké avec des chansons populaires et beaucoup de plaisir', '2024-04-20 20:00:00',
-        '2024-04-21 00:00:00', 'gaming', 80, 29);
+        '2024-04-21 00:00:00', 'gaming', 80, 13);
 

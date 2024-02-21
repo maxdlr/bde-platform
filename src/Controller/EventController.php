@@ -36,37 +36,19 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/event/show', name: 'app_event_show', httpMethod: ['POST'])]
-    public function show(): string
+    #[Route('/event/show/{id}', name: 'app_event_show', httpMethod: ['POST'])]
+    public function show(int $idEvent): string
     {
-        if (isset($_POST['showSubmit']) && $_POST['showSubmit'] == 'showEvent') {
-            $eventRepository = new EventRepository();
-            $event = $eventRepository->findOneBy(['id' => $_POST['idShow']]);
-        }
+        $eventRepository = new EventRepository();
+        $eventToShow = $eventRepository->findOneBy(['id' => $idEvent]);
 
-        return $this->twig->render('event/show.html.twig', [
-            'event' => $event,
-        ]);
-    }
-
-    #[Route('/events/delete', name: 'app_events_new', httpMethod: ['GET'])]
-    public function delete(): string
-    {
-
-    }
-
-
-    /*#[Route('/events/{id}', name: 'app_event_detail', httpMethod: ['GET'])]
-    public function detail(int $idEvent, EventRepository $eventRepository): string
-    {
-
-        if($eventRepository->findOneBy(['id' => $idEvent])) {
-            return $this->twig->render('event/detail.html.twig', [
-                'event' => $eventRepository->findOneBy(['id' => $idEvent])
+        if(!is_null($eventToShow)){
+            return $this->twig->render('event/show.html.twig', [
+                'event' => $eventToShow,
             ]);
         } else {
             return $this->twig->render('404.html.twig');
         }
-    }*/
+    }
 
 }
