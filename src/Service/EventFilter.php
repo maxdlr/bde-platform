@@ -74,4 +74,17 @@ class EventFilter
 
         return new static;
     }
+
+    public function isEventBetween(Event $event, DateTime $minDate, DateTime $maxDate): bool
+    {
+        if($event->getStartDate() > $minDate && $event->getStartDate() < $maxDate)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
 }
