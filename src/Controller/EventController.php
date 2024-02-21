@@ -3,12 +3,7 @@
 namespace App\Controller;
 
 use App\Attribute\Route;
-use App\Entity\Event;
-use App\Enum\TagEnum;
-use App\Mapping\Event\EventOTD;
 use App\Repository\EventRepository;
-use App\Repository\TagRepository;
-use DateTime;
 use Exception;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -53,4 +48,25 @@ class EventController extends AbstractController
             'event' => $event,
         ]);
     }
+
+    #[Route('/events/delete', name: 'app_events_new', httpMethod: ['GET'])]
+    public function delete(): string
+    {
+
+    }
+
+
+    /*#[Route('/events/{id}', name: 'app_event_detail', httpMethod: ['GET'])]
+    public function detail(int $idEvent, EventRepository $eventRepository): string
+    {
+
+        if($eventRepository->findOneBy(['id' => $idEvent])) {
+            return $this->twig->render('event/detail.html.twig', [
+                'event' => $eventRepository->findOneBy(['id' => $idEvent])
+            ]);
+        } else {
+            return $this->twig->render('404.html.twig');
+        }
+    }*/
+
 }

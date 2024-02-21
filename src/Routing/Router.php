@@ -42,10 +42,17 @@ readonly class Router
 
         // Method
         $method = $route->getControllerMethod();
+        // Get the id passed in the uri if the controller road contains "{id}"
+        if (str_contains($route->getUri(), "{id}")) {
+            $idElementInUri = substr($uri, strrpos($uri, "/") + 1);
+        }
+
         $methodParams = $this->getMethodParams($controllerClass . '::' . $method);
-
-
-        return $controllerInstance->$method(...$methodParams);
+        if(isset($idElementInUri)) {
+            return $controllerInstance->$method($idElementInUri, ...$methodParams);
+        } else {
+            return $controllerInstance->$method(...$methodParams);
+        }
     }
 
     /**
@@ -53,9 +60,17 @@ readonly class Router
      */
     private function getRoute(string $uri, string $httpMethod): ?Route
     {
+        $uriWithoutID = substr($uri, 0, strrpos($uri, "/"));
+
+        $regExpr2 = "#".$uriWithoutID."\/(\d+)#";
+
+        $uriNew = $uriWithoutID."/{id}";
 
         foreach ($this->extractRoutesFromAttributes() as $savedRoute) {
-            if ($savedRoute->getUri() === $uri && in_array($httpMethod, $savedRoute->getHttpMethod())) {
+            // Check if request's url is in "/events/{id}" format, with {id} set to an integer
+            if ($savedRoute->getUri() === $uriNew && preg_match($regExpr2, $uri)) {
+                return $savedRoute;
+            } elseif ($savedRoute->getUri() === $uri && in_array($httpMethod, $savedRoute->getHttpMethod())){
                 return $savedRoute;
             }
         }
@@ -148,8 +163,12 @@ readonly class Router
         foreach ($methodParameters as $param) {
             $paramType = $param->getType();
             $paramTypeFQCN = $paramType->getName();
-            try {
-                $params[] = $this->container->get($paramTypeFQCN);
+            try{
+                if($paramTypeFQCN === "int") {
+                    continue;
+                } else {
+                    $params[] = $this->container->get($paramTypeFQCN);
+                }
             } catch (ContainerExceptionInterface $e) {
                 var_dump($e);
             }
