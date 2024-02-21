@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+
+    <h1>Users</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Firstname</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Is Verified</th>
+                <th>Signed Up Date</th>
+                <th>Actions</th>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>                
+                <td>{{ user.signedUpDate }}</td>
+                <td>
+                    <a href="">Supprimer</a>
+                    <a href="">Modifier</a>
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+{% endblock %}
