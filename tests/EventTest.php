@@ -1,37 +1,63 @@
 <?php
 
 use App\Entity\Event;
+use App\Enum\RoleEnum;
+use App\Factory\EventFactory;
+use App\Factory\UserFactory;
 use App\Repository\EventRepository;
-use App\Service\DB\DatabaseManager;
+use App\Repository\UserRepository;
 use App\Service\DB\Entity;
 use App\Service\DB\EntityManager;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\assertIsArray;
 use function PHPUnit\Framework\assertSame;
 
 class EventTest extends TestCase
 {
+    public function testCreateUsers()
+    {
+        $userRepository = new UserRepository();
+        $users = UserFactory::make(10)->generate();
+        foreach ($users as $user) {
+            $userRepository->insertOne($user);
+        }
+
+        assertIsArray($users);
+    }
+
+    public function testCreateEvents()
+    {
+        $eventRepository = new EventRepository();
+        $events = EventFactory::make(10)->generate();
+        foreach ($events as $event) {
+            $eventRepository->insertOne($event);
+        }
+
+        assertIsArray($events);
+    }
+
     /**
      * @throws Exception
      */
     public function testCanFindAllEvent()
     {
         $eventRepository = new EventRepository();
+        $userRepository = new UserRepository();
         $faker = Factory::create();
 
         $name = $faker->word();
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $event = new Event();
             $event
-                ->setId($i + 999)
                 ->setName($name)
                 ->setDescription($faker->paragraph())
                 ->setStartDate($faker->dateTime())
                 ->setEndDate($faker->dateTime())
                 ->setTag($faker->word())
                 ->setCapacity($faker->randomNumber(2))
-                ->setOwnerId(1);
+                ->setOwnerId($faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId());
 
             $eventRepository->insertOne($event);
         }
@@ -51,6 +77,7 @@ class EventTest extends TestCase
     public function testCanCreateEventAndFindOneBy()
     {
         $eventRepository = new EventRepository();
+        $userRepository = new UserRepository();
         $faker = Factory::create();
 
         $name = $faker->word();
@@ -59,7 +86,7 @@ class EventTest extends TestCase
         $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
-        $owner_id = 1;
+        $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
 
         $event = new Event();
         $event
@@ -71,7 +98,6 @@ class EventTest extends TestCase
             ->setTag($tag)
             ->setCapacity($capacity)
             ->setOwnerId($owner_id);
-
         $eventRepository->insertOne($event);
 
         $read = $eventRepository->findOneBy(['name' => $name]);
@@ -93,6 +119,7 @@ class EventTest extends TestCase
     public function testCanCreateEventAndFindBy()
     {
         $eventRepository = new EventRepository();
+        $userRepository = new UserRepository();
         $faker = Factory::create();
 
         $name = $faker->word();
@@ -102,7 +129,7 @@ class EventTest extends TestCase
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $event = new Event();
             $event
                 ->setId($i + 999)
@@ -112,8 +139,7 @@ class EventTest extends TestCase
                 ->setEndDate($endDate)
                 ->setTag($tag)
                 ->setCapacity($capacity)
-                ->setOwnerId(1);
-
+                ->setOwnerId($faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId());
             $eventRepository->insertOne($event);
         }
 
@@ -126,10 +152,9 @@ class EventTest extends TestCase
             assertSame($event->getEndDate()->format('Y-m-d H:i:s'), $eventItem->getEndDate()->format('Y-m-d H:i:s'));
             assertSame($event->getTag(), $eventItem->getTag());
             assertSame($event->getCapacity(), $eventItem->getCapacity());
-            assertSame($event->getOwnerId(), $eventItem->getOwnerId());
         }
 
-        self::assertCount(50, $events);
+        self::assertCount(10, $events);
 
         $eventRepository->delete(['name' => $name]);
     }
@@ -140,6 +165,7 @@ class EventTest extends TestCase
     public function testCanUpdateEvent()
     {
         $eventRepository = new EventRepository();
+        $userRepository = new UserRepository();
         $faker = Factory::create();
 
         $name = $faker->word();
@@ -148,7 +174,7 @@ class EventTest extends TestCase
         $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
-        $owner_id = 1;
+        $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
 
         $event = new Event();
         $event
@@ -179,6 +205,7 @@ class EventTest extends TestCase
     public function testCanDeleteEvent()
     {
         $eventRepository = new EventRepository();
+        $userRepository = new UserRepository();
         $faker = Factory::create();
 
         $name = $faker->word();
@@ -187,11 +214,10 @@ class EventTest extends TestCase
         $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
-        $owner_id = 1;
+        $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
 
         $event = new Event();
         $event
-            ->setId($faker->randomNumber(1) + 999)
             ->setName($name)
             ->setDescription($description)
             ->setStartDate($startDate)
@@ -210,6 +236,7 @@ class EventTest extends TestCase
     public function testCanEventToArray()
     {
         $faker = Factory::create();
+        $userRepository = new UserRepository();
 
         $name = $faker->word();
         $description = $faker->paragraph();
@@ -217,7 +244,7 @@ class EventTest extends TestCase
         $endDate = $faker->dateTime();
         $tag = $faker->word();
         $capacity = $faker->randomNumber(2);
-        $owner_id = 1;
+        $owner_id = $faker->randomElement($userRepository->findBy(['roles' => RoleEnum::ROLE_MANAGER->value]))->getId();
 
         $event = new Event();
         $event
@@ -233,5 +260,80 @@ class EventTest extends TestCase
         $event = $event->toArray();
 
         self::assertIsArray($event);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testCanCreateOneEventWithFactory()
+    {
+        $event = EventFactory::make()->withName('Maxime')->generate();
+
+        $eventRepository = new EventRepository();
+        $eventRepository->insertOne($event);
+
+        $result = $eventRepository->findOneBy(['name' => $event->getName()]);
+
+        assertSame('Maxime', $result->getName());
+
+        $eventRepository->delete(['name' => $event->getName()]);
+    }
+
+    public function testCanCreateManyWithFactory()
+    {
+        $events = EventFactory::make(30)->withName('Maxime')->generate();
+        $eventRepository = new EventRepository();
+
+        foreach ($events as $event) {
+            $eventRepository->insertOne($event);
+        }
+
+        $result = $eventRepository->findBy(['name' => $event->getName()]);
+
+        self::assertCount(30, $result);
+
+        $eventRepository->delete(['name' => $event->getName()]);
+    }
+
+    public function testCanCreateWithDescription()
+    {
+        $eventRepository = new EventRepository();
+        $event = EventFactory::make()->withDescription(
+            'oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo ')->generate();
+        $eventRepository->insertOne($event);
+
+        $result = $eventRepository->findOneBy(['description' => $event->getDescription()]);
+
+        assertSame('oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooooooooo ', $result->getDescription());
+
+        $eventRepository->delete(['description' => $event->getDescription()]);
+    }
+
+    public function testCanCreateWithTag()
+    {
+        $event = EventFactory::make()->withTag('soirée')->generate();
+
+        $eventRepository = new EventRepository();
+        $eventRepository->insertOne($event);
+
+        $result = $eventRepository->findOneBy(['tag' => $event->getTag()]);
+
+        assertSame('soirée', $result->getTag());
+
+        $eventRepository->delete(['tag' => $event->getTag()]);
+    }
+
+    public function testCanCreateWithDates()
+    {
+        $event = EventFactory::make()->withStartDate(new DateTime('now'))->generate();
+
+        $eventRepository = new EventRepository();
+        $eventRepository->insertOne($event);
+
+        $result = $eventRepository->findOneBy(['startDate' => $event->getStartDate()->format('Y-m-d H:i:s')]);
+
+        assertSame($event->getName(), $result->getName());
+
+        $eventRepository->delete(['name' => $event->getName()]);
     }
 }

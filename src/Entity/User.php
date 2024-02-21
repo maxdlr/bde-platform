@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Attribute\AsEntity;
 use App\Repository\UserRepository;
 use App\Service\DB\Entity;
+use DateTime;
 
 #[AsEntity(repositoryClass: UserRepository::class)]
 class User extends Entity
@@ -16,7 +17,7 @@ class User extends Entity
     private string $password;
     private string $roles;
     private bool $isVerified;
-    private string $signedUpOn;
+    private DateTime $signedUpOn;
 
     public function toArray(): array
     {
@@ -109,12 +110,12 @@ class User extends Entity
         return $this;
     }
 
-    public function getSignedUpOn(): string
+    public function getSignedUpOn(): DateTime
     {
         return $this->signedUpOn;
     }
 
-    public function setSignedUpOn(string $signedUpOn): static
+    public function setSignedUpOn(DateTime $signedUpOn): static
     {
         $this->signedUpOn = $signedUpOn;
         return $this;
