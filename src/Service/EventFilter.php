@@ -67,6 +67,7 @@ class EventFilter
                     return strcmp(strval($b->getOwnerId()), strval($a->getOwnerId()));
                 });
             }
+
                 break;
             default:
                 throw new \Exception("Merci de renseigner un champ à tri");
@@ -78,6 +79,17 @@ class EventFilter
     public function isEventBetween(Event $event, DateTime $minDate, DateTime $maxDate): bool
     {
         if($event->getStartDate() > $minDate && $event->getStartDate() < $maxDate)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function isOnTag(Event $event, string $name): bool
+    {
+        if($event->getTag() == $name)
         {
             return true;
         }
