@@ -18,7 +18,7 @@ CREATE TABLE event
     fileSize    double,
     owner_id    int           NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT event_owner FOREIGN KEY (owner_id) REFERENCES user (id)
+    CONSTRAINT event_owner FOREIGN KEY (owner_id) REFERENCES user (id) on delete cascade
 );
 
 DROP TABLE IF EXISTS user;
