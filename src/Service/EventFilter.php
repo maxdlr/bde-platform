@@ -67,9 +67,23 @@ class EventFilter
                     return strcmp(strval($b->getOwnerId()), strval($a->getOwnerId()));
                 });
             }
-
                 break;
-            default:
+                case "tag":
+                    if(!$reverse)
+                    {
+                        usort(self::$events, function ($a, $b)
+                        {
+                            return strcmp($a->getTag(),  $b->getTag());
+                        });
+                    }
+                    else {
+                        usort(self::$events, function ($a, $b)
+                        {
+                            return strcmp($b->getTag(), $a->getTag());
+                        });
+                    }
+                break;
+                default:
                 throw new \Exception("Merci de renseigner un champ à tri");
         }
 
