@@ -3,10 +3,11 @@
 namespace App\Mapping\Event;
 
 use App\Entity\Event;
+use App\Mapping\OTD;
 use App\Mapping\OTDInterface;
 use Exception;
 
-class EventOTD implements OTDInterface
+class EventOTD extends OTD implements OTDInterface
 {
     // Data transfer class Object -> Database
     private object $from;

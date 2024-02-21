@@ -3,6 +3,7 @@
 namespace App\Service\DB;
 
 use App\Mapping\DTO;
+use App\Mapping\OTD;
 use App\Service\DB\Utils\RepositoryUtil;
 use Exception;
 
@@ -10,6 +11,7 @@ abstract class Repository extends EntityManager
 {
     protected ?string $tableName;
     protected ?DTO $dto;
+    protected ?OTD $otd;
 
     public function __construct()
     {
@@ -23,9 +25,11 @@ abstract class Repository extends EntityManager
     /**
      * @throws Exception
      */
-    public function insertOne(array $columnAndValues): bool
+    public function insertOne(object $object): bool
     {
-        assert($this->isTableSet());
+        assert($this->isTableSet() && $this->isDataTransferSet());
+
+        $columnAndValues = $this->toDbModel($object);
 
         $sql = 'insert into ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('insert', $columnAndValues);
@@ -40,7 +44,7 @@ abstract class Repository extends EntityManager
      */
     public function findAll(): null|array
     {
-        assert($this->isTableSet() && $this->isDtoSet());
+        assert($this->isTableSet() && $this->isDataTransferSet());
 
         $sql = "select * from $this->tableName;";
         $arrays = $this->executeRequest($sql);
@@ -53,7 +57,7 @@ abstract class Repository extends EntityManager
      */
     public function findBy(array $criteria): null|array
     {
-        assert($this->isTableSet());
+        assert($this->isTableSet() && $this->isDataTransferSet());
 
         $sql = 'select * from ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
@@ -68,7 +72,7 @@ abstract class Repository extends EntityManager
      */
     public function findOneBy(array $criteria): null|object
     {
-        assert($this->isTableSet());
+        assert($this->isTableSet() && $this->isDataTransferSet());
 
         $sql = 'select * from ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
@@ -84,9 +88,11 @@ abstract class Repository extends EntityManager
     /**
      * @throws Exception
      */
-    public function update(array $columnAndValues, array $criteria): bool
+    public function update(array $columnAndValues, array|object $mixed): bool
     {
-        assert($this->isTableSet());
+        assert($this->isTableSet() && $this->isDataTransferSet());
+
+        $criteria = $mixed instanceof Entity ? $this->toDbModel($mixed) : $mixed;
 
         $sql = 'update ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('set', $columnAndValues);
@@ -101,9 +107,11 @@ abstract class Repository extends EntityManager
     /**
      * @throws Exception
      */
-    public function delete(array $criteria): bool
+    public function delete(array|object $mixed): bool
     {
-        assert($this->isTableSet());
+        assert($this->isTableSet() && $this->isDataTransferSet());
+
+        $criteria = $mixed instanceof Entity ? $this->toDbModel($mixed) : $mixed;
 
         $sql = 'delete from ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
@@ -111,6 +119,8 @@ abstract class Repository extends EntityManager
 
         return $this->executeRequest($sql);
     }
+
+//    CHECKS ---------------------------------------------------------------------------------------------------
 
     /**
      * @throws Exception
@@ -127,9 +137,9 @@ abstract class Repository extends EntityManager
     /**
      * @throws Exception
      */
-    private function isDtoSet(): bool
+    private function isDataTransferSet(): bool
     {
-        if (is_null($this->dto)) {
+        if (is_null($this->dto) || is_null($this->otd)) {
             throw new Exception('Table of repository is not set.');
         }
 
@@ -144,5 +154,20 @@ abstract class Repository extends EntityManager
         }
 
         return $objects;
+    }
+
+    private function toDbModel(array|object $objects): array
+    {
+        if ($objects instanceof Entity) {
+            return $this->otd->config($objects)->process();
+        }
+
+        $arrays = [];
+        foreach ($objects as $object) {
+            assert($object instanceof Entity);
+            $arrays[] = $this->otd->config($object)->process();
+        }
+
+        return $arrays;
     }
 }

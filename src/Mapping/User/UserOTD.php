@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 namespace App\Mapping\User;
 
 use App\Entity\User;
+use App\Mapping\OTD;
 use App\Mapping\OTDInterface;
 use Exception;
 
-class UserOTD implements OTDInterface
+class UserOTD extends OTD implements OTDInterface
 {
     private object $from;
 
@@ -23,18 +24,17 @@ class UserOTD implements OTDInterface
     {
         if (!assert($this->from instanceof User))
             throw new Exception('Wrong type, this is supposed to be an User object');
-        
+
         $user = $this->from;
 
-        $arrayUser = [
-            'name' => $user->getName(),
+        return [
+            'lastname' => $user->getLastname(),
             'firstname' => $user->getFirstName(),
             'password' => $user->getPassword(),
             'email' => $user->getEmail(),
-            'role' => $user->getRole(),
+            'roles' => $user->getRoles(),
             'isVerified' => $user->isVerified(),
-            'signedUpOn' => $user->getSignedUpDate()
+            'signedUpOn' => $user->getSignedUpOn()->format('Y-m-d H:i:s')
         ];
-        return $arrayUser;
     }
 }

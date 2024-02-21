@@ -1,12 +1,11 @@
 <?php
 
-use App\DB\DatabaseManager;
-use App\DB\EntityManager;
+use App\Factory\UserFactory;
+use App\Repository\UserRepository;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-
     /**
      * Allows to check the validity of user's email
      * @throws Exception
@@ -35,4 +34,36 @@ class UserTest extends TestCase
         self::assertSame(true, $result);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function testCanCreateOneWithFactory()
+    {
+        $user = UserFactory::make()->withFirstname('Maxime')->generate();
+
+        $userRepository = new UserRepository();
+        $userRepository->insertOne($user);
+
+        $result = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
+
+        self::assertSame('Maxime', $result->getFirstname());
+
+        $userRepository->delete(['firstname' => $user->getFirstname()]);
+    }
+
+    public function testCanCreateManyWithFactory()
+    {
+        $users = UserFactory::make(30)->withFirstname('Maxime')->generate();
+        $userRepository = new UserRepository();
+
+        foreach ($users as $user) {
+            $userRepository->insertOne($user);
+        }
+
+        $result = $userRepository->findBy(['firstname' => $user->getFirstname()]);
+
+        self::assertCount(30, $result);
+
+        $userRepository->delete(['firstname' => $user->getFirstname()]);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Mapping\User;
 use App\Entity\User;
 use App\Mapping\DTO;
 use App\Mapping\DTOInterface;
+use DateTime;
 use Exception;
 
 class UserDTO extends DTO implements DTOInterface
@@ -17,6 +18,9 @@ class UserDTO extends DTO implements DTOInterface
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function process(): object
     {
         if (!assert(is_array($this->from)))
@@ -25,13 +29,14 @@ class UserDTO extends DTO implements DTOInterface
         $user = new User;
 
         $user
+            ->setId($this->from['id'])
             ->setFirstname($this->from['firstname'])
-            ->setName($this->from['name'])
+            ->setLastname($this->from['lastname'])
             ->setEmail($this->from['email'])
             ->setPassword($this->from['password'])
-            ->setRole($this->from['role'])
+            ->setRoles($this->from['roles'])
             ->setIsVerified($this->from['isVerified'])
-            ->setSignedUpDate($this->from['signedUpDate']);
+            ->setSignedUpOn(new DateTime($this->from['signedUpOn']));
 
         return $user;
     }
