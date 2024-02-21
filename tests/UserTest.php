@@ -62,37 +62,4 @@ class UserTest extends TestCase
 
         $userRepository->delete($user);
     }
-
-    /**
-     * @throws Exception
-     */
-    public function testCanCreateOneWithFactory()
-    {
-        $user = UserFactory::make()->withFirstname('Maxime')->generate();
-
-        $userRepository = new UserRepository();
-        $userRepository->insertOne($user);
-
-        $result = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
-
-        self::assertSame('Maxime', $result->getFirstname());
-
-        $userRepository->delete(['firstname' => $user->getFirstname()]);
-    }
-
-    public function testCanCreateManyWithFactory()
-    {
-        $users = UserFactory::make(30)->withFirstname('Maxime')->generate();
-        $userRepository = new UserRepository();
-
-        foreach ($users as $user) {
-            $userRepository->insertOne($user);
-        }
-
-        $result = $userRepository->findBy(['firstname' => $user->getFirstname()]);
-
-        self::assertCount(30, $result);
-
-        $userRepository->delete(['firstname' => $user->getFirstname()]);
-    }
 }

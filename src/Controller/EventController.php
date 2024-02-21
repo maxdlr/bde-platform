@@ -9,7 +9,6 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use App\Service\EventFilter;
 
 class EventController extends AbstractController
 {
@@ -19,22 +18,6 @@ class EventController extends AbstractController
     )
     {
         parent::__construct($twig);
-    }
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     * @throws Exception
-     */
-    #[Route('/events', name: 'app_event_index', httpMethod: ['GET'])]
-    public function index(): string
-    {
-        $events = $this->eventRepository->findAll();
-        $events = EventFilter::use($events)->sortBy("date")->return();
-        return $this->twig->render('event/index.html.twig', [
-            'events' => $events,
-        ]);
     }
 
     #[Route('/event/show', name: 'app_event_show', httpMethod: ['POST'])]

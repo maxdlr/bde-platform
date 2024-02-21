@@ -4,6 +4,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Entity\Interested;
 use App\Factory\EventFactory;
+use App\Factory\InterestedFactory;
 use App\Factory\UserFactory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
@@ -22,25 +23,18 @@ class InterestedTest extends TestCase
         $eventRepository = new EventRepository();
         $userRepository = new UserRepository();
         $interestedRepository = new InterestedRepository();
+        $faker = Factory::create();
 
-        $event = EventFactory::make()->generate();
-        $eventRepository->insertOne($event);
-        $eventObject = $eventRepository->findOneBy(['name' => $event->getName()]);
+        $events = $eventRepository->findAll();
+        $event = $faker->randomElement($events);
 
-        $user = UserFactory::make()->generate();
-        $userRepository->insertOne($user);
-        $userObject = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
+        $users = $userRepository->findAll();
+        $user = $faker->randomElement($users);
 
-        $interested = new Interested();
-        $interested
-            ->setEventId($eventObject->getId())
-            ->setUserId($userObject->getId());
-
+        $interested = InterestedFactory::make()->withUser($user)->withEvent($event)->generate();
         $interestedRepository->insertOne($interested);
 
-        self::assertNotNull($interestedRepository);
-
-        $interestedObject = $interestedRepository->findOneBy(['event_id' => $eventObject->getId()]);
+        $interestedObject = $interestedRepository->findOneBy(['event_id' => $event->getId()]);
 
         self::assertInstanceOf(Interested::class, $interestedObject);
 
