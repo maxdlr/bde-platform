@@ -44,6 +44,7 @@ readonly class Router
         $method = $route->getControllerMethod();
         $methodParams = $this->getMethodParams($controllerClass . '::' . $method);
 
+
         return $controllerInstance->$method(...$methodParams);
     }
 

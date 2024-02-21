@@ -11,7 +11,7 @@
     <main class="container">
         <h1 class="my-5">Modifier un evenement.</h1>
 
-        <form action="/event/new" method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
 
             <div class="row row-cols-sm-2">
 
@@ -72,7 +72,11 @@
                         placeholder: "Description",
                         value: item.description
                     }) }}
-                    <button class="btn btn-primary" type="submit" name="eventSubmit" value="new-event">Enregistrer
+
+                    <input type="number" value="{{ item.id }}" name="update-event-input" class="d-none">
+
+                    <button class="btn btn-primary" type="submit" name="update-event-submit" value="update-event">
+                        Enregistrer
                     </button>
                 </div>
             </div>

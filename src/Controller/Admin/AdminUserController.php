@@ -15,7 +15,7 @@ class AdminUserController extends AbstractController
     public function __construct(
         Environment                     $twig,
         private readonly UserRepository $userRepository,
-        private readonly RoleRepository $roleRepository,
+//        private readonly RoleRepository $roleRepository,
     )
     {
         parent::__construct($twig);
@@ -33,19 +33,20 @@ class AdminUserController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/user/edit', name: 'app_admin_user_edit', httpMethod: ['GET', 'POST'])]
-    public function edit(): string
-    {
-        if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
-            $userRepository = new UserRepository();
-            $user = $userRepository->findOneBy(['id' => $_POST['edit-user-input']]);
-        }
-
-        $roles = $this->roleRepository->findAll();
-
-        return $this->twig->render('admin/edit/user-edit.html.twig', [
-            'item' => $user,
-            'roles' => $roles
-        ]);
-    }
+//todo: implement /{id}
+//    #[Route('/admin/user/edit', name: 'app_admin_user_edit', httpMethod: ['GET', 'POST'])]
+//    public function edit(): string
+//    {
+//        if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
+//            $userRepository = new UserRepository();
+//            $user = $userRepository->findOneBy(['id' => $_POST['edit-user-input']]);
+//        }
+//
+//        $roles = $this->roleRepository->findAll();
+//
+//        return $this->twig->render('admin/edit/user-edit.html.twig', [
+//            'item' => $user,
+//            'roles' => $roles
+//        ]);
+//    }
 }
