@@ -54,6 +54,7 @@ class RepositoryUtil
         foreach ($columnAndValues as $column => $value) {
             if (!$first) $sql .= ' and ';
 
+
             $sql .= $column . ' = "' . $value . '"';
 
             $first = false;

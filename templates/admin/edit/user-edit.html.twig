@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Modifier un user
+{% endblock %}
+
+{% block body %}
+
+    {{ dump(item.tag) }}
+
+    <main class="container">
+        <h1 class="my-5">Modifier un evenement.</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="row row-cols-2">
+
+                <div>
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Prénom',
+                        type: 'text',
+                        name: 'firstname',
+                        required: true,
+                        value: item.firstname
+                    }) }}
+                </div>
+                <div>
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Nom',
+                        type: 'text',
+                        name: 'lastname',
+                        required: true,
+                        value: item.lastname
+                    }) }}
+
+                </div>
+            </div>
+
+            <div class="row row-cols-3">
+
+
+                <div>
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Email',
+                        type: 'email',
+                        name: 'email',
+                        required: true,
+                        value: item.email
+                    }) }}
+
+                </div>
+                <div>
+
+                    {{ include('shared/form/_dropdown.html.twig', {
+                        choices: roles,
+                        label: 'Roles',
+                        name: 'role',
+                        required: true,
+                        value: item.roles
+                    }) }}
+                </div>
+
+
+                {{ include('shared/form/_input.html.twig', {
+                    label: 'Vérifié',
+                    type: 'checkbox',
+                    name: 'isVerified',
+                    required: true,
+                    value: item.isVerified,
+                    class: 'form-check-input'
+                }) }}
+            </div>
+
+            <div>
+                <button class="btn btn-primary" type="submit" name="eventSubmit" value="new-event">Enregistrer
+                </button>
+            </div>
+        </form>
+    </main>
+
+{% endblock %}

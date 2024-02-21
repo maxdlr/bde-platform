@@ -25,13 +25,14 @@ class UserDTO extends DTO implements DTOInterface
         $user = new User;
 
         $user
+            ->setId($this->from['id'])
             ->setFirstname($this->from['firstname'])
-            ->setName($this->from['name'])
+            ->setLastname($this->from['lastname'])
             ->setEmail($this->from['email'])
             ->setPassword($this->from['password'])
-            ->setRole($this->from['role'])
+            ->setRoles($this->from['roles'])
             ->setIsVerified($this->from['isVerified'])
-            ->setSignedUpDate($this->from['signedUpDate']);
+            ->setSignedUpOn($this->from['signedUpOn']);
 
         return $user;
     }

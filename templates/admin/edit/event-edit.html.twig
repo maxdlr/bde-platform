@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Modifier un evenement
+{% endblock %}
+
+{% block body %}
+
+    {{ dump(item.tag) }}
+
+    <main class="container">
+        <h1 class="my-5">Modifier un evenement.</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="row row-cols-sm-2">
+
+                <div>
+                    <div class="d-flex gap-2">
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Nom',
+                            type: 'text',
+                            name: 'name',
+                            required: true,
+                            value: item.name
+                        }) }}
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: '',
+                            type: 'number',
+                            name: 'capacity',
+                            required: true,
+                            placeholder: "Capacité maximum",
+                            value: item.capacity
+                        }) }}
+                    </div>
+
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Début',
+                        type: 'datetime-local',
+                        name: 'startDate',
+                        required: true,
+                        placeholder: "Début",
+                        value: item.startDate|date('Y-m-d H:i:s')
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Fin',
+                        type: 'datetime-local',
+                        name: 'endDate',
+                        required: true,
+                        placeholder: "Fin",
+                        value: item.endDate|date('Y-m-d H:i:s')
+                    }) }}
+
+                    {{ include('shared/form/_dropdown.html.twig', {
+                        choices: tags,
+                        label: 'Catégorie',
+                        name: 'tag',
+                        required: true,
+                        value: item.tag
+                    }) }}
+                </div>
+                <div>
+                    {{ include('shared/form/_textarea.html.twig', {
+                        label: 'Description',
+                        type: 'text',
+                        name: 'description',
+                        required: true,
+                        placeholder: "Description",
+                        value: item.description
+                    }) }}
+
+                    <input type="number" value="{{ item.id }}" name="update-event-input" class="d-none">
+
+                    <button class="btn btn-primary" type="submit" name="update-event-submit" value="update-event">
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+{% endblock %}
