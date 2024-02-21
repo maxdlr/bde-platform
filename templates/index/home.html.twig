@@ -24,6 +24,9 @@
                                 au {{ event.endDate|date("d/m/y H:i") }}</p>
                         </div>
                     </div>
+                    <a href="/event/show/{{ event.id }}" class="btn btn-primary">
+                        Voir
+                    </a>
                 </article>
 
             {% endfor %}
