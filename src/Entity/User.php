@@ -27,7 +27,7 @@ class User extends Entity
             'lastname' => $this->getLastname(),
             'email' => $this->getEmail(),
             'roles' => $this->getRoles(),
-            'isVerified' => $this->isVerified(),
+            'isVerified' => $this->getIsVerified(),
             'signedUpOn' => $this->getSignedUpOn()
         ];
     }
@@ -83,8 +83,7 @@ class User extends Entity
 
     public function setPassword(string $password): static
     {
-        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-        $this->password = $hashPassword;
+        $this->password = $password;
         return $this;
     }
 
@@ -99,7 +98,7 @@ class User extends Entity
         return $this;
     }
 
-    public function isVerified(): bool
+    public function getIsVerified(): bool
     {
         return $this->isVerified;
     }
