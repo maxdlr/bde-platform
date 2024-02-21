@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Créer un nouvel evenement
+{% endblock %}
+
+{% block body %}
+
+    <main class="container">
+        <h1 class="my-5">Créer un nouvel evenement.</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="row row-cols-sm-2">
+
+                <div>
+                    <div class="d-flex gap-2">
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Nom',
+                            type: 'text',
+                            name: 'name',
+                            required: true,
+                            placeholder: "Nom"
+                        }) }}
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: '',
+                            type: 'number',
+                            name: 'capacity',
+                            required: true,
+                            placeholder: "Capacité maximum"
+                        }) }}
+                    </div>
+
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Début',
+                        type: 'datetime-local',
+                        name: 'startDate',
+                        required: true,
+                        placeholder: "Début"
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Fin',
+                        type: 'datetime-local',
+                        name: 'endDate',
+                        required: true,
+                        placeholder: "Fin"
+                    }) }}
+
+
+                    {{ include('shared/form/_dropdown.html.twig', {
+                        choices: tags,
+                        label: 'Catégorie',
+                        name: 'tag',
+                        required: true
+                    }) }}
+                </div>
+                <div>
+                    {{ include('shared/form/_textarea.html.twig', {
+                        label: 'Description',
+                        type: 'text',
+                        name: 'description',
+                        required: true,
+                        placeholder: "Description"
+                    }) }}
+                    <button class="btn btn-primary" type="submit" name="edit-event-submit" value="new-event">Enregistrer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+{% endblock %}

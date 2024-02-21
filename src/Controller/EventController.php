@@ -14,7 +14,7 @@ class EventController extends AbstractController
 {
     public function __construct(
         Environment                      $twig,
-        private readonly EventRepository $eventRepository
+        private readonly EventRepository $eventRepository,
     )
     {
         parent::__construct($twig);
@@ -26,7 +26,7 @@ class EventController extends AbstractController
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/events', name: 'app_events_index', httpMethod: ['GET'])]
+    #[Route('/events', name: 'app_event_index', httpMethod: ['GET'])]
     public function index(): string
     {
         $events = $this->eventRepository->findAll();
@@ -36,21 +36,17 @@ class EventController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route('/events/new', name: 'app_events_new', httpMethod: ['GET'])]
-    public function new(): string
+    #[Route('/event/show', name: 'app_event_show', httpMethod: ['POST'])]
+    public function show(): string
     {
-        return $this->twig->render('event/new.html.twig');
-    }
+        if (isset($_POST['showSubmit']) && $_POST['showSubmit'] == 'showEvent') {
+            $eventRepository = new EventRepository();
+            $event = $eventRepository->findOneBy(['id' => $_POST['idShow']]);
+        }
 
-    #[Route('/events/edit', name: 'app_events_new', httpMethod: ['GET'])]
-    public function edit(): string
-    {
-
+        return $this->twig->render('event/show.html.twig', [
+            'event' => $event,
+        ]);
     }
 
     #[Route('/events/delete', name: 'app_events_new', httpMethod: ['GET'])]
@@ -60,7 +56,7 @@ class EventController extends AbstractController
     }
 
 
-    #[Route('/events/{id}', name: 'app_event_detail', httpMethod: ['GET'])]
+    /*#[Route('/events/{id}', name: 'app_event_detail', httpMethod: ['GET'])]
     public function detail(int $idEvent, EventRepository $eventRepository): string
     {
 
@@ -71,6 +67,6 @@ class EventController extends AbstractController
         } else {
             return $this->twig->render('404.html.twig');
         }
-    }
+    }*/
 
 }

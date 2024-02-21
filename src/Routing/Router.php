@@ -31,7 +31,6 @@ readonly class Router
         string $httpMethod
     ): string
     {
-
         $route = $this->getRoute($uri, $httpMethod);
         if ($route === null)
             throw new RouteNotFoundException("La page n'existe pas");
@@ -84,12 +83,44 @@ readonly class Router
      */
     private function extractRoutesFromAttributes(): array
     {
+        $adminControllerNames = $this->attributeManager->getPhpFileNamesFromDir(
+            __DIR__ . '/../Controller/Admin'
+        );
+        $routes = [];
+
+        foreach ($adminControllerNames as $controller) {
+            $controllerInfo = new ReflectionClass("App\Controller\Admin\\" . $controller);
+            $routedMethods = $controllerInfo->getMethods();
+
+            foreach ($routedMethods as $routedMethod) {
+
+                foreach ($routedMethod->getAttributes() as $attributes) {
+
+                    if (!$routedMethod->isConstructor() &&
+                        $routedMethod->isPublic() &&
+                        $attributes->getName() === \App\Attribute\Route::class
+                    ) {
+                        $route = $attributes->newInstance();
+
+                        $route = new Route(
+                            $route->getUri(),
+                            $route->getName(),
+                            $route->getHttpMethod(),
+                            "App\Controller\Admin\\" . $routedMethod->getDeclaringClass()->getShortName(),
+                            $routedMethod->getName(),
+                        );
+
+                        $routes[] = $route;
+                    }
+                }
+            }
+        }
+
         $controllerNames = $this->attributeManager->getPhpFileNamesFromDir(
             __DIR__ . '/../Controller',
-            ['AbstractController.php']
+            ['AbstractController.php', 'Admin']
         );
 
-        $routes = [];
         foreach ($controllerNames as $controller) {
             $controllerInfo = new ReflectionClass("App\Controller\\" . $controller);
             $routedMethods = $controllerInfo->getMethods();
@@ -116,8 +147,6 @@ readonly class Router
                     }
                 }
             }
-
-
         }
         return $routes;
     }
@@ -127,7 +156,6 @@ readonly class Router
      */
     private function getMethodParams(string $method): array
     {
-
         $methodInfos = new ReflectionMethod($method);
         $methodParameters = $methodInfos->getParameters();
 
@@ -135,10 +163,14 @@ readonly class Router
         foreach ($methodParameters as $param) {
             $paramType = $param->getType();
             $paramTypeFQCN = $paramType->getName();
-            if($paramTypeFQCN === "int") {
-                continue;
-            } else {
-                $params[] = $this->container->get($paramTypeFQCN);
+            try{
+                if($paramTypeFQCN === "int") {
+                    continue;
+                } else {
+                    $params[] = $this->container->get($paramTypeFQCN);
+                }
+            } catch (ContainerExceptionInterface $e) {
+                var_dump($e);
             }
         }
 

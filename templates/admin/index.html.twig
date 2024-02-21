@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Les evenements
+{% endblock %}
+
+{% block body %}
+    <main class="container-fluid">
+        <h1>Evenements</h1>
+
+        {{ include('admin/shared/_data-table.html.twig', {
+            items: items,
+            entityName: entityName
+        }) }}
+
+    </main>
+
+{% endblock %}

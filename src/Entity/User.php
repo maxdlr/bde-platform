@@ -9,14 +9,33 @@ use App\Service\DB\Entity;
 #[AsEntity(repositoryClass: UserRepository::class)]
 class User extends Entity
 {
-    private int $id;
+    private ?int $id = null;
     private string $firstname;
-    private string $name;
+    private string $lastname;
     private string $email;
     private string $password;
-    private string $role;
+    private string $roles;
     private bool $isVerified;
-    private string $signedUpDate;
+    private string $signedUpOn;
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'firstname' => $this->getFirstName(),
+            'lastname' => $this->getLastname(),
+            'email' => $this->getEmail(),
+            'roles' => $this->getRoles(),
+            'isVerified' => $this->isVerified(),
+            'signedUpOn' => $this->getSignedUpOn()
+        ];
+    }
+
+    public function setId(int $id): User
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     public function getId(): int
     {
@@ -34,14 +53,14 @@ class User extends Entity
         return $this;
     }
 
-    public function getName(): string
+    public function getLastname(): string
     {
-        return $this->name;
+        return $this->lastname;
     }
 
-    public function setName(string $name): static
+    public function setLastname(string $lastname): static
     {
-        $this->name = $name;
+        $this->lastname = $lastname;
         return $this;
     }
 
@@ -68,14 +87,14 @@ class User extends Entity
         return $this;
     }
 
-    public function getRole(): string
+    public function getRoles(): string
     {
-        return $this->role;
+        return $this->roles;
     }
 
-    public function setRole(string $role): static
+    public function setRoles(string $roles): static
     {
-        $this->role = $role;
+        $this->roles = $roles;
         return $this;
     }
 
@@ -90,14 +109,14 @@ class User extends Entity
         return $this;
     }
 
-    public function getSignedUpDate(): string
+    public function getSignedUpOn(): string
     {
-        return $this->signedUpDate;
+        return $this->signedUpOn;
     }
 
-    public function setSignedUpDate(string $signedUpDate): static
+    public function setSignedUpOn(string $signedUpOn): static
     {
-        $this->signedUpDate = $signedUpDate;
+        $this->signedUpOn = $signedUpOn;
         return $this;
     }
 }
