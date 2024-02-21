@@ -20,23 +20,33 @@ class EventFilter
         return self::$events;
     }
 
-    static public function sortBy(string $value): static
+    static public function sortBy(string $value, bool $reverse = false): static
     {
-        if($value == "name")
-        {
-        usort(self::$events, function ($a, $b)
+        switch($value) {
+            case "name":
+                usort(self::$events, function ($a, $b)
         {
             return strcmp($a->getName(),  $b->getName());
         });
-    }
-    else{
-
-        uasort(self::$events, function ($a, $b)
-        {
-            return strcasecmp($b->getStartDate() , $a->getStartDate());
-        });
-
-    }
+            break;
+            case "date":
+                if(!$reverse)
+                {
+                    usort(self::$events, function ($a, $b)
+                    {
+                        return strcasecmp($b->getStartDate()->format('Y-m-d'), $a->getStartDate()->format('Y-m-d'));
+                    });
+                }
+                else {
+                    usort(self::$events, function ($a, $b)
+                    {
+                        return strcasecmp($a->getStartDate()->format('Y-m-d'),$b->getStartDate()->format('Y-m-d'));
+                    });
+                }
+                break;
+            default:
+                throw new \Exception("Merci de renseigner un champ à tri");
+        }
 
         return new static;
     }
