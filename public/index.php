@@ -30,6 +30,9 @@ if (php_sapi_name() === 'cli') {
     'REQUEST_METHOD' => $httpMethod
 ] = $_SERVER;
 
+session_start();
+$_SESSION["flashbag"] = [];
+
 try {
     echo $router->execute($uri, $httpMethod);
 } catch (RouteNotFoundException) {

@@ -28,18 +28,22 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_home', httpMethod: ['GET'])]
     public function home(): string
     {
-        var_dump($_SESSION);
-        if(isset($_SESSION)){
+        $this->clearFlashs();
+
+        $events = $this->eventRepository->findAll();
+
+        if(!is_null($_SESSION["user_connected"])){
             $connectedUser = new User();
             $connectedUser->getUserConnected();
+            $this->addFlash("success", "Vous êtes bien connecté !");
         } else {
             $connectedUser = null;
         }
 
-        $events = $this->eventRepository->findAll();
         return $this->twig->render('index/home.html.twig', [
             'events' => $events,
-            'connectedUser' => $connectedUser
+            'connectedUser' => $connectedUser,
+            'flashbag' => $_SESSION["flashbag"]
         ]);
     }
 }

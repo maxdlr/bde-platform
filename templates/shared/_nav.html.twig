@@ -18,7 +18,10 @@
             {% if connectedUser.id == null %}
                 <a class="btn btn-warning rounded-pill border-0" href="/user/login">Connexion</a>
             {% else %}
-                <a class="btn btn-warning rounded-pill border-0" href="/user/logout">Déconnexion</a>
+                <div class="d-flex align-items-center gap-3">
+                    <p class="mb-0">Bonjour {{ connectedUser.firstname }} {{ connectedUser.lastname }}</p>
+                    <a class="btn btn-warning rounded-pill border-0" href="/user/logout">Déconnexion</a>
+                </div>
             {% endif %}
         </div>
     </div>

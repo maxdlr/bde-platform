@@ -20,6 +20,8 @@ class UserController extends AbstractController
     #[Route('/user/login', name: 'app_user_login', httpMethod: ['GET', 'POST'])]
     public function connection(): string
     {
+        $this->clearFlashs();
+
         if (isset($_POST['connect-user-submit']) && $_POST['connect-user-submit'] == 'connect-user') {
 
             $userRepository = new UserRepository();
@@ -28,23 +30,20 @@ class UserController extends AbstractController
             if(!is_null($user)){
                 $verifyHashPassword = password_verify($_POST['password'], $user->getPassword());
                 if($verifyHashPassword === true){
-                    session_start();
                     $_SESSION["user_connected"] = $user->getEmail();
 
-//                    var_dump($_SESSION); die;
-
-                    header("Location: /");
+                    $this->redirect('/');
                     exit();
                 } else {
-                    return $this->twig->render('user/login.html.twig', [
-                        'errorMessage' => "Le mot de passe saisi ne correspond pas à l'adresse mail",
-                    ]);
+                    $this->addFlash("danger", "Le mot de passe saisi ne correspond pas à l'adresse mail");
                 }
             }else {
-                return $this->twig->render('user/login.html.twig', [
-                    'errorMessage' => "L'adresse mail saisie ne correspond à aucun compte utilisateur",
-                ]);
+                $this->addFlash("danger", "L'adresse mail saisie ne correspond à aucun compte");
             }
+
+            return $this->twig->render('user/login.html.twig', [
+                'flashbag' => $_SESSION["flashbag"]
+            ]);
         }
 
         return $this->twig->render('user/login.html.twig', []);

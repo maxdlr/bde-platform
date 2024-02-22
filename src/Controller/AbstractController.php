@@ -14,7 +14,7 @@ abstract class AbstractController
 
     #[NoReturn] protected function redirect(string $route): void
     {
-        header("Location:" . $route);
+        header("Location:".$route);
         die();
     }
 
@@ -33,5 +33,18 @@ abstract class AbstractController
     protected function getUser(): User
     {
         $this->dd($_SESSION);
+    }
+
+    public function addFlash(string $flashType, string $flashMessage):void{
+        if(isset($_SESSION)){
+
+            $newFlash = ["type" => $flashType, "message" => $flashMessage];
+
+            $_SESSION["flashbag"][] = $newFlash;
+        }
+    }
+
+    public function clearFlashs():void{
+        unset($_SESSION["flashbag"]);
     }
 }
