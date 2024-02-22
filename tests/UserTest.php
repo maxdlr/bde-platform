@@ -1,7 +1,6 @@
 <?php
 
 use App\Entity\User;
-use App\Mapping\User\UserOTD;
 use App\Repository\userRepository;
 use Faker\Factory;
 use App\Factory\UserFactory;

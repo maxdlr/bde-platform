@@ -87,8 +87,16 @@ class AFixturesTest extends TestCase
     {
         $participantRepository = new ParticipantRepository();
         $participants = ParticipantFactory::make(200)->generate();
+        $eventRepository = new EventRepository();
+
+
         foreach ($participants as $participant) {
-            $participantRepository->insertOne($participant);
+
+            $event = $eventRepository->findOneBy(['id' => $participant->getEventId()]);
+
+            if ($event->getCapacity() > count($participantRepository->findBy(['event_id' => $event->getId()]))) {
+                $participantRepository->insertOne($participant);
+            }
         }
 
         assertIsArray($participants);

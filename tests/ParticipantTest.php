@@ -1,18 +1,9 @@
 <?php
 
-use App\Entity\Event;
-use App\Entity\Interested;
-use App\Entity\User;
 use App\Entity\Participant;
 use App\Factory\EventFactory;
 use App\Factory\UserFactory;
-use App\Repository\EventRepository;
-use App\Repository\InterestedRepository;
-use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
-use App\Mapping\Participant\ParticipantDTO;
-use App\Mapping\Participant\ParticipantOTD;
-use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 
 class ParticipantTest extends TestCase

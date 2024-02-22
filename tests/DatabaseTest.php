@@ -36,6 +36,4 @@ class DatabaseTest extends TestCase
         $deletionRequest = $entityManager->executeRequest('drop table caca;');
         self::assertSame(true, $deletionRequest);
     }
-
-
 }
