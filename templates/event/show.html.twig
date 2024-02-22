@@ -16,7 +16,7 @@
                         <span> à </span>
                         <span>{{ event.startDate|date('H:i') }}</span>
                     </div>
-                    <div>
+                    <div class="fw-bold">
                         <span> au </span>
                         <span>{{ event.endDate|date("d/m/y") }}</span>
                         <span> à </span>
@@ -36,11 +36,13 @@
                         {{ event.tag|title }}
                     </button>
                     <div class="text-light position-absolute top-0 end-0 me-4 mt-4 fw-bold">
-                        <span>Plus que </span>
-                        <span class="fs-2 fw-bolder bg-warning px-3 py-2 rounded-pill">{{ remainingCapacity }}</span>
-                        <span>/</span>
-                        <span>{{ event.capacity }}</span>
-                        <span> places restantes !!! </span>
+                        {% if userParticipant == true %}
+                            <span>Vous êtes déjà inscrit pour cet évènement !</span>
+                        {% else %}
+                            <span>Plus que </span>
+                            <span class="fs-2 fw-bolder bg-warning px-3 py-2 rounded-pill">{{ remainingCapacity }}</span>
+                            <span>/{{ event.capacity }} places restantes !!! </span>
+                        {% endif %}
                     </div>
                     <div class="position-absolute bottom-0 start-0 ms-4 mb-4 text-dark bg-light rounded-pill py-3 px-5">
                         <span class="fs-3 fw-bolder">Le {{ event.startDate|date("d/m/y") }}</span>
@@ -48,9 +50,15 @@
                 </div>
                 <div class="row">
                     <p class="col-10 offset-1 align-self-center my-5 my-lg-0">{{ event.description }}</p>
-                    <div class="col-10 offset-1 d-none d-lg-block">
-                        <a href="/event/new/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
-                    </div>
+                    {% if connectedUser != null %}
+                        <div class="col-10 offset-1 d-none d-lg-block">
+                            {% if userParticipant == true %}
+                                <a href="/event/delete/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me désinscrire</a>
+                            {% else %}
+                                <a href="/event/new/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </article>

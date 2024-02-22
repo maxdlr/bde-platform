@@ -7,11 +7,12 @@ use App\Entity\Participant;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
+use App\Controller\AbstractController;
 use Twig\Environment;
 use DateTime;
 
 
-class ParticipantController extends \App\Controller\AbstractController
+class ParticipantController extends AbstractController
 {
     public function __construct(
         Environment                            $twig,
@@ -40,5 +41,20 @@ class ParticipantController extends \App\Controller\AbstractController
         if ($participantRepository->insertOne($participant)) {
             $this->redirect('/event/show/'.$idEvent);
         }
+    }
+
+    #[Route('/event/delete/participant/{id}', name: 'app_participant_delete', httpMethod: ['GET'])]
+    public function deleteParticipant(int $idEvent): string
+    {
+        $participantList = $this->participantRepository->findBy(['event_id' => $idEvent]);
+        $connectedUser = $this->getUserConnected();
+
+        foreach ($participantList as $participant){
+            if ($participant->getUserId() == $connectedUser->getId()){
+                $this->participantRepository->delete($participant);
+            }
+        }
+
+        $this->redirect('/event/show/'.$idEvent);
     }
 }

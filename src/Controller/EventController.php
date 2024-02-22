@@ -24,12 +24,19 @@ class EventController extends AbstractController
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
         $remainingCapacity = $event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()]));
 
-        $participantRepository = new ParticipantRepository();
-        $participantList = $participantRepository->findBy(['event_id' => $idEvent]);
-        var_dump($participantList); die;
-
         if(!is_null($_SESSION["user_connected"])){
             $connectedUser = $this->getUserConnected();
+
+            $participantRepository = new ParticipantRepository();
+            $participantList = $participantRepository->findBy(['event_id' => $idEvent]);
+            foreach ($participantList as $participant){
+                if ($participant->getUserId() == $connectedUser->getId()){
+                    $userParticipant = true;
+                } else {
+                    $userParticipant = false;
+                }
+            }
+
             $this->addFlash("success", "Vous êtes bien connecté !");
         } else {
             $connectedUser = null;
@@ -38,7 +45,8 @@ class EventController extends AbstractController
         return $this->twig->render('event/show.html.twig', [
             'event' => $event,
             'remainingCapacity' => $remainingCapacity,
-            'connectedUser' => $connectedUser
+            'connectedUser' => $connectedUser,
+            'userParticipant' => $userParticipant
         ]);
     }
 }
