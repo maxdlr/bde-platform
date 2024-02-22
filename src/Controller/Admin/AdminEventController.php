@@ -157,7 +157,7 @@ class AdminEventController extends AbstractController
         $eventToDelete = $eventRepository->findOneBy(['id' => $idEvent]);
 
         if ($eventRepository->delete($eventToDelete)) {
-            $this->redirect('/admin/event/index');
+            $this->redirect($_SERVER['HTTP_REFERER']);
         }
     }
 }
