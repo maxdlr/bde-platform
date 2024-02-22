@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\RoleEnum;
 use App\Factory\EventFactory;
 use App\Factory\InterestedFactory;
 use App\Factory\ParticipantFactory;
@@ -13,6 +14,24 @@ use function PHPUnit\Framework\assertIsArray;
 
 class AFixturesTest extends TestCase
 {
+    public function testCreateMaxime()
+    {
+        $userRepository = new UserRepository();
+        $max = UserFactory::make()
+            ->withFirstname('Maxime')
+            ->withLastname('de la Rocheterie')
+            ->withEmail('contact@maxdlr.com')
+            ->withRole(RoleEnum::ROLE_ADMIN)
+            ->withSignedUpOn(new DateTime('now'))
+            ->withPassword('password')
+            ->withIsVerified(true)
+            ->generate();
+
+        $userRepository->insertOne($max);
+
+        self::assertNotNull($userRepository->findOneBy(['email' => 'contact@maxdlr.com']));
+    }
+
     public function testCreateUsers()
     {
         $userRepository = new UserRepository();

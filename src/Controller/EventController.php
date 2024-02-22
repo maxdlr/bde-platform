@@ -5,11 +5,7 @@ namespace App\Controller;
 use App\Attribute\Route;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
-use Exception;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class EventController extends AbstractController
 {
@@ -23,18 +19,14 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/show/{id}', name: 'app_event_show', httpMethod: ['POST'])]
-    public function show(int $idEvent): string
+    public function show(int $id): string
     {
-        $eventRepository = new EventRepository();
-        $eventToShow = $eventRepository->findOneBy(['id' => $idEvent]);
+        $event = $this->eventRepository->findOneBy(['id' => $id]);
+        $remainingCapacity = $event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()]));
 
-        if(!is_null($eventToShow)){
-            return $this->twig->render('event/show.html.twig', [
-                'event' => $eventToShow,
-            ]);
-        } else {
-            return $this->twig->render('404.html.twig');
-        }
+        return $this->twig->render('event/show.html.twig', [
+            'event' => $event,
+            'remainingCapacity' => $remainingCapacity,
+        ]);
     }
-
 }

@@ -65,4 +65,10 @@ abstract class AbstractController
     public function clearFlashs():void{
         unset($_SESSION["flashbag"]);
     }
+
+    protected function truncate(string $string, int $charMax, string $suffix): string
+    {
+        $result = substr($string, 0, $charMax);
+        return $result . $suffix;
+    }
 }
