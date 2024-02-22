@@ -7,6 +7,7 @@ use App\Entity\Participant;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
+use App\Service\Mail\MailManager;
 use Twig\Environment;
 
 
@@ -26,11 +27,14 @@ class ParticipantController extends AbstractController
     #[Route('/event/new/participant/{id}', name: 'app_participant_new', httpMethod: ['GET'])]
     public function newParticipant(int $idEvent): string
     {
+        $mailManager = new MailManager;
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
         $currentUser = $this->getUserConnected();
 
         $participant = new Participant();
         $participantRepository = new ParticipantRepository();
+        $user = $this->userRepository->findOneBy(['id'=>$currentUser->getId()]);
+        $mailManager->sendMailParticipant($user, $event);
 
         $participant
             ->setEventId($event->getId())
