@@ -32,7 +32,7 @@ CREATE TABLE user
     roles      varchar(255) not null,
     isVerified tinyint,
     signedUpOn dateTime     not null,
-    token      varchar(255) not null UNIQUE,
+    token      varchar(255) UNIQUE,
     PRIMARY KEY (id) 
 );
 DROP TABLE IF EXISTS interested;
