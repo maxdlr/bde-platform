@@ -6,11 +6,12 @@
 
 {% block body %}
     <main class="container-fluid">
-        <h1></h1>
+
+        {{ include('admin/shared/_admin-header.html.twig') }}
 
         {% if entityName == 'user' %}
             <a href="/{{ entityName }}/new">Ajouter un utilisateur</a>
-        {% elseif entityName == 'event'  %}
+        {% elseif entityName == 'event' %}
             <a href="/admin/{{ entityName }}/new">Créer un nouvel évènement</a>
         {% endif %}
 

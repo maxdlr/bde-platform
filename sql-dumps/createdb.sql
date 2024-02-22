@@ -30,7 +30,7 @@ CREATE TABLE user
     email      varchar(255) not null UNIQUE,
     password   varchar(255) not null,
     roles      varchar(255) not null,
-    isVerified boolean,
+    isVerified tinyint,
     signedUpOn dateTime     not null,
 
     PRIMARY KEY (id)

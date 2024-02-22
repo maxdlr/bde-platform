@@ -6,6 +6,7 @@ use App\Attribute\Route;
 use App\Controller\AbstractController;
 use App\Entity\User;
 use App\Mapping\User\UserOTD;
+use App\Repository\EventRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Twig\Environment;
@@ -13,9 +14,10 @@ use Twig\Environment;
 class AdminUserController extends AbstractController
 {
     public function __construct(
-        Environment                     $twig,
-        private readonly UserRepository $userRepository,
-        private readonly RoleRepository $roleRepository
+        Environment                      $twig,
+        private readonly UserRepository  $userRepository,
+        private readonly EventRepository $eventRepository,
+        private readonly RoleRepository  $roleRepository
     )
     {
         parent::__construct($twig);
@@ -26,10 +28,14 @@ class AdminUserController extends AbstractController
     {
         $userObjects = $this->userRepository->findAll();
         $users = array_map(fn(User $user): array => $user->toArray(), $userObjects);
+        $events = $this->eventRepository->findAll();
+
 
         return $this->twig->render('admin/index.html.twig', [
             'items' => $users,
-            'entityName' => 'user'
+            'users' => $users,
+            'entityName' => 'user',
+            'events' => $events,
         ]);
     }
 
@@ -49,7 +55,7 @@ class AdminUserController extends AbstractController
                 'roles' => $_POST['role']
             ];
 
-            if($_POST['isVerified'] === "on"){
+            if ($_POST['isVerified'] === "on") {
                 $updatedUserArray['isVerified'] = 1;
             } else {
                 $updatedUserArray['isVerified'] = 0;

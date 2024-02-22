@@ -5,119 +5,101 @@
 {% endblock %}
 
 {% block body %}
-    <main class="container">
-        <div class="d-flex justify-content-between my-4">
-            <h1>Tableau de bord admin</h1>
+    <main class="container-fluid">
 
-            <div>
-
-                {% set pillStats = {
-                    'utilisateurs inscrits': users,
-                    'evenements': events,
-                } %}
-
-                {% for name, pillStat in pillStats %}
-
-                    {{ include('admin/shared/_pill.html.twig', {
-                        content: pillStat|length ~ ' ' ~ name
-                    }) }}
-
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-divider"></div>
+        {{ include('admin/shared/_admin-header.html.twig') }}
 
         <h2>Programmation</h2>
         <p>Les Evenements futur</p>
 
-        <div class="row row-cols-lg-2">
+        <div class="row row-cols-lg-3 g-2">
 
             {% for futureEvent in futureEvents %}
 
-                <div class="card">
-                    <div class="row">
-                        <div class="col">
+                <div class="p-2">
+                    <div class="card">
+                        <div class="row g-2">
+                            <div class="col">
 
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <div class="card-title">
-                                    {{ futureEvent.name }}
-                                </div>
-                                <div class="card-subtitle">
-                                    {{ futureEvent.startDate|date("d/m/y") }}
-                                </div>
-                            </div>
-
-                            <div class="card-body row">
-
-                                <div class="col-3">
-                                    <img src="{{ futureEvent.fileName }}" alt="image de {{ futureEvent.name }}"
-                                         class="img-fluid">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div class="card-title fw-bolder">
+                                        {{ futureEvent.name }}
+                                    </div>
+                                    <div class="card-subtitle">
+                                        {{ futureEvent.startDate|date("d/m/y") }}
+                                    </div>
                                 </div>
 
-                                <div class="col">
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <th>
-                                                Participants
-                                            </th>
-                                            <td>
-                                                {% set eventParticipantCount = [] %}
-                                                {% for participant in participants %}
-                                                    {% if participant.eventId is same as futureEvent.id %}
-                                                        {% set eventParticipantCount = eventParticipantCount|merge([participant.id]) %}
-                                                    {% endif %}
-                                                {% endfor %}
+                                <div class="card-body row">
 
-                                                <span class="{{ eventParticipantCount|length is same as 0 ? 'bg-danger' : '' }} {{ eventParticipantCount|length <= 3 ? 'bg-warning' : '' }} {{ eventParticipantCount|length > 3 ? 'bg-success' : '' }} badge rounded-pill fs-5">
+                                    <div class="col-3">
+                                        <img src="{{ futureEvent.fileName }}" alt="image de {{ futureEvent.name }}"
+                                             class="img-fluid">
+                                    </div>
+
+                                    <div class="col">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr>
+                                                <th>
+                                                    Participants
+                                                </th>
+                                                <td>
+                                                    {% set eventParticipantCount = [] %}
+                                                    {% for participant in participants %}
+                                                        {% if participant.eventId is same as futureEvent.id %}
+                                                            {% set eventParticipantCount = eventParticipantCount|merge([participant.id]) %}
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                    <span class="{{ eventParticipantCount|length is same as 0 ? 'bg-danger' : '' }} {{ eventParticipantCount|length <= 3 ? 'bg-warning' : '' }} {{ eventParticipantCount|length > 3 ? 'bg-success' : '' }} badge rounded-pill fs-5">
                                                 {{ eventParticipantCount|length }}
                                                 </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                Interessés
-                                            </th>
-                                            <td>
-                                                {% set eventInterestedCount = [] %}
-                                                {% for interested in interesteds %}
-                                                    {% if interested.eventId is same as futureEvent.id %}
-                                                        {% set eventInterestedCount = eventInterestedCount|merge([interested.id]) %}
-                                                    {% endif %}
-                                                {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    Interessés
+                                                </th>
+                                                <td>
+                                                    {% set eventInterestedCount = [] %}
+                                                    {% for interested in interesteds %}
+                                                        {% if interested.eventId is same as futureEvent.id %}
+                                                            {% set eventInterestedCount = eventInterestedCount|merge([interested.id]) %}
+                                                        {% endif %}
+                                                    {% endfor %}
 
-                                                <span class="{{ eventParticipantCount|length is same as 0 ? 'bg-danger' : '' }} {{ eventParticipantCount|length <= 3 ? 'bg-warning' : '' }} {{ eventParticipantCount|length > 3 ? 'bg-success' : '' }} badge rounded-pill fs-5">
+                                                    <span class="{{ eventInterestedCount|length < 5 ? 'bg-danger' : '' }} {{ eventInterestedCount|length <= 10 ? 'bg-warning' : '' }} {{ eventInterestedCount|length > 10 ? 'bg-success' : '' }} badge rounded-pill fs-5">
                                                 {{ eventInterestedCount|length }}
                                                 </span>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                 </div>
+                            </div>
+
+                            <div class="col-2 d-flex flex-column justify-content-center align-items-center gap-2">
+
+                                <a class="btn btn-primary px-3 py-2 rounded-pill d-block"
+                                   href="/event/show/{{ futureEvent.id }}">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a class="btn btn-danger px-3 py-2 rounded-pill d-block"
+                                   href="/admin/event/delete/{{ futureEvent.id }}"><i
+                                            class="bi bi-trash-fill"></i></a>
+
+                                <a class="btn btn-warning px-3 py-2 rounded-pill d-block"
+                                   href="/admin/event/edit/{{ futureEvent.id }}"><i
+                                            class="bi bi-pencil-fill"></i></a>
 
                             </div>
                         </div>
 
-                        <div class="col-2 d-flex flex-column justify-content-center align-items-center">
 
-                            <a class="btn btn-primary px-3 py-2 rounded-pill d-block"
-                               href="/event/show/{{ futureEvent.id }}">
-                                <i class="bi bi-eye-fill"></i>
-                            </a>
-                            <a class="btn btn-danger px-3 py-2 rounded-pill d-block"
-                               href="/admin/event/delete/{{ futureEvent.id }}"><i
-                                        class="bi bi-trash-fill"></i></a>
-
-                            <a class="btn btn-warning px-3 py-2 rounded-pill d-block"
-                               href="/admin/event/edit/{{ futureEvent.id }}"><i
-                                        class="bi bi-pencil-fill"></i></a>
-
-                        </div>
                     </div>
-
-
                 </div>
             {% else %}
                 <p class="blockquote-footer my-3">Aucun Evenements à venir</p>
