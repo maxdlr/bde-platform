@@ -16,14 +16,6 @@ public function alert()
         $eventRepository = new EventRepository;
         $participantRepository = new ParticipantRepository;
 
-        // $event = EventFactory::make()->withName('Sortie à la plage ')->withStartDate(new \DateTime("tomorrow"))
-        // ->withEndDate(new \DateTime("2024-02-24"))->generate();
-        // $eventRepository->insertOne($event);
-
-        // $retrievedEvent = $eventRepository->findOneBy(['name' => 'Sortie à la plage ']);
-
-        // $participant = ParticipantFactory::make()->withEvent($retrievedEvent)->generate();
-        // $participantRepository->insertOne($participant);
         $subject = "Attention !";
         $mailManager = new MailManager;
         $tomorrow = new \DateTime("tomorrow");
@@ -46,11 +38,6 @@ public function alert()
         $participantRepository = new ParticipantRepository;
         $userRepository = new UserRepository;
 
-        // $user = $userRepository->findOneBy(['lastname' => 'MOYAERTS']);
-
-        // $event = EventFactory::make()->withName('Sortie à la plage ')->withStartDate(new \DateTime("2024-02-27"))
-        // ->withEndDate(new \DateTime("2024-03-01"))->withOwner($user)->generate();
-        // $eventRepository->insertOne($event);
         $datas = $eventRepository->executeRequest("SELECT user.email, event.name, event.id, event.startDate FROM event INNER JOIN user ON user.id = event.owner_id;");
         $subject = "Attention !";
         $mailManager = new MailManager;

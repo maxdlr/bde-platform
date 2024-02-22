@@ -38,6 +38,41 @@ class AdminUserController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/user/new', name: 'app_admin_user_new', httpMethod: ['GET', 'POST'])]
+    public function new(): string
+    {
+        if (isset($_POST['new-user-submit']) && $_POST['new-user-submit'] == 'new-user') {
+            $user = new User();
+            $userRepository = new UserRepository();
+            $mailManager = new MailManager;
+
+            $stringCurrentDate = date('Y-m-d H:i:s');
+            $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
+
+            $user
+                ->setFirstname($_POST['firstname'])
+                ->setLastname($_POST['lastname'])
+                ->setEmail($_POST['email'])
+                ->setPassword($_POST['password'])
+                ->setRoles("student")
+                ->setIsVerified(false)
+                ->setSignedUpOn($dateCurrentDate);
+
+            if ($userRepository->insertOne($user)) {
+                $token = md5(uniqid(rand(), true));
+
+                $mailManager->sendValidateMail($_POST['email'], $token);
+
+                $this->redirect('/admin/user/index');
+            }
+        }
+
+        $roles = $this->roleRepository->findAll();
+        return $this->twig->render('user/user-new.html.twig', [
+            'tags' => $roles,
+        ]);
+    }
+
     #[Route('/admin/user/edit/{id}', name: 'app_admin_user_edit', httpMethod: ['GET', 'POST'])]
     public function edit(int $idUser): string
     {

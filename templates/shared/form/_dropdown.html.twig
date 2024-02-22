@@ -1,8 +1,12 @@
-<select class="form-select" aria-label="Default select" name="{{ name }}" required="{{ required }}">
-    <option selected>{{ value ? value|title : label }} </option>
-    {% for option in choices %}
-        {% if value is not same as option %}
-            <option value="{{ option }}">{{ option|title() }}</option>
-        {% endif %}
-    {% endfor %}
-</select>
+<div class="input-group mb-3 align-items-center">
+    <span class=" input-group-text" id="{{ name }}-addon">
+        {{ label|title }}
+    </span>
+    <select class="form-select" aria-label="Default select" name="{{ name }}" required="{{ required }}">
+        {% for option in choices %}
+            {% if value is not same as option %}
+                <option value="{{ option }}">{{ option|title() }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</div>
