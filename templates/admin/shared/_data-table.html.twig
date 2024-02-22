@@ -21,24 +21,28 @@
             {% for name, value in item %}
                 {% if name is not same as 'owner_id' %}
                     <td>
-
-                        {% if value is same as true %}
+                        {% if value is same as true or value is same as false %}
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" checked="{{ value }}"
-                                       disabled>
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                        {% if value is same as true %}
+                                            checked
+                                        {% endif %}
+                                       disabled
+                                >
                             </div>
                         {% elseif value is not iterable %}
                             <div>{{ value }}</div>
                         {% endif %}
-
                     </td>
                 {% endif %}
             {% endfor %}
             <td>
-                <a class="px-3 py-2 bg-danger text-white rounded-pill text-decoration-none" href="/admin/{{ entityName }}/delete/{{ item.id }}">Supprimer</a>
+                <a class="px-3 py-2 bg-danger text-white rounded-pill text-decoration-none"
+                   href="/admin/{{ entityName }}/delete/{{ item.id }}">Supprimer</a>
             </td>
             <td>
-                <a class="px-3 py-2 bg-warning text-white rounded-pill text-decoration-none" href="/admin/{{ entityName }}/edit/{{ item.id }}">Modifier</a>
+                <a class="px-3 py-2 bg-warning text-white rounded-pill text-decoration-none"
+                   href="/admin/{{ entityName }}/edit/{{ item.id }}">Modifier</a>
             </td>
         </tr>
     {% else %}

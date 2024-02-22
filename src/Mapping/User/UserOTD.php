@@ -35,7 +35,7 @@ class UserOTD extends OTD implements OTDInterface
             'password' => $hashedPassword,
             'email' => $user->getEmail(),
             'roles' => $user->getRoles(),
-            'isVerified' => $user->getIsVerified(),
+            'isVerified' => +$user->getIsVerified(),
             'signedUpOn' => $user->getSignedUpOn()->format('Y-m-d H:i:s')
         ];
     }

@@ -29,9 +29,9 @@ class AdminController extends AbstractController
     {
         $eventFilter = new EventFilter();
         $users = $this->userRepository->findAll();
-        $events = $this->eventRepository->findAll();
         $participants = $this->participantRepository->findAll();
         $interesteds = $this->interestedRepository->findAll();
+        $events = $this->eventRepository->findAll();
 
         $futureEvents = [];
         foreach ($events as $event) {
@@ -43,8 +43,8 @@ class AdminController extends AbstractController
         return $this->twig->render('admin/dashboard/index.html.twig', [
             'users' => $users,
             'events' => $events,
-            'participants' => $participants,
             'interesteds' => $interesteds,
+            'participants' => $participants,
             'futureEvents' => $futureEvents
         ]);
     }
