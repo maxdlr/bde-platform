@@ -6,11 +6,20 @@ use App\Entity\Event;
 use App\Entity\Participant;
 use App\Entity\User;
 use App\Repository\EventRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use Faker\Factory;
 
 class ParticipantFactory
 {
+    static public function random(): Participant
+    {
+        $faker = Factory::create();
+        $participantRepository = new ParticipantRepository();
+        $participants = $participantRepository->findAll();
+        return $faker->randomElement($participants);
+
+    }
 
     static private Participant|array $participant;
 
@@ -54,20 +63,8 @@ class ParticipantFactory
     static private function mountObjectBase(): Participant
     {
         $faker = Factory::create();
-
-        $username = $faker->userName();
-        $userRepository = new UserRepository();
-        $userRepository->insertOne(
-            UserFactory::make()->withFirstname($username)->generate()
-        );
-        $user = $userRepository->findOneBy(['firstname' => $username]);
-
-        $name = $faker->word();
-        $eventRepository = new EventRepository();
-        $eventRepository->insertOne(
-            EventFactory::make()->withName($name)->generate()
-        );
-        $event = $eventRepository->findOneBy(['name' => $name]);
+        $user = UserFactory::random();
+        $event = EventFactory::random();
 
         $participant = new Participant();
         $participant

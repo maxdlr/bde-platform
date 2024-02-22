@@ -20,16 +20,9 @@ class InterestedTest extends TestCase
      */
     public function testCanProcessInterestedObject()
     {
-        $eventRepository = new EventRepository();
-        $userRepository = new UserRepository();
         $interestedRepository = new InterestedRepository();
-        $faker = Factory::create();
-
-        $events = $eventRepository->findAll();
-        $event = $faker->randomElement($events);
-
-        $users = $userRepository->findAll();
-        $user = $faker->randomElement($users);
+        $event = EventFactory::random();
+        $user = UserFactory::random();
 
         $interested = InterestedFactory::make()->withUser($user)->withEvent($event)->generate();
         $interestedRepository->insertOne($interested);
