@@ -30,6 +30,7 @@ abstract class AbstractController
         exit();
     }
 
+
     protected function getUser(): User
     {
         $this->dd($_SESSION);
