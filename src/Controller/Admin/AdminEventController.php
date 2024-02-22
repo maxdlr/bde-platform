@@ -96,7 +96,7 @@ class AdminEventController extends AbstractController
         $event = $eventRepository->findOneBy(['id' => $idEvent]);
 
         // Case when the edit form was submitted
-        if (isset($_POST['update-event-submit']) && $_POST['update-event-submit'] == 'update-event') {
+        if (isset($_POST['edit-event-submit']) && $_POST['edit-event-submit'] == 'edit-event') {
 
             $updatedEventArray = [
                 'name' => $_POST['name'],

@@ -20,7 +20,7 @@ class UserOTD extends OTD implements OTDInterface
     /**
      * @throws Exception
      */
-    public function process(bool $encrypt = false): array
+    public function process(bool $encrypt = true): array
     {
         if (!assert($this->from instanceof User))
             throw new Exception('Wrong type, this is supposed to be an User object');

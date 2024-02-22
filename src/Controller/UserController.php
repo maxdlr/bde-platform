@@ -23,7 +23,7 @@ class UserController extends AbstractController
     #[Route('/user/new', name: 'app_user_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
-        if (isset($_POST['create-user-submit']) && $_POST['create-user-submit'] == 'new-user') {
+        if (isset($_POST['new-user-submit']) && $_POST['new-user-submit'] == 'new-user') {
             $user = new User();
             $userRepository = new UserRepository();
 

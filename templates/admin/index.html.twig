@@ -10,7 +10,7 @@
 
         {% if entityName == 'user' %}
             <a href="/{{ entityName }}/new">Ajouter un utilisateur</a>
-        {% else %}
+        {% elseif entityName == 'event'  %}
             <a href="/admin/{{ entityName }}/new">Créer un nouvel évènement</a>
         {% endif %}
 

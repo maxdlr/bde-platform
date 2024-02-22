@@ -40,7 +40,7 @@ class AdminUserController extends AbstractController
         $user = $userRepository->findOneBy(['id' => $idUser]);
 
 
-        if (isset($_POST['update-user-submit']) && $_POST['update-user-submit'] == 'update-user') {
+        if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
 
             $updatedUserArray = [
                 'firstname' => $_POST['firstname'],

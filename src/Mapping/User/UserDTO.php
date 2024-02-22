@@ -26,7 +26,6 @@ class UserDTO extends DTO implements DTOInterface
         if (!assert(is_array($this->from)))
             throw new Exception('Wrong type, this is supposed to be an array');
 
-//        var_dump($this->from);
         $user = new User;
 
         $user
