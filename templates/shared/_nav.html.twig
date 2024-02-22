@@ -9,15 +9,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/user/dashboard">Mes évenements</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/dashboard">Admin</a>
-                </li>
+                {% if currentUser.roles is same as 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">Admin</a>
+                    </li>
+                {% endif %}
             </ul>
-            {% if connectedUser.id == null %}
+            {% if currentUser.id == null %}
                 <a class="btn btn-warning rounded-pill border-0" href="/user/login">Connexion</a>
             {% else %}
                 <div class="d-flex align-items-center gap-3">
-                    <p class="mb-0">Bonjour {{ connectedUser.firstname }} {{ connectedUser.lastname }}</p>
+                    <p class="mb-0 text-light">
+                        <span>Bonjour</span>
+                        <span class="fw-bolder"> {{ currentUser.firstname }} {{ currentUser.lastname }}</span>
+                    </p>
                     <a class="btn btn-warning rounded-pill border-0" href="/user/logout">Déconnexion</a>
                 </div>
             {% endif %}

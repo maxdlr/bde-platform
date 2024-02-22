@@ -24,19 +24,23 @@
                     </div>
                 </div>
 
-                {% if connectedUser != null %}
+                {% if currentUser != null %}
                     <div class="d-lg-none">
-                        {% if userParticipant == true  %}
-                            <a href="/event/delete/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me désinscrire</a>
+                        {% if userParticipant == true %}
+                            <a href="/event/delete/participant/{{ event.id }}"
+                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me désinscrire</a>
                         {% else %}
-                            <a href="/event/new/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
+                            <a href="/event/new/participant/{{ event.id }}"
+                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
                         {% endif %}
                     </div>
                     <div>
                         {% if userInterested == true %}
-                            <a href="/event/delete/interested/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Retirer de ma liste de voeux</a>
+                            <a href="/event/delete/interested/{{ event.id }}"
+                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Retirer de ma liste de voeux</a>
                         {% else %}
-                            <a href="/event/new/interested/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Ajouter à ma liste de voeux</a>
+                            <a href="/event/new/interested/{{ event.id }}"
+                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Ajouter à ma liste de voeux</a>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -63,12 +67,15 @@
                 </div>
                 <div class="row">
                     <p class="col-10 offset-1 align-self-center my-5 my-lg-0">{{ event.description }}</p>
-                    {% if connectedUser != null %}
+                    {% if currentUser != null %}
                         <div class="col-10 offset-1 d-none d-lg-block">
                             {% if userParticipant == true %}
-                                <a href="/event/delete/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me désinscrire</a>
+                                <a href="/event/delete/participant/{{ event.id }}"
+                                   class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me
+                                    désinscrire</a>
                             {% else %}
-                                <a href="/event/new/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
+                                <a href="/event/new/participant/{{ event.id }}"
+                                   class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
                             {% endif %}
                         </div>
                     {% endif %}

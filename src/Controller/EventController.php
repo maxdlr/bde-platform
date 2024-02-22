@@ -54,7 +54,7 @@ class EventController extends AbstractController
         return $this->twig->render('event/show.html.twig', [
             'event' => $event,
             'remainingCapacity' => $remainingCapacity,
-            'connectedUser' => $this->currentUser,
+            'currentUser' => $this->currentUser,
             'userParticipant' => $userParticipant,
             'userInterested' => $userInterested
         ]);

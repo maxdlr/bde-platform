@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Attribute\Route;
 use App\Entity\User;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
@@ -17,8 +18,12 @@ class UserController extends AbstractController
     private User|bool $currentUser;
 
     public function __construct(
-        Environment                     $twig,
-        private readonly RoleRepository $roleRepository
+        Environment                            $twig,
+        private readonly RoleRepository        $roleRepository,
+        private readonly UserRepository        $userRepository,
+        private readonly EventRepository       $eventRepository,
+        private readonly ParticipantRepository $participantRepository,
+        private readonly InterestedRepository  $interestedRepository,
     )
     {
         parent::__construct($twig);
@@ -107,15 +112,32 @@ class UserController extends AbstractController
     #[Route('/user/dashboard', name: 'app_user_dashboard', httpMethod: ['GET'])]
     public function dahsboard(): string
     {
-        $eventRepository = new EventRepository();
-        $participantRepository = new ParticipantRepository();
-        $currentUserInterested = $eventRepository->findBy(
-            ['id' => $participantRepository->findOneBy(['user_id' => $this->currentUser->getId()])->getEventId()]
-        );
+        $participants = $this->participantRepository->findAll();
+        $interesteds = $this->interestedRepository->findAll();
+
+        $currentInteresteds = $this->interestedRepository->findBy(['user_id' => $this->currentUser->getId()]);
+        $currentParticipants = $this->participantRepository->findBy(['user_id' => $this->currentUser->getId()]);
+
+        $interestedEvents = [];
+        foreach ($currentInteresteds as $interested) {
+            $event = $this->eventRepository->findOneBy(['id' => $interested->getEventId()]);
+            $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
+            $interestedEvents[] = $event;
+        }
+
+        $participantEvents = [];
+        foreach ($currentParticipants as $participant) {
+            $event = $this->eventRepository->findOneBy(['id' => $participant->getEventId()]);
+            $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
+            $participantEvents[] = $event;
+        }
 
         return $this->twig->render('user/index.html.twig', [
             'currentUser' => $this->currentUser,
-            'currentUserInterested' => $currentUserInterested
+            'interestedEvents' => $interestedEvents,
+            'participantEvents' => $participantEvents,
+            'interesteds' => $interesteds,
+            'participants' => $participants,
         ]);
     }
 

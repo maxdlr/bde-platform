@@ -17,6 +17,7 @@ class AFixturesTest extends TestCase
     public function testCreateMaxime()
     {
         $userRepository = new UserRepository();
+
         $max = UserFactory::make()
             ->withFirstname('Maxime')
             ->withLastname('de la Rocheterie')
@@ -31,6 +32,7 @@ class AFixturesTest extends TestCase
 
         self::assertNotNull($userRepository->findOneBy(['email' => 'contact@maxdlr.com']));
     }
+
     public function testCreateMathieu()
     {
         $userRepository = new UserRepository();
@@ -117,5 +119,27 @@ class AFixturesTest extends TestCase
         }
 
         assertIsArray($participants);
+    }
+
+    public function testCreateInterestedAndParticipantForMaxime()
+    {
+        $userRepository = new UserRepository();
+        $participantRepository = new ParticipantRepository();
+        $interestedRepository = new InterestedRepository();
+
+        $maxFromDb = $userRepository->findOneBy(['lastname' => 'de la Rocheterie']);
+
+        $participants = ParticipantFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
+        $interesteds = ParticipantFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
+
+        foreach ($participants as $participant) {
+            $participantRepository->insertOne($participant);
+        }
+
+        foreach ($interesteds as $interested) {
+            $interestedRepository->insertOne($interested);
+        }
+
+        self::assertTrue(true);
     }
 }

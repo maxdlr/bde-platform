@@ -6,7 +6,6 @@ use App\Attribute\Route;
 use App\Entity\Participant;
 use App\Entity\User;
 use App\Repository\EventRepository;
-use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
 use App\Service\Mail\MailManager;
 use Twig\Environment;
@@ -28,27 +27,27 @@ class ParticipantController extends AbstractController
 
 
     #[Route('/event/new/participant/{id}', name: 'app_participant_new', httpMethod: ['GET'])]
-    public function newParticipant(int $idEvent): string
+    public function newParticipant(int $idEvent): void
     {
         $mailManager = new MailManager;
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
 
         $participant = new Participant();
         $participantRepository = new ParticipantRepository();
-        $user = $this->userRepository->findOneBy(['id'=>$currentUser->getId()]);
-        $mailManager->sendMailParticipant($user, $event);
+        $user = $this->currentUser->getId();
 
         $participant
             ->setEventId($event->getId())
             ->setUserId($this->currentUser->getId());
 
         if ($participantRepository->insertOne($participant)) {
+            $mailManager->sendMailParticipant($user, $event);
             $this->redirect('/event/show/' . $idEvent);
         }
     }
 
     #[Route('/event/delete/participant/{id}', name: 'app_participant_delete', httpMethod: ['GET'])]
-    public function deleteParticipant(int $idEvent): string
+    public function deleteParticipant(int $idEvent): void
     {
         $participantList = $this->participantRepository->findBy(['event_id' => $idEvent]);
 

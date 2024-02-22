@@ -9,6 +9,7 @@ use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use App\Service\EventFilter;
+use DateTime;
 use Twig\Environment;
 
 class AdminController extends AbstractController
@@ -40,7 +41,7 @@ class AdminController extends AbstractController
 
         $futureEvents = [];
         foreach ($events as $event) {
-            if ($eventFilter->isEventDateGreaterThan($event, new \DateTime('now'))) {
+            if ($eventFilter->isEventDateGreaterThan($event, new DateTime('now'))) {
                 $futureEvents[] = $event;
             }
         }

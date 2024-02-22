@@ -137,7 +137,7 @@ class EventFactory
             ->setTag($faker->randomElement(TagEnum::cases())->value)
             ->setCapacity($faker->randomNumber(2))
             ->setOwnerId($user->getId())
-            ->setFileName($faker->imageUrl())
+            ->setFileName('https://picsum.photos/300/300?random=' . rand(0, 100))
             ->setFileSize($faker->randomFloat(2));
 
         return $event;
