@@ -19,6 +19,8 @@ class User extends Entity
     private bool $isVerified;
     private DateTime $signedUpOn;
 
+    private string $token;
+
     public function toArray(): array
     {
         return [
@@ -117,6 +119,17 @@ class User extends Entity
     public function setSignedUpOn(DateTime $signedUpOn): static
     {
         $this->signedUpOn = $signedUpOn;
+        return $this;
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): static 
+    {
+        $this->token = $token;
         return $this;
     }
 }

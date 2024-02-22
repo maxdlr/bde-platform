@@ -37,6 +37,5 @@ public function alert()
                 $mailManager->sendMail($data['email'], $subject, $body);
             }
         }
-
     }
 }
