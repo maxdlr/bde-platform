@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Attribute\Route;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -27,10 +28,18 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_home', httpMethod: ['GET'])]
     public function home(): string
     {
-        $events = $this->eventRepository->findAll();
+        var_dump($_SESSION);
+        if(isset($_SESSION)){
+            $connectedUser = new User();
+            $connectedUser->getUserConnected();
+        } else {
+            $connectedUser = null;
+        }
 
+        $events = $this->eventRepository->findAll();
         return $this->twig->render('index/home.html.twig', [
             'events' => $events,
+            'connectedUser' => $connectedUser
         ]);
     }
 }

@@ -119,4 +119,25 @@ class User extends Entity
         $this->signedUpOn = $signedUpOn;
         return $this;
     }
+
+    public function getUserConnected(): static|null
+    {
+        if (isset($_SESSION["user_connected"])){
+            $userRepository = new UserRepository();
+            $userConnected = $userRepository->findOneBy(['email' => $_SESSION["user_connected"]]);
+
+            $this->setId($userConnected->getId());
+            $this->setFirstname($userConnected->getFirstname());
+            $this->setLastname($userConnected->getLastname());
+            $this->setEmail($userConnected->getEmail());
+            $this->setPassword($userConnected->getPassword());
+            $this->setRoles($userConnected->getRoles());
+            $this->setIsVerified($userConnected->getIsVerified());
+            $this->setSignedUpOn($userConnected->getSignedUpOn());
+
+            return $this;
+        } else {
+            return $this;
+        }
+    }
 }

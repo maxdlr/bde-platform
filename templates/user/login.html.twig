@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Connexion
+{% endblock %}
+
+{% block body %}
+
+    <main class="container">
+        <h1 class="my-5">Connexion</h1>
+
+        <p class="text-danger">{{ errorMessage }}</p>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="row row-cols-sm-2">
+
+                <div>
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Adresse mail',
+                        type: 'email',
+                        name: 'email',
+                        required: true,
+                        placeholder: "Saisissez votre adresse mail"
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Mot de passe',
+                        type: 'password',
+                        name: 'password',
+                        required: true,
+                        placeholder: "Saisissez votre mot de passe"
+                    }) }}
+                    <button class="btn btn-primary" type="submit" name="connect-user-submit" value="connect-user">Valider</button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+{% endblock %}
