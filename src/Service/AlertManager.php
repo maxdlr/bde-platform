@@ -1,7 +1,6 @@
 <?php 
 
 namespace App\Service;
-use App\Factory\ParticipantFactory;
 use App\Repository\UserRepository;
 use App\Service\DB\EntityManager;
 use App\Factory\EventFactory;
