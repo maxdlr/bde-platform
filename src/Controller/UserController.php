@@ -39,11 +39,15 @@ class UserController extends AbstractController
                 ->setEmail($_POST['email'])
                 ->setPassword($_POST['password'])
                 ->setRoles("student")
+                ->setIsVerified(false)
                 ->setSignedUpOn($dateCurrentDate);
             $mailManager->sendValidateMail($_POST['email']);
 
             if ($userRepository->insertOne($user)) {
                 $this->redirect('/admin/user/index');
+            }
+            else {
+                var_dump("ok");
             }
         }
 
@@ -62,13 +66,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/validate/{id}', name: 'app_user_validate', httpMethod: ['GET'])]
-    public function validate(): string
+    public function validate()
     {
         $token = substr($_SERVER['PATH_INFO'], strrpos($_SERVER['PATH_INFO'], "/") + 1);
         $mailManager = new MailManager();
         $mailManager->validationUser($token);
-        var_dump($token);
-        return $this->twig->render("user/validate.html.twig", [
-        ]);
+
     }
 }

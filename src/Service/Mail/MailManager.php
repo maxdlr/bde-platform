@@ -42,32 +42,33 @@ class MailManager
         }
 
     }
-
         public function sendValidateMail($emailto)
         {
             $token = md5(uniqid(rand(), true));
             $userRepository = new UserRepository;
-            $userRepository->update(["token" => $token], ["email" => $emailto]);
+            if($userRepository->executeRequest("UPDATE user SET user.lastname = '321c9fb495648978b9f821a698bb6016' WHERE user.email = 'mathieu.moyaerts.pro@gmail.com'"))
+            {
 
-            $subject = "Confirmation de votre compte";
+                $subject = "Confirmation de votre compte";
+                $message = "Bonjour,\n\n";
+                $message .= "Merci de vous être inscrit sur notre site.\n";
+                $message .= "Veuillez cliquer sur le lien suivant pour activer votre compte :\n";
+                $message .= "http://localhost:8000/user/validate/" . $token . "\n";
+                $message .= "Cordialement,\nVotre BDE";
 
-            $message = "Bonjour,\n\n";
-            $message .= "Merci de vous être inscrit sur notre site.\n";
-            $message .= "Veuillez cliquer sur le lien suivant pour activer votre compte :\n";
-            $message .= "http://localhost:8000/user/validate/" . $token . "\n";
-            $message .= "Cordialement,\nVotre BDE";
-
-            $this->sendMail($emailto, $subject, $message);
+                $this->sendMail($emailto, $subject, $message);
+            }
         }
         public function validationUser($token)
         {
-
             $userRepository = new UserRepository;
-            $userForValidate = $userRepository->findOneBy(["token"=> $token]);
-            $userForValidate->setIsVerified(1);
-            $userRepository->update(["isVerified" => "1"], ["token" => $token]);
-
-            echo "Bienvenu ". $userForValidate->getFirstName();
-
+            $userForValidate = $userRepository->findOneBy(["token" => $token]);
+            var_dump($userRepository->findOneBy(["token" => 'e8d9353740f56c2d39797aecdecc100d']));
+            die();
+            $userForValidate->setIsVerified(true);
+            if($userRepository->update(["isVerified" => "1"], ["token" => $token]))
+            {
+                echo "Bienvenu ". $userForValidate->getFirstName();
+            }
         }
 }

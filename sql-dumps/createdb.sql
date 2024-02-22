@@ -1,4 +1,3 @@
-set FOREIGN_KEY_CHECKS = 0;
 
 DROP DATABASE IF EXISTS bde_platform;
 CREATE DATABASE IF NOT EXISTS bde_platform;
@@ -18,7 +17,7 @@ CREATE TABLE event
     fileSize    double,
     owner_id    int           NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT event_owner FOREIGN KEY (owner_id) REFERENCES user (id) on delete cascade
+    CONSTRAINT event_owner FOREIGN KEY (owner_id) REFERENCES user (id) on delete cascade on update cascade
 );
 
 DROP TABLE IF EXISTS user;
@@ -33,7 +32,7 @@ CREATE TABLE user
     isVerified tinyint,
     signedUpOn dateTime     not null,
     token      varchar(255) UNIQUE,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id) 
 );
 DROP TABLE IF EXISTS interested;
 CREATE TABLE interested
@@ -42,8 +41,8 @@ CREATE TABLE interested
     event_id int not null,
     user_id  int not null,
     PRIMARY KEY (id),
-    CONSTRAINT interested_event FOREIGN KEY (event_id) REFERENCES event (id) on delete cascade,
-    CONSTRAINT interested_user FOREIGN KEY (user_id) REFERENCES user (id) on delete cascade
+    CONSTRAINT interested_event FOREIGN KEY (event_id) REFERENCES event (id) on delete cascade on update cascade,
+    CONSTRAINT interested_user FOREIGN KEY (user_id) REFERENCES user (id) on update cascade on delete cascade 
 );
 DROP TABLE IF EXISTS participant;
 CREATE TABLE participant
@@ -52,8 +51,8 @@ CREATE TABLE participant
     event_id int not null,
     user_id  int not null,
     PRIMARY KEY (id),
-    CONSTRAINT participant_event FOREIGN KEY (event_id) REFERENCES event (id) on delete cascade,
-    CONSTRAINT participant_user FOREIGN KEY (user_id) REFERENCES user (id) on delete cascade
+    CONSTRAINT participant_event FOREIGN KEY (event_id) REFERENCES event (id) on delete cascade on update cascade,
+    CONSTRAINT participant_user FOREIGN KEY (user_id) REFERENCES user (id) on update cascade on delete cascade 
 
 );
 
