@@ -49,9 +49,6 @@ class UserController extends AbstractController
 
                 $this->redirect('/admin/user/index');
             }
-            else {
-                var_dump("ok");
-            }
         }
 
         $roles = $this->roleRepository->findAll();
@@ -117,6 +114,8 @@ class UserController extends AbstractController
         $token = substr($_SERVER['PATH_INFO'], strrpos($_SERVER['PATH_INFO'], "/") + 1);
         $mailManager = new MailManager();
         $mailManager->validationUser($token);
+
+        $this->redirect('/user/login');
 
     }
 }

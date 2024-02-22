@@ -61,10 +61,7 @@ class MailManager
             $userRepository = new UserRepository;
             $userForValidate = $userRepository->findOneBy(["token"=> $token]);
             $userForValidate->setIsVerified(true);
-            if($userRepository->update(["isVerified" => "1"], ["token" => $token]))
-            {
-
-            echo "Bienvenu ". $userForValidate->getFirstName();
-            }
+            $userRepository->update(["isVerified" => "1"], ["token" => $token]);
+ 
         }
 }
