@@ -48,28 +48,24 @@ public function alert()
         $participantRepository = new ParticipantRepository;
         $userRepository = new UserRepository;
 
-        $user = $userRepository->findOneBy(['lastname' => 'MOYAERTS']);
+        // $user = $userRepository->findOneBy(['lastname' => 'MOYAERTS']);
 
-        $event = EventFactory::make()->withName('Sortie à la plage ')->withStartDate(new \DateTime("2024-02-27"))
-        ->withEndDate(new \DateTime("2024-02-24"))->withOwner($user)->generate();
-        $eventRepository->insertOne($event);
-
+        // $event = EventFactory::make()->withName('Sortie à la plage ')->withStartDate(new \DateTime("2024-02-27"))
+        // ->withEndDate(new \DateTime("2024-03-01"))->withOwner($user)->generate();
+        // $eventRepository->insertOne($event);
+        $datas = $eventRepository->executeRequest("SELECT user.email, event.name, event.id, event.startDate FROM event INNER JOIN user ON user.id = event.owner_id;");
         $subject = "Attention !";
         $mailManager = new MailManager;
         $j5 = new \DateTime(" + 5 days ");
-        $datas = $entityManager->executeRequest("SELECT user.email, event.startDate, event.name FROM event INNER JOIN user ON event.owner_id = user.id WHERE event.owner_id = user.id;");
         foreach($datas as $data)
         {
-            if($j5->diff(\DateTime::createFromFormat('Y-m-j H:i:s', $data['startDate']))->days == 5)
+            if($j5->diff(\DateTime::createFromFormat('Y-m-j H:i:s', $data['startDate']))->days == 0)
             {
                 $body = $data['name'];
                 $body .= "est l'évènement que vous avez créer, il commence dans 5 jours mais personne n'est inscrit...";
-                $mailManager->sendMail("mathieu.moyaerts.pro@gmai.com", $subject, $body);
+                $mailManager->sendMail($data['email'], $subject, $body);
             }
-            else {
-                var_dump($j5);
-            }
-        }
 
+        }
     }
 }
