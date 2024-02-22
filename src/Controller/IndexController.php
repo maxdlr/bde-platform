@@ -33,8 +33,7 @@ class IndexController extends AbstractController
         $events = $this->eventRepository->findAll();
 
         if(!is_null($_SESSION["user_connected"])){
-            $connectedUser = new User();
-            $connectedUser->getUserConnected();
+            $connectedUser = $this->getUserConnected();
             $this->addFlash("success", "Vous êtes bien connecté !");
         } else {
             $connectedUser = null;
