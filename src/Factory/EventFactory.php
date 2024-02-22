@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Enum\TagEnum;
+use App\Factory\Data\EventData;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use DateTime;
@@ -121,6 +122,7 @@ class EventFactory
     static private function mountObjectBase(): Event
     {
         $userRepository = new UserRepository();
+        $eventData = new EventData();
         $event = new Event();
         $faker = Factory::create();
 
@@ -128,8 +130,8 @@ class EventFactory
         $user = $faker->randomElement($users);
 
         $event
-            ->setName($faker->domainWord())
-            ->setDescription($faker->paragraph())
+            ->setName($eventData->buildTitle())
+            ->setDescription($eventData->buildDescription())
             ->setStartDate($faker->dateTime())
             ->setEndDate($faker->dateTime())
             ->setTag($faker->randomElement(TagEnum::cases())->value)

@@ -30,6 +30,11 @@ abstract class AbstractController
         exit();
     }
 
+    protected function truncate(string $string, int $charMax, string $suffix): string
+    {
+        $result = substr($string, 0, $charMax);
+        return $result . $suffix;
+    }
 
     protected function getUser(): User
     {

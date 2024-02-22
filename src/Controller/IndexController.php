@@ -35,6 +35,8 @@ class IndexController extends AbstractController
         foreach ($events as $event) {
             $capacities[] = [$event->getId(), $event->getCapacity()];
             $event->setCapacity($event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()])));
+
+            $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
         }
 
         return $this->twig->render('index/home.html.twig', [
