@@ -35,22 +35,10 @@
                 {% endif %}
             {% endfor %}
             <td>
-                <form action="/admin/{{ entityName }}/delete" method="POST" enctype="multipart/form-data">
-                    <input type="number" value="{{ item.id }}" name="delete-{{ entityName }}-input" class="d-none">
-                    <button class="btn btn-danger rounded-pill" type="submit" name="delete-{{ entityName }}-submit"
-                            value="delete-{{ entityName }}">
-                        Supprimer
-                    </button>
-                </form>
+                <a class="px-3 py-2 bg-danger text-white rounded-pill text-decoration-none" href="/admin/{{ entityName }}/delete/{{ item.id }}">Supprimer</a>
             </td>
             <td>
-                <form action="/admin/{{ entityName }}/edit" method="POST" enctype="multipart/form-data">
-                    <input type="number" value="{{ item.id }}" name="edit-{{ entityName }}-input" class="d-none">
-                    <button class="btn btn-warning rounded-pill" type="submit" name="edit-{{ entityName }}-submit"
-                            value="edit-{{ entityName }}">
-                        Modifier
-                    </button>
-                </form>
+                <a class="px-3 py-2 bg-warning text-white rounded-pill text-decoration-none" href="/admin/{{ entityName }}/edit/{{ item.id }}">Modifier</a>
             </td>
         </tr>
     {% else %}
