@@ -35,14 +35,15 @@ class MailManager
             $phpmailer->isHTML(true);
             $phpmailer->Subject = $subject;
             $phpmailer->Body = $body;
+            $phpmailer->send();
 
-            $err = $phpmailer->send();
         } catch(Exception $e) {
             echo 'Erreur lors de l\'envoi de l\'e-mail : ', $phpmailer->ErrorInfo;
         }
 
     }
-    /** @var User */
+
+
     public function sendMailParticipant($user, $event)
     {
         $startDate = $event->getStartDate();
@@ -56,4 +57,31 @@ class MailManager
         $message .= "Cordialement,\nVotre équipe d'organisation";
         $this->sendMail($emailto, $subject, $message);
     }
+
+        public function sendValidateMail($emailto, $token)
+        {
+            $userRepository = new UserRepository;
+            if($userRepository->executeRequest("UPDATE user SET token = '$token' WHERE email = '$emailto'"))
+
+                $subject = "Confirmation de votre compte";
+                $message = "Bonjour,\n\n";
+                $message .= "Merci de vous être inscrit sur notre site.\n";
+                $message .= "Veuillez cliquer sur le lien suivant pour activer votre compte :\n";
+                $message .= "http://localhost:8000/user/validate/" . $token . "\n";
+                $message .= "Cordialement,\nVotre BDE";
+
+                $this->sendMail($emailto, $subject, $message);
+        }
+        public function validationUser($token)
+        {
+            $userRepository = new UserRepository;
+            $userForValidate = $userRepository->findOneBy(["token"=> $token]);
+            $userForValidate->setIsVerified(true);
+            if($userRepository->update(["isVerified" => "1"], ["token" => $token]))
+            {
+
+            echo "Bienvenu ". $userForValidate->getFirstName();
+            }
+        }
+
 }

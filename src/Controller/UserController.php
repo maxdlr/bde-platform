@@ -6,6 +6,7 @@ use App\Attribute\Route;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
+use App\Service\Mail\MailManager;
 use Twig\Environment;
 use DateTime;
 
@@ -27,6 +28,7 @@ class UserController extends AbstractController
         if (isset($_POST['new-user-submit']) && $_POST['new-user-submit'] == 'new-user') {
             $user = new User();
             $userRepository = new UserRepository();
+            $mailManager = new MailManager;
 
             $stringCurrentDate = date('Y-m-d H:i:s');
             $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
@@ -37,11 +39,18 @@ class UserController extends AbstractController
                 ->setEmail($_POST['email'])
                 ->setPassword($_POST['password'])
                 ->setRoles("student")
-                ->setIsVerified(1)
+                ->setIsVerified(false)
                 ->setSignedUpOn($dateCurrentDate);
 
             if ($userRepository->insertOne($user)) {
+                $token = md5(uniqid(rand(), true));
+
+                $mailManager->sendValidateMail($_POST['email'], $token);
+
                 $this->redirect('/admin/user/index');
+            }
+            else {
+                var_dump("ok");
             }
         }
 
@@ -100,5 +109,14 @@ class UserController extends AbstractController
     {
         return $this->twig->render('user/index.html.twig', [
         ]);
+    }
+
+    #[Route('/user/validate/{id}', name: 'app_user_validate', httpMethod: ['GET'])]
+    public function validate()
+    {
+        $token = substr($_SERVER['PATH_INFO'], strrpos($_SERVER['PATH_INFO'], "/") + 1);
+        $mailManager = new MailManager();
+        $mailManager->validationUser($token);
+
     }
 }
