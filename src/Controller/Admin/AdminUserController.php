@@ -15,7 +15,7 @@ class AdminUserController extends AbstractController
     public function __construct(
         Environment                     $twig,
         private readonly UserRepository $userRepository,
-//        private readonly RoleRepository $roleRepository,
+        private readonly RoleRepository $roleRepository
     )
     {
         parent::__construct($twig);
@@ -33,20 +33,51 @@ class AdminUserController extends AbstractController
         ]);
     }
 
-//todo: implement /{id}
-//    #[Route('/admin/user/edit', name: 'app_admin_user_edit', httpMethod: ['GET', 'POST'])]
-//    public function edit(): string
-//    {
-//        if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
-//            $userRepository = new UserRepository();
-//            $user = $userRepository->findOneBy(['id' => $_POST['edit-user-input']]);
-//        }
-//
-//        $roles = $this->roleRepository->findAll();
-//
-//        return $this->twig->render('admin/edit/user-edit.html.twig', [
-//            'item' => $user,
-//            'roles' => $roles
-//        ]);
-//    }
+    #[Route('/admin/user/edit/{id}', name: 'app_admin_user_edit', httpMethod: ['GET', 'POST'])]
+    public function edit(int $idUser): string
+    {
+        $userRepository = new UserRepository();
+        $user = $userRepository->findOneBy(['id' => $idUser]);
+
+
+        if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
+
+            $updatedUserArray = [
+                'firstname' => $_POST['firstname'],
+                'lastname' => $_POST['lastname'],
+                'email' => $_POST['email'],
+                'roles' => $_POST['role']
+            ];
+
+            if($_POST['isVerified'] === "on"){
+                $updatedUserArray['isVerified'] = 1;
+            } else {
+                $updatedUserArray['isVerified'] = 0;
+            }
+
+            if ($userRepository->update($updatedUserArray, $user)) {
+                $this->redirect('/admin/user/index');
+            }
+        } elseif (!is_null($user)) {
+            $roles = $this->roleRepository->findAll();
+            return $this->twig->render('admin/edit/user-edit.html.twig', [
+                'item' => $user,
+                'roles' => $roles
+            ]);
+        } else {
+            return $this->twig->render('404.html.twig');
+        }
+    }
+
+    #[Route('/admin/user/delete/{id}', name: 'app_admin_user_delete', httpMethod: ['POST'])]
+    public function delete(int $idUser): void
+    {
+        $userRepository = new userRepository();
+        $userToDelete = $userRepository->findOneBy(['id' => $idUser]);
+
+        if ($userRepository->delete($userToDelete)) {
+            $this->redirect('/admin/user/index');
+        }
+    }
+
 }
