@@ -1,42 +1,29 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Modifier un evenement
+    Modification d'évènement
 {% endblock %}
 
 {% block body %}
 
     <main class="container">
-        <h1 class="my-5">Modifier un evenement.</h1>
+        <h1 class="my-5">Modifier un évènement</h1>
 
         <form method="POST" enctype="multipart/form-data">
 
-            <div class="row row-cols-sm-2">
+            <div class="row row-cols-lg-2">
 
                 <div>
-                    <div class="d-flex gap-2">
-
-                        {{ include('shared/form/_input.html.twig', {
-                            label: 'Nom',
-                            type: 'text',
-                            name: 'name',
-                            required: true,
-                            value: item.name
-                        }) }}
-
-                        {{ include('shared/form/_input.html.twig', {
-                            label: '',
-                            type: 'number',
-                            name: 'capacity',
-                            required: true,
-                            placeholder: "Capacité maximum",
-                            value: item.capacity
-                        }) }}
-                    </div>
-
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Intitulé *',
+                        type: 'text',
+                        name: 'name',
+                        required: true,
+                        value: item.name
+                    }) }}
 
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Début',
+                        label: 'Date de début *',
                         type: 'datetime-local',
                         name: 'startDate',
                         required: true,
@@ -45,7 +32,7 @@
                     }) }}
 
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Fin',
+                        label: 'Date de fin *',
                         type: 'datetime-local',
                         name: 'endDate',
                         required: true,
@@ -53,31 +40,44 @@
                         value: item.endDate|date('Y-m-d H:i:s')
                     }) }}
 
-                    {{ include('shared/form/_dropdown.html.twig', {
-                        choices: tags,
-                        label: 'Catégorie',
-                        name: 'tag',
-                        required: true,
-                        value: item.tag
-                    }) }}
+                    <div class="d-flex flex-column flex-sm-row gap-2 ">
+                        {{ include('shared/form/_dropdown.html.twig', {
+                            label: 'Catégorie *',
+                            choices: tags,
+                            name: 'tag',
+                            required: true,
+                            value: item.tag
+                        }) }}
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Nombre de places *',
+                            type: 'number',
+                            name: 'capacity',
+                            required: true,
+                            value: item.capacity
+                        }) }}
+                    </div>
+
+
                 </div>
                 <div>
                     {{ include('shared/form/_textarea.html.twig', {
-                        label: 'Description',
+                        label: 'Description *',
                         type: 'text',
                         name: 'description',
                         required: true,
-                        placeholder: "Description",
+                        placeholder: "Ajoutez une description",
                         value: item.description
                     }) }}
-
-
-                    <button class="btn btn-primary" type="submit" name="edit-event-submit" value="edit-event">
-                        Enregistrer
-                    </button>
                 </div>
             </div>
+            <div class="mt-5 row row-cols-2 offset-4 row-cols-sm-3 offset-sm-5 row-cols-lg-5">
+                <button class="btn btn-primary" type="submit" name="edit-event-submit" value="edit-event">Valider</button>
+            </div>
         </form>
+
+        <a class="px-4 py-1 my-5 btn btn-secondary rounded-pill border-0" href="/admin/event/index">Retour</a>
     </main>
+
 
 {% endblock %}

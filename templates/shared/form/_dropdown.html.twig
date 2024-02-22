@@ -6,6 +6,8 @@
         {% for option in choices %}
             {% if value is not same as option %}
                 <option value="{{ option }}">{{ option|title() }}</option>
+            {% else  %}
+                <option value="{{ option }} selected">{{ option|title() }}</option>
             {% endif %}
         {% endfor %}
     </select>

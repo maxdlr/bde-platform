@@ -142,6 +142,9 @@ class AdminEventController extends AbstractController
                     'flashbag' => $_SESSION["flashbag"]
                 ]);
             } else {
+                $currentUser = $this->getUserConnected();
+                $currentUserId =  $currentUser->getId();
+
                 $event
                     ->setName($_POST['name'])
                     ->setDescription($_POST['description'])
@@ -149,9 +152,17 @@ class AdminEventController extends AbstractController
                     ->setEndDate(new DateTime($_POST['endDate']))
                     ->setTag($_POST['tag'])
                     ->setCapacity($_POST['capacity'])
-                    ->setOwnerId(1)
-                    ->setFileName($newFileName)
-                    ->setFileSize($fileSize);
+                    ->setOwnerId($currentUserId);
+
+                if(isset($newFileName) && isset($fileSize)){
+                    $event
+                        ->setFileName($newFileName)
+                        ->setFileSize($fileSize);
+                } else {
+                    $event
+                        ->setFileName("")
+                        ->setFileSize(0);
+                }
 
                 if ($eventRepository->insertOne($event)) {
                     $this->redirect('/admin/event/index');
@@ -170,23 +181,57 @@ class AdminEventController extends AbstractController
         $eventRepository = new EventRepository();
         $event = $eventRepository->findOneBy(['id' => $idEvent]);
 
-        // Case when the edit form was submitted
+        $tags = $this->tagRepository->findAll();
+
         if (isset($_POST['edit-event-submit']) && $_POST['edit-event-submit'] == 'edit-event') {
 
-            $updatedEventArray = [
-                'name' => $_POST['name'],
-                'description' => $_POST['description'],
-                'startDate' => $_POST['startDate'],
-                'endDate' => $_POST['endDate'],
-                'tag' => $_POST['tag'],
-                'capacity' => $_POST['capacity']
-            ];
+            $validData = true;
 
-            if ($eventRepository->update($updatedEventArray, $event)) {
-                $this->redirect('/admin/event/index');
+            if(intval($_POST['capacity']) < 1){
+                $validData = false;
+                $this->addFlash("danger", "La capacité de l'évènement doit être de 1 au minimum");
+            }
+
+            $nowDate = new DateTime('now');
+
+            $startDate = new DateTime($_POST['startDate']);
+            if($startDate < $nowDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de début est antérieure à la date actuelle");
+            }
+
+            $endDate = new DateTime($_POST['endDate']);
+            if($endDate < $nowDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de fin est antérieure à la date actuelle");
+            }
+
+            if($endDate < $startDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de fin est antérieure à la date de début");
+            }
+
+            if($validData === false){
+                return $this->twig->render('admin/edit/event-edit.html.twig', [
+                    'item' => $event,
+                    'tags' => $tags,
+                    'flashbag' => $_SESSION["flashbag"]
+                ]);
+            } else {
+                $updatedEventArray = [
+                    'name' => $_POST['name'],
+                    'description' => $_POST['description'],
+                    'startDate' => $_POST['startDate'],
+                    'endDate' => $_POST['endDate'],
+                    'tag' => $_POST['tag'],
+                    'capacity' => $_POST['capacity']
+                ];
+
+                if ($eventRepository->update($updatedEventArray, $event)) {
+                    $this->redirect('/admin/event/index');
+                }
             }
         } elseif (!is_null($event)) {
-            $tags = $this->tagRepository->findAll();
             return $this->twig->render('admin/edit/event-edit.html.twig', [
                 'item' => $event,
                 'tags' => $tags,
