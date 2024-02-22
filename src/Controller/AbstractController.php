@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use JetBrains\PhpStorm\NoReturn;
 use Twig\Environment;
 
@@ -36,20 +37,7 @@ abstract class AbstractController
             $userRepository = new UserRepository();
             $userConnected = $userRepository->findOneBy(['email' => $_SESSION["user_connected"]]);
 
-            var_dump($userConnected); die;
-
-            $this->setId($userConnected->getId());
-            $this->setFirstname($userConnected->getFirstname());
-            $this->setLastname($userConnected->getLastname());
-            $this->setEmail($userConnected->getEmail());
-            $this->setPassword($userConnected->getPassword());
-            $this->setRoles($userConnected->getRoles());
-            $this->setIsVerified($userConnected->getIsVerified());
-            $this->setSignedUpOn($userConnected->getSignedUpOn());
-
-            return $this;
-        } else {
-            return $this;
+            return $userConnected;
         }
     }
 

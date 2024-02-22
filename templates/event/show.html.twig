@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Modifier evenement
+    Consulter l'évènement
 {% endblock %}
 
 {% block body %}
@@ -40,7 +40,7 @@
                         <span class="fs-2 fw-bolder bg-warning px-3 py-2 rounded-pill">{{ remainingCapacity }}</span>
                         <span>/</span>
                         <span>{{ event.capacity }}</span>
-                        <span> places restances !!! </span>
+                        <span> places restantes !!! </span>
                     </div>
                     <div class="position-absolute bottom-0 start-0 ms-4 mb-4 text-dark bg-light rounded-pill py-3 px-5">
                         <span class="fs-3 fw-bolder">Le {{ event.startDate|date("d/m/y") }}</span>
@@ -48,9 +48,9 @@
                 </div>
                 <div class="row">
                     <p class="col-10 offset-1 align-self-center my-5 my-lg-0">{{ event.description }}</p>
-                    <form action="/event/new/participant/{{ user.id }}" class="col-10 offset-1 d-none d-lg-block">
-                        <button class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</button>
-                    </form>
+                    <div class="col-10 offset-1 d-none d-lg-block">
+                        <a href="/event/new/participant/{{ event.id }}" class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
+                    </div>
                 </div>
             </div>
 

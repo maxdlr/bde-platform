@@ -57,6 +57,7 @@ class UserController extends AbstractController
     {
         $this->clearFlashs();
 
+
         if (isset($_POST['connect-user-submit']) && $_POST['connect-user-submit'] == 'connect-user') {
 
             $userRepository = new UserRepository();
