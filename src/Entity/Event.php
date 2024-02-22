@@ -22,43 +22,6 @@ class Event extends Entity
     private string $fileName;
     private float $fileSize;
 
-    public function getFileName(): string
-    {
-        return $this->fileName;
-    }
-
-    public function setFileName(string $fileName): Event
-    {
-        $this->fileName = $fileName;
-        return $this;
-    }
-
-    public function getFileSize(): float
-    {
-        return $this->fileSize;
-    }
-
-    public function setFileSize(float $fileSize): Event
-    {
-        $this->fileSize = $fileSize;
-        return $this;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'description' => $this->getDescription(),
-            'startDate' => $this->getStartDate()->format('Y-m-d H:i:s'),
-            'endDate' => $this->getEndDate()->format('Y-m-d H:i:s'),
-            'tag' => $this->getTag(),
-            'capacity' => $this->getCapacity(),
-            'owner_id' => $this->getOwnerId(),
-            'fileName' => $this->getFileName(),
-            'fileSize' => $this->getFileSize()
-        ];
-    }
 
     public function getId(): int
     {
@@ -151,5 +114,43 @@ class Event extends Entity
     {
         $this->ownerId = $ownerId;
         return $this;
+    }
+
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): Event
+    {
+        $this->fileName = $fileName;
+        return $this;
+    }
+
+    public function getFileSize(): float
+    {
+        return $this->fileSize;
+    }
+
+    public function setFileSize(float $fileSize): Event
+    {
+        $this->fileSize = $fileSize;
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'startDate' => $this->getStartDate()->format('Y-m-d H:i:s'),
+            'endDate' => $this->getEndDate()->format('Y-m-d H:i:s'),
+            'tag' => $this->getTag(),
+            'capacity' => $this->getCapacity(),
+            'owner_id' => $this->getOwnerId(),
+            'fileName' => $this->getFileName(),
+            'fileSize' => $this->getFileSize()
+        ];
     }
 }

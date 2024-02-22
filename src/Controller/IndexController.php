@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Attribute\Route;
 use App\Entity\Participant;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use Twig\Environment;
@@ -30,6 +31,7 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_home', httpMethod: ['GET'])]
     public function home(): string
     {
+        $this->clearFlashs();
         $alertManager = new AlertManager;
         $alertManager->alert();
         $events = $this->eventRepository->findAll();
@@ -41,9 +43,18 @@ class IndexController extends AbstractController
             $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
         }
 
+        if(!is_null($_SESSION["user_connected"])){
+            $connectedUser = $this->getUserConnected();
+            $this->addFlash("success", "Vous êtes bien connecté !");
+        } else {
+            $connectedUser = null;
+        }
+
         return $this->twig->render('index/home.html.twig', [
             'events' => $events,
             'capacities' => $capacities,
+            'connectedUser' => $connectedUser,
+            'flashbag' => $_SESSION["flashbag"]
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Attribute\Route;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
 use Twig\Environment;
 
@@ -19,14 +20,44 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/show/{id}', name: 'app_event_show', httpMethod: ['POST'])]
-    public function show(int $id): string
+    public function show(int $idEvent): string
     {
-        $event = $this->eventRepository->findOneBy(['id' => $id]);
+        $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
         $remainingCapacity = $event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()]));
+
+        if(!is_null($_SESSION["user_connected"])){
+            $connectedUser = $this->getUserConnected();
+
+            $userParticipant = false;
+            $userInterested = false;
+
+            $participantRepository = new ParticipantRepository();
+            $participantList = $participantRepository->findBy(['event_id' => $idEvent]);
+            foreach ($participantList as $participant){
+                if ($participant->getUserId() == $connectedUser->getId()){
+                    $userParticipant = true;
+                }
+            }
+
+            $interestedRepository = new InterestedRepository();
+            $interestedList = $interestedRepository->findBy(['event_id' => $idEvent]);
+            foreach ($interestedList as $interested){
+                if ($interested->getUserId() == $connectedUser->getId()){
+                    $userInterested = true;
+                }
+            }
+
+            $this->addFlash("success", "Vous êtes bien connecté !");
+        } else {
+            $connectedUser = null;
+        }
 
         return $this->twig->render('event/show.html.twig', [
             'event' => $event,
             'remainingCapacity' => $remainingCapacity,
+            'connectedUser' => $connectedUser,
+            'userParticipant' => $userParticipant,
+            'userInterested' => $userInterested
         ]);
     }
 }

@@ -32,6 +32,7 @@ readonly class Router
     ): string
     {
         $route = $this->getRoute($uri, $httpMethod);
+
         if ($route === null)
             throw new RouteNotFoundException("La page n'existe pas");
 
@@ -42,6 +43,8 @@ readonly class Router
 
         // Method
         $method = $route->getControllerMethod();
+
+
         // Get the id passed in the uri if the controller road contains "{id}"
         if (str_contains($route->getUri(), "{id}")) {
             $idElementInUri = substr($uri, strrpos($uri, "/") + 1);
@@ -156,6 +159,7 @@ readonly class Router
      */
     private function getMethodParams(string $method): array
     {
+
         $methodInfos = new ReflectionMethod($method);
         $methodParameters = $methodInfos->getParameters();
 
