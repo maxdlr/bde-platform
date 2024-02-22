@@ -111,11 +111,12 @@ abstract class Repository extends EntityManager
     {
         assert($this->isTableSet() && $this->isDataTransferSet());
 
-        $criteria = $mixed instanceof Entity ? $this->toDbModel($mixed) : $mixed;
+        $criteria = $mixed instanceof Entity ? $this->toDbModel($mixed, false) : $mixed;
 
         $sql = 'delete from ' . $this->tableName;
         $sql .= RepositoryUtil::formatMysqlConditionClause('where', $criteria);
         $sql .= ';';
+
 
         return $this->executeRequest($sql);
     }

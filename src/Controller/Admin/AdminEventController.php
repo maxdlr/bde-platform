@@ -39,6 +39,8 @@ class AdminEventController extends AbstractController
         $eventObjects = $this->eventRepository->findAll();
         $events = array_map(fn(Event $event): array => $event->toArray(), $eventObjects);
 
+//        var_dump($events);
+
         $eventsWithOwners = [];
         foreach ($events as $event) {
 
@@ -63,11 +65,36 @@ class AdminEventController extends AbstractController
     #[Route('/admin/event/new', name: 'app_admin_event_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
-        if (isset($_POST['edit-event-submit']) && $_POST['edit-event-submit'] == 'new-event') {
+        if (isset($_POST['new-event-submit']) && $_POST['new-event-submit'] == 'new-event') {
             $event = new Event();
             $eventRepository = new EventRepository();
 
             array_map('trim', $_POST);
+
+            if (isset($_FILES['new-event-file']) && $_FILES['new-event-file']['error'] === UPLOAD_ERR_OK) {
+
+                var_dump('in file upload if');
+
+                $originalFileName = $_FILES['new-event-file']['name'];
+                $tmpFileName = $_FILES['new-event-file']['tmp_name'];
+
+                $fileNameCmps = explode(".", $originalFileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+
+                $fileSize = $_FILES['new-event-file']['size'];
+
+                $newFileName = md5(time() . $tmpFileName) . '.' . $fileExtension;
+                $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+
+                if (in_array($fileExtension, $allowedfileExtensions)) {
+                    $uploadFileDir = __DIR__ . '/../../../public/assets/images/';
+                    $dest_path = $uploadFileDir . $newFileName;
+
+                    move_uploaded_file($tmpFileName, $dest_path);
+                }
+            }
+
+            var_dump($_FILES['new-event-file']['error']);
 
             $event
                 ->setName($_POST['name'])
@@ -76,7 +103,9 @@ class AdminEventController extends AbstractController
                 ->setEndDate(new DateTime($_POST['endDate']))
                 ->setTag($_POST['tag'])
                 ->setCapacity($_POST['capacity'])
-                ->setOwnerId(1);
+                ->setOwnerId(1)
+                ->setFileName($newFileName)
+                ->setFileSize($fileSize);
 
             if ($eventRepository->insertOne($event)) {
                 $this->redirect('/admin/event/index');
@@ -89,15 +118,14 @@ class AdminEventController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/event/edit', name: 'app_admin_event_edit', httpMethod: ['GET', 'POST'])]
-    public function edit(): string
+    #[Route('/admin/event/edit/{id}', name: 'app_admin_event_edit', httpMethod: ['GET', 'POST'])]
+    public function edit(int $idEvent): string
     {
-        //todo: implement /{id}
         $eventRepository = new EventRepository();
-        if (isset($_POST['edit-event-input'])) {
-            $event = $eventRepository->findOneBy(['id' => $_POST['edit-event-input']]);
-        }
-        if (isset($_POST['update-event-submit']) && $_POST['update-event-submit'] == 'update-event') {
+        $event = $eventRepository->findOneBy(['id' => $idEvent]);
+
+        // Case when the edit form was submitted
+        if (isset($_POST['edit-event-submit']) && $_POST['edit-event-submit'] == 'edit-event') {
 
             $updatedEventArray = [
                 'name' => $_POST['name'],
@@ -105,32 +133,31 @@ class AdminEventController extends AbstractController
                 'startDate' => $_POST['startDate'],
                 'endDate' => $_POST['endDate'],
                 'tag' => $_POST['tag'],
-                'capacity' => $_POST['capacity'],
-                'owner_id' => $_POST['capacity'],
+                'capacity' => $_POST['capacity']
             ];
 
             if ($eventRepository->update($updatedEventArray, $event)) {
                 $this->redirect('/admin/event/index');
             }
+        } elseif (!is_null($event)) {
+            $tags = $this->tagRepository->findAll();
+            return $this->twig->render('admin/edit/event-edit.html.twig', [
+                'item' => $event,
+                'tags' => $tags,
+            ]);
+        } else {
+            return $this->twig->render('404.html.twig');
         }
-        $tags = $this->tagRepository->findAll();
-
-        return $this->twig->render('admin/edit/event-edit.html.twig', [
-            'item' => $event,
-            'tags' => $tags,
-        ]);
     }
 
-    #[Route('/admin/event/delete', name: 'app_admin_event_delete', httpMethod: ['POST'])]
-    public function delete(): void
+    #[Route('/admin/event/delete/{id}', name: 'app_admin_event_delete', httpMethod: ['POST'])]
+    public function delete(int $idEvent): void
     {
-        if (isset($_POST['delete-event-submit']) && $_POST['delete-event-submit'] == 'delete-event') {
-            $eventRepository = new EventRepository();
-            $eventToDelete = $eventRepository->findOneBy(['id' => $_POST['delete-event-input']]);
+        $eventRepository = new EventRepository();
+        $eventToDelete = $eventRepository->findOneBy(['id' => $idEvent]);
 
-            if ($eventRepository->delete($eventToDelete)) {
-                $this->redirect('/admin/event/index');
-            }
+        if ($eventRepository->delete($eventToDelete)) {
+            $this->redirect('/admin/event/index');
         }
     }
 }

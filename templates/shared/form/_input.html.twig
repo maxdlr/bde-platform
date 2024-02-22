@@ -14,7 +14,7 @@
                 name="{{ name }}"
                 required="{{ required }}"
                 placeholder="{{ placeholder }}"
-                class="form-control {{ type is same as 'datetime-local' or type is same as 'number' or type is same as 'email' ? 'ms-3' : '' }} {{ class }}"
+                class="form-control {{ type is same as 'datetime-local' or type is same as 'number' or type is same as 'email' or type is same as 'password' ? 'ms-3' : '' }} {{ class }}"
                 aria-label="{{ name }}"
                 aria-describedby="{{ name }}-addon"
                 value="{{ value|default('') }}"
@@ -26,11 +26,13 @@
 
 {% if type is same as 'checkbox' %}
     <div class="form-check form-switch">
-        <input class="form-check-input {{ class }}" type="checkbox" role="switch" id="{{ name }}" checked="{{ value }}"
-               name="{{ name }}" required="{{ required }}">
+        <input class="form-check-input {{ class }}" type="checkbox" role="switch" id="{{ name }}"
+                {% if value == 1 %}
+                    checked = {{ value }}
+                {% endif %}
+               name="{{ name }}">
         <label class="form-check-label" for="{{ name }}">{{ label }}</label>
     </div>
-
 {% endif %}
 
 

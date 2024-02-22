@@ -14,7 +14,7 @@ abstract class AbstractController
 
     #[NoReturn] protected function redirect(string $route): void
     {
-        header("Location:".$route);
+        header("Location:" . $route);
         die();
     }
 
