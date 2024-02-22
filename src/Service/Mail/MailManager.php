@@ -12,12 +12,11 @@ class MailManager
     // Config PHP Mailer
     $phpmailer = new PHPMailer(true);
 
-    // Paramètres SMTP pour Gmail
     $phpmailer->isSMTP();
     $phpmailer->Host = 'smtp.gmail.com';
     $phpmailer->SMTPAuth = true;
-    $phpmailer->Username = 'mathieu.moyaerts.pro@gmail.com'; // Votre adresse e-mail Gmail
-    $phpmailer->Password = 'evhw tfsv lvxn mdfo'; // Votre mot de passe Gmail
+    $phpmailer->Username = 'mathieu.moyaerts.pro@gmail.com';
+    $phpmailer->Password = 'evhw tfsv lvxn mdfo';
     $phpmailer->SMTPSecure = 'tls';
     $phpmailer->Port = 587;
 
