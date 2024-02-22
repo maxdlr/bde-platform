@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Attribute\Route;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
 use Twig\Environment;
 
@@ -27,13 +28,22 @@ class EventController extends AbstractController
         if(!is_null($_SESSION["user_connected"])){
             $connectedUser = $this->getUserConnected();
 
+            $userParticipant = false;
+            $userInterested = false;
+
             $participantRepository = new ParticipantRepository();
             $participantList = $participantRepository->findBy(['event_id' => $idEvent]);
             foreach ($participantList as $participant){
                 if ($participant->getUserId() == $connectedUser->getId()){
                     $userParticipant = true;
-                } else {
-                    $userParticipant = false;
+                }
+            }
+
+            $interestedRepository = new InterestedRepository();
+            $interestedList = $interestedRepository->findBy(['event_id' => $idEvent]);
+            foreach ($interestedList as $interested){
+                if ($interested->getUserId() == $connectedUser->getId()){
+                    $userInterested = true;
                 }
             }
 
@@ -46,7 +56,8 @@ class EventController extends AbstractController
             'event' => $event,
             'remainingCapacity' => $remainingCapacity,
             'connectedUser' => $connectedUser,
-            'userParticipant' => $userParticipant
+            'userParticipant' => $userParticipant,
+            'userInterested' => $userInterested
         ]);
     }
 }

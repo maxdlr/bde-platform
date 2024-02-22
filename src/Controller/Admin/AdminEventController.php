@@ -39,8 +39,6 @@ class AdminEventController extends AbstractController
         $eventObjects = $this->eventRepository->findAll();
         $events = array_map(fn(Event $event): array => $event->toArray(), $eventObjects);
 
-//        var_dump($events);
-
         $eventsWithOwners = [];
         foreach ($events as $event) {
 

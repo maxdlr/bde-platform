@@ -3,53 +3,54 @@
 namespace App\Controller;
 
 use App\Attribute\Route;
+use App\Entity\Interested;
 use App\Entity\Participant;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
 use App\Repository\UserRepository;
-use App\Repository\ParticipantRepository;
 use Twig\Environment;
 
 
-class ParticipantController extends AbstractController
+class InterestedController extends AbstractController
 {
     public function __construct(
         Environment                            $twig,
         private readonly EventRepository       $eventRepository,
         private readonly UserRepository        $userRepository,
-        private readonly ParticipantRepository $participantRepository
+        private readonly InterestedRepository  $interestedRepository
     )
     {
         parent::__construct($twig);
     }
 
 
-    #[Route('/event/new/participant/{id}', name: 'app_participant_new', httpMethod: ['GET'])]
-    public function newParticipant(int $idEvent): string
+    #[Route('/event/new/interested/{id}', name: 'app_interested_new', httpMethod: ['GET'])]
+    public function newInterested(int $idEvent): string
     {
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
         $currentUser = $this->getUserConnected();
 
-        $participant = new Participant();
-        $participantRepository = new ParticipantRepository();
+        $interested = new Interested();
+        $interestedRepository = new InterestedRepository();
 
-        $participant
+        $interested
             ->setEventId($event->getId())
             ->setUserId($currentUser->getId());
 
-        if ($participantRepository->insertOne($participant)) {
+        if ($interestedRepository->insertOne($interested)) {
             $this->redirect('/event/show/'.$idEvent);
         }
     }
 
-    #[Route('/event/delete/participant/{id}', name: 'app_participant_delete', httpMethod: ['GET'])]
-    public function deleteParticipant(int $idEvent): string
+    #[Route('/event/delete/interested/{id}', name: 'app_interested_delete', httpMethod: ['GET'])]
+    public function deleteInterested(int $idEvent): string
     {
-        $participantList = $this->participantRepository->findBy(['event_id' => $idEvent]);
+        $interestedList = $this->interestedRepository->findBy(['event_id' => $idEvent]);
         $connectedUser = $this->getUserConnected();
 
-        foreach ($participantList as $participant){
+        foreach ($interestedList as $participant){
             if ($participant->getUserId() == $connectedUser->getId()){
-                $this->participantRepository->delete($participant);
+                $this->interestedRepository->delete($participant);
             }
         }
 
