@@ -4,6 +4,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Entity\Interested;
 use App\Factory\EventFactory;
+use App\Factory\InterestedFactory;
 use App\Factory\UserFactory;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
@@ -19,28 +20,14 @@ class InterestedTest extends TestCase
      */
     public function testCanProcessInterestedObject()
     {
-        $eventRepository = new EventRepository();
-        $userRepository = new UserRepository();
         $interestedRepository = new InterestedRepository();
+        $event = EventFactory::random();
+        $user = UserFactory::random();
 
-        $event = EventFactory::make()->generate();
-        $eventRepository->insertOne($event);
-        $eventObject = $eventRepository->findOneBy(['name' => $event->getName()]);
-
-        $user = UserFactory::make()->generate();
-        $userRepository->insertOne($user);
-        $userObject = $userRepository->findOneBy(['firstname' => $user->getFirstname()]);
-
-        $interested = new Interested();
-        $interested
-            ->setEventId($eventObject->getId())
-            ->setUserId($userObject->getId());
-
+        $interested = InterestedFactory::make()->withUser($user)->withEvent($event)->generate();
         $interestedRepository->insertOne($interested);
 
-        self::assertNotNull($interestedRepository);
-
-        $interestedObject = $interestedRepository->findOneBy(['event_id' => $eventObject->getId()]);
+        $interestedObject = $interestedRepository->findOneBy(['event_id' => $event->getId()]);
 
         self::assertInstanceOf(Interested::class, $interestedObject);
 

@@ -20,6 +20,7 @@ class UserController extends AbstractController
         parent::__construct($twig);
     }
 
+
     #[Route('/user/new', name: 'app_user_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
@@ -47,6 +48,14 @@ class UserController extends AbstractController
         $roles = $this->roleRepository->findAll();
         return $this->twig->render('user/user-new.html.twig', [
             'tags' => $roles,
+        ]);
+    }
+
+
+    #[Route('/user/dashboard', name: 'app_user_dashboard', httpMethod: ['GET'])]
+    public function dahsboard(): string
+    {
+        return $this->twig->render('user/index.html.twig', [
         ]);
     }
 }

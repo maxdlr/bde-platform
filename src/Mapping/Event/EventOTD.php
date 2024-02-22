@@ -21,7 +21,7 @@ class EventOTD extends OTD implements OTDInterface
     /**
      * @throws Exception
      */
-    public function process(): array
+    public function process(bool $encrypt = true): array
     {
         if (!assert($this->from instanceof Event))
             throw new Exception('Wrong type, this is supposed to be an Event object');
@@ -35,7 +35,9 @@ class EventOTD extends OTD implements OTDInterface
             'endDate' => $event->getEndDate()->format('Y-m-d H:i:s'),
             'tag' => $event->getTag(),
             'capacity' => $event->getCapacity(),
-            'owner_id' => $event->getOwnerId()
+            'owner_id' => $event->getOwnerId(),
+            'fileSize' => $event->getFileSize(),
+            'fileName' => $event->getFileName(),
         ];
     }
 }

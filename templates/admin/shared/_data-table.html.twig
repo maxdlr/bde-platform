@@ -5,7 +5,6 @@
         {% for item in items %}
             {% for name, value in item %}
                 {% if name is not same as 'owner_id' %}
-
                     {% if name not in names %}
                         <th>{{ name }}</th>
                         {% set names = names|merge([name]) %}

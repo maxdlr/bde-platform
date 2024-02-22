@@ -57,6 +57,14 @@
                         name: 'tag',
                         required: true
                     }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Image',
+                        type: 'file',
+                        name: 'new-event-file',
+                        required: true,
+                    }) }}
+
                 </div>
                 <div>
                     {{ include('shared/form/_textarea.html.twig', {

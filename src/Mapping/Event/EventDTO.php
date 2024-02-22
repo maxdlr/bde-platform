@@ -38,7 +38,9 @@ class EventDTO extends DTO implements DTOInterface
             ->setEndDate(new DateTime($this->from['endDate']))
             ->setTag($this->from['tag'])
             ->setCapacity($this->from['capacity'])
-            ->setOwnerId($this->from['owner_id']);
+            ->setOwnerId($this->from['owner_id'])
+            ->setFileName($this->from['fileName'])
+            ->setFileSize($this->from['fileSize']);
 
         return $event;
     }

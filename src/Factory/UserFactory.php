@@ -4,12 +4,22 @@ namespace App\Factory;
 
 use App\Entity\User;
 use App\Enum\RoleEnum;
+use App\Repository\UserRepository;
 use DateTime;
 use Faker\Factory;
 
 class UserFactory
 {
     static private User|array $user;
+
+    static public function random(): User
+    {
+        $faker = Factory::create();
+        $userRepository = new UserRepository();
+        $users = $userRepository->findAll();
+        return $faker->randomElement($users);
+
+    }
 
     static public function generate(): User|array
     {

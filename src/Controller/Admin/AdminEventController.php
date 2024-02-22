@@ -39,6 +39,8 @@ class AdminEventController extends AbstractController
         $eventObjects = $this->eventRepository->findAll();
         $events = array_map(fn(Event $event): array => $event->toArray(), $eventObjects);
 
+//        var_dump($events);
+
         $eventsWithOwners = [];
         foreach ($events as $event) {
 
@@ -69,6 +71,31 @@ class AdminEventController extends AbstractController
 
             array_map('trim', $_POST);
 
+            if (isset($_FILES['new-event-file']) && $_FILES['new-event-file']['error'] === UPLOAD_ERR_OK) {
+
+                var_dump('in file upload if');
+
+                $originalFileName = $_FILES['new-event-file']['name'];
+                $tmpFileName = $_FILES['new-event-file']['tmp_name'];
+
+                $fileNameCmps = explode(".", $originalFileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+
+                $fileSize = $_FILES['new-event-file']['size'];
+
+                $newFileName = md5(time() . $tmpFileName) . '.' . $fileExtension;
+                $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+
+                if (in_array($fileExtension, $allowedfileExtensions)) {
+                    $uploadFileDir = __DIR__ . '/../../../public/assets/images/';
+                    $dest_path = $uploadFileDir . $newFileName;
+
+                    move_uploaded_file($tmpFileName, $dest_path);
+                }
+            }
+
+            var_dump($_FILES['new-event-file']['error']);
+
             $event
                 ->setName($_POST['name'])
                 ->setDescription($_POST['description'])
@@ -76,7 +103,9 @@ class AdminEventController extends AbstractController
                 ->setEndDate(new DateTime($_POST['endDate']))
                 ->setTag($_POST['tag'])
                 ->setCapacity($_POST['capacity'])
-                ->setOwnerId(1);
+                ->setOwnerId(1)
+                ->setFileName($newFileName)
+                ->setFileSize($fileSize);
 
             if ($eventRepository->insertOne($event)) {
                 $this->redirect('/admin/event/index');
