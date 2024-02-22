@@ -5,7 +5,7 @@ namespace App\Service\Mail;
 use App\Repository\UserRepository;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
+use App\Entity\User;
 class MailManager
 {
     public function getPhpMailer(): PHPMailer
@@ -42,6 +42,22 @@ class MailManager
         }
 
     }
+
+
+    public function sendMailParticipant($user, $event)
+    {
+        $startDate = $event->getStartDate();
+        $strStartDate = $startDate->format("Y-m-d H:i:s");
+        $emailto = $user->getEmail();
+        $subject = "Confirmation de votre inscription";
+        $message = "Bonjour ". $user->getFirstName() . " " . $user->getLastName() . ",\n\n";
+        $message .= "Nous sommes ravis de vous compter parmi les participants inscrits à notre prochain événement, ". $event->getName() . "";
+        $message .= "Date : ".$strStartDate . "\n";
+        $message .= "Votre inscription a été enregistrée avec succès et nous sommes impatients de vous accueillir pour partager cette expérience enrichissante.\n\n";
+        $message .= "Cordialement,\nVotre équipe d'organisation";
+        $this->sendMail($emailto, $subject, $message);
+    }
+
         public function sendValidateMail($emailto, $token)
         {
             $userRepository = new UserRepository;
@@ -67,4 +83,5 @@ class MailManager
             echo "Bienvenu ". $userForValidate->getFirstName();
             }
         }
+
 }
