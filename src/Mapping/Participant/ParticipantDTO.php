@@ -30,6 +30,7 @@ class ParticipantDTO extends DTO implements DTOInterface
         $participant = new Participant();
 
         $participant
+            ->setId($this->from['id'])
             ->setEventId($this->from['event_id'])
             ->setUserId($this->from['user_id']);
 

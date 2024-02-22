@@ -132,8 +132,8 @@ class EventFactory
         $event
             ->setName($eventData->buildTitle())
             ->setDescription($eventData->buildDescription())
-            ->setStartDate($faker->dateTime())
-            ->setEndDate($faker->dateTime())
+            ->setStartDate($faker->dateTimeThisYear('+6 months'))
+            ->setEndDate($faker->dateTimeThisYear('+6 months'))
             ->setTag($faker->randomElement(TagEnum::cases())->value)
             ->setCapacity($faker->randomNumber(2))
             ->setOwnerId($user->getId())

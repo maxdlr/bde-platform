@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Service;
 
@@ -8,6 +8,7 @@ use DateTime;
 class EventFilter
 {
     static private array $events;
+
     /** @var Event[] */
     static public function use(array $events): static
     {
@@ -22,68 +23,52 @@ class EventFilter
 
     static public function sortBy(string $value, bool $reverse = false): static
     {
-        switch($value) {
+        switch ($value) {
             case "name":
-                if(!$reverse)
-                {
-                    usort(self::$events, function ($a, $b)
-                    {
-                        return strcmp($a->getName(),  $b->getName());
+                if (!$reverse) {
+                    usort(self::$events, function ($a, $b) {
+                        return strcmp($a->getName(), $b->getName());
                     });
-                }
-                else {
-                    usort(self::$events, function ($a, $b)
-                    {
+                } else {
+                    usort(self::$events, function ($a, $b) {
                         return strcmp($b->getName(), $a->getName());
                     });
                 }
-            break;
+                break;
             case "date":
-                if(!$reverse)
-                {
-                    usort(self::$events, function ($a, $b)
-                    {
+                if (!$reverse) {
+                    usort(self::$events, function ($a, $b) {
                         return strcasecmp($b->getStartDate()->format('Y-m-d'), $a->getStartDate()->format('Y-m-d'));
                     });
-                }
-                else {
-                    usort(self::$events, function ($a, $b)
-                    {
-                        return strcasecmp($a->getStartDate()->format('Y-m-d'),$b->getStartDate()->format('Y-m-d'));
+                } else {
+                    usort(self::$events, function ($a, $b) {
+                        return strcasecmp($a->getStartDate()->format('Y-m-d'), $b->getStartDate()->format('Y-m-d'));
                     });
                 }
                 break;
             case "owner":
-                if(!$reverse)
-                {
-                    usort(self::$events, function($a, $b)
-                    {
+                if (!$reverse) {
+                    usort(self::$events, function ($a, $b) {
                         return strcmp(strval($a->getOwnerId()), strval($b->getOwnerId()));
                     });
+                } else {
+                    usort(self::$events, function ($a, $b) {
+                        return strcmp(strval($b->getOwnerId()), strval($a->getOwnerId()));
+                    });
                 }
-            else {
-                usort(self::$events, function($a, $b)
-                {
-                    return strcmp(strval($b->getOwnerId()), strval($a->getOwnerId()));
-                });
-            }
                 break;
-                case "tag":
-                    if(!$reverse)
-                    {
-                        usort(self::$events, function ($a, $b)
-                        {
-                            return strcmp($a->getTag(),  $b->getTag());
-                        });
-                    }
-                    else {
-                        usort(self::$events, function ($a, $b)
-                        {
-                            return strcmp($b->getTag(), $a->getTag());
-                        });
-                    }
+            case "tag":
+                if (!$reverse) {
+                    usort(self::$events, function ($a, $b) {
+                        return strcmp($a->getTag(), $b->getTag());
+                    });
+                } else {
+                    usort(self::$events, function ($a, $b) {
+                        return strcmp($b->getTag(), $a->getTag());
+                    });
+                }
                 break;
-                default:
+            default:
                 throw new \Exception("Merci de renseigner un champ à tri");
         }
 
@@ -92,24 +77,27 @@ class EventFilter
 
     public function isEventBetween(Event $event, DateTime $minDate, DateTime $maxDate): bool
     {
-        if($event->getStartDate() > $minDate && $event->getStartDate() < $maxDate)
-        {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return $event->getStartDate() > $minDate && $event->getStartDate() < $maxDate;
+    }
+
+    public function isEventDateGreaterThan(Event $event, DateTime $date): bool
+    {
+        return $event->getStartDate() > $date;
+    }
+
+    public function isEventDateLowerThan(Event $event, DateTime $date): bool
+    {
+        return $event->getStartDate() < $date;
+    }
+
+    public function isEventDateEqualTo(Event $event, DateTime $date): bool
+    {
+        return $event->getStartDate() === $date;
     }
 
     public function isOnTag(Event $event, string $name): bool
     {
-        if($event->getTag() == $name)
-        {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return $event->getTag() == $name;
     }
 
 

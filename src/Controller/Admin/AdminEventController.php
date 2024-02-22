@@ -6,6 +6,8 @@ use App\Attribute\Route;
 use App\Controller\AbstractController;
 use App\Entity\Event;
 use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\TagRepository;
 use App\Repository\UserRepository;
 use DateTime;
@@ -18,10 +20,12 @@ use Twig\Error\SyntaxError;
 class AdminEventController extends AbstractController
 {
     public function __construct(
-        Environment                      $twig,
-        private readonly EventRepository $eventRepository,
-        private readonly TagRepository   $tagRepository,
-        private readonly UserRepository  $userRepository,
+        Environment                            $twig,
+        private readonly EventRepository       $eventRepository,
+        private readonly TagRepository         $tagRepository,
+        private readonly UserRepository        $userRepository,
+        private readonly ParticipantRepository $participantRepository,
+        private readonly InterestedRepository  $interestedRepository,
     )
     {
         parent::__construct($twig);
@@ -37,9 +41,13 @@ class AdminEventController extends AbstractController
     public function index(): string
     {
         $eventObjects = $this->eventRepository->findAll();
+        array_map(fn(Event $event): Event => $event->setDescription($this->truncate($event->getDescription(), 40, '...')), $eventObjects);
         $events = array_map(fn(Event $event): array => $event->toArray(), $eventObjects);
 
-//        var_dump($events);
+        $participants = $this->participantRepository->findAll();
+        $interesteds = $this->interestedRepository->findAll();
+        $users = $this->userRepository->findAll();
+
 
         $eventsWithOwners = [];
         foreach ($events as $event) {
@@ -58,7 +66,11 @@ class AdminEventController extends AbstractController
 
         return $this->twig->render('admin/index.html.twig', [
             'items' => $eventsWithOwners,
-            'entityName' => 'event'
+            'entityName' => 'event',
+            'interesteds' => $interesteds,
+            'participants' => $participants,
+            'events' => $eventObjects,
+            'users' => $users
         ]);
     }
 
@@ -157,7 +169,7 @@ class AdminEventController extends AbstractController
         $eventToDelete = $eventRepository->findOneBy(['id' => $idEvent]);
 
         if ($eventRepository->delete($eventToDelete)) {
-            $this->redirect('/admin/event/index');
+            $this->redirect($_SERVER['HTTP_REFERER']);
         }
     }
 }
