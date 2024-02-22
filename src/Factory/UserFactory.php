@@ -66,7 +66,7 @@ class UserFactory
         return new static;
     }
 
-    static public function withEndDate(DateTime $signedUpOn): static
+    static public function withSignedUpOn(DateTime $signedUpOn): static
     {
         self::distribute(
             fn(User $user) => $user->setSignedUpOn($signedUpOn)
@@ -86,6 +86,14 @@ class UserFactory
     {
         self::distribute(
             fn(User $user) => $user->setIsVerified($isVerified)
+        );
+        return new static;
+    }
+
+    static public function withRole(RoleEnum $roleEnum): static
+    {
+        self::distribute(
+            fn(User $user) => $user->setRoles($roleEnum->value)
         );
         return new static;
     }
