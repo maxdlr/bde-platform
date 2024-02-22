@@ -109,7 +109,7 @@ class UserFactory
             ->setFirstname($faker->firstName())
             ->setLastname($faker->lastName())
             ->setPassword('password')
-            ->setIsVerified(1)
+            ->setIsVerified($faker->boolean())
             ->setSignedUpOn($faker->dateTime());
 
         return $user;

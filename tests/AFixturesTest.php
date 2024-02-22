@@ -35,7 +35,7 @@ class AFixturesTest extends TestCase
     public function testCreateUsers()
     {
         $userRepository = new UserRepository();
-        $users = UserFactory::make(10)->generate();
+        $users = UserFactory::make(100)->generate();
         foreach ($users as $user) {
             $userRepository->insertOne($user);
         }
@@ -57,7 +57,7 @@ class AFixturesTest extends TestCase
     public function testCreateInterested()
     {
         $interestedRepository = new InterestedRepository();
-        $interesteds = InterestedFactory::make(30)->generate();
+        $interesteds = InterestedFactory::make(200)->generate();
         foreach ($interesteds as $interested) {
             $interestedRepository->insertOne($interested);
         }
@@ -68,7 +68,7 @@ class AFixturesTest extends TestCase
     public function testCreateParticipant()
     {
         $participantRepository = new ParticipantRepository();
-        $participants = ParticipantFactory::make(50)->generate();
+        $participants = ParticipantFactory::make(200)->generate();
         foreach ($participants as $participant) {
             $participantRepository->insertOne($participant);
         }
