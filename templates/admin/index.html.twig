@@ -9,16 +9,38 @@
 
         {{ include('admin/shared/_admin-header.html.twig') }}
 
-        {% if entityName == 'user' %}
-            <a href="/{{ entityName }}/new">Ajouter un utilisateur</a>
-        {% elseif entityName == 'event' %}
-            <a href="/admin/{{ entityName }}/new">Créer un nouvel évènement</a>
-        {% endif %}
+        {% set entity = {
+            user: 'utilisateur',
+            event: 'évenement'
+        } %}
 
-        {{ include('admin/shared/_data-table.html.twig', {
-            items: items,
-            entityName: entityName
-        }) }}
+        {% for key, entityValue in entity %}
+            {% if key is same as entityName %}
+
+                <div class="d-flex justify-content-between align-items-center mx-lg-5">
+                    <div class="">
+                        <h2>
+                            Les {{ entityValue|title }}s
+                        </h2>
+                    </div>
+
+                    <div>
+                        <a class="btn btn-primary rounded-pill my-3" href="/{{ entityName }}/new">Ajouter
+                            un {{ entityValue }}</a>
+
+                    </div>
+                </div>
+
+
+                {{ include('admin/shared/_data-table.html.twig', {
+                    items: items,
+                    entityName: entityName
+                }) }}
+
+            {% endif %}
+
+        {% endfor %}
+
 
     </main>
 

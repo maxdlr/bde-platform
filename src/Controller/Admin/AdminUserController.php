@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Attribute\Route;
 use App\Controller\AbstractController;
 use App\Entity\User;
-use App\Mapping\User\UserOTD;
 use App\Repository\EventRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
