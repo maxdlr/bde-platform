@@ -12,8 +12,11 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use App\Service\AlertManager;
+
 class IndexController extends AbstractController
 {
+    private User|bool $currentUser;
+
     public function __construct(
         Environment                            $twig,
         private readonly EventRepository       $eventRepository,
@@ -21,6 +24,7 @@ class IndexController extends AbstractController
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
     }
 
     /**
@@ -43,17 +47,10 @@ class IndexController extends AbstractController
             $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
         }
 
-        if(!is_null($_SESSION["user_connected"])){
-            $connectedUser = $this->getUserConnected();
-            $this->addFlash("success", "Vous êtes bien connecté !");
-        } else {
-            $connectedUser = null;
-        }
-
         return $this->twig->render('index/home.html.twig', [
             'events' => $events,
             'capacities' => $capacities,
-            'connectedUser' => $connectedUser,
+            'connectedUser' => $this->currentUser,
             'flashbag' => $_SESSION["flashbag"]
         ]);
     }

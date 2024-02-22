@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Attribute\Route;
 use App\Entity\User;
+use App\Repository\EventRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use Twig\Environment;
@@ -11,13 +13,15 @@ use DateTime;
 
 class UserController extends AbstractController
 {
+    private User|bool $currentUser;
+
     public function __construct(
-        Environment                      $twig,
-        private readonly UserRepository $userRepository,
+        Environment                     $twig,
         private readonly RoleRepository $roleRepository
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
     }
 
 
@@ -57,15 +61,14 @@ class UserController extends AbstractController
     {
         $this->clearFlashs();
 
-
         if (isset($_POST['connect-user-submit']) && $_POST['connect-user-submit'] == 'connect-user') {
 
             $userRepository = new UserRepository();
 
             $user = $userRepository->findOneBy(['email' => $_POST['email']]);
-            if(!is_null($user)){
+            if (!is_null($user)) {
                 $verifyHashPassword = password_verify($_POST['password'], $user->getPassword());
-                if($verifyHashPassword === true){
+                if ($verifyHashPassword === true) {
                     $_SESSION["user_connected"] = $user->getEmail();
 
                     $this->redirect('/');
@@ -73,7 +76,7 @@ class UserController extends AbstractController
                 } else {
                     $this->addFlash("danger", "Le mot de passe saisi ne correspond pas à l'adresse mail");
                 }
-            }else {
+            } else {
                 $this->addFlash("danger", "L'adresse mail saisie ne correspond à aucun compte");
             }
 
@@ -98,7 +101,15 @@ class UserController extends AbstractController
     #[Route('/user/dashboard', name: 'app_user_dashboard', httpMethod: ['GET'])]
     public function dahsboard(): string
     {
+        $eventRepository = new EventRepository();
+        $participantRepository = new ParticipantRepository();
+        $currentUserInterested = $eventRepository->findBy(
+            ['id' => $participantRepository->findOneBy(['user_id' => $this->currentUser->getId()])->getEventId()]
+        );
+
         return $this->twig->render('user/index.html.twig', [
+            'currentUser' => $this->currentUser,
+            'currentUserInterested' => $currentUserInterested
         ]);
     }
 }

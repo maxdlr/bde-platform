@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Attribute\Route;
 use App\Entity\Participant;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
@@ -12,14 +13,16 @@ use Twig\Environment;
 
 class ParticipantController extends AbstractController
 {
+    private User|bool $currentUser;
+
     public function __construct(
         Environment                            $twig,
         private readonly EventRepository       $eventRepository,
-        private readonly UserRepository        $userRepository,
         private readonly ParticipantRepository $participantRepository
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
     }
 
 
@@ -27,17 +30,16 @@ class ParticipantController extends AbstractController
     public function newParticipant(int $idEvent): string
     {
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
-        $currentUser = $this->getUserConnected();
 
         $participant = new Participant();
         $participantRepository = new ParticipantRepository();
 
         $participant
             ->setEventId($event->getId())
-            ->setUserId($currentUser->getId());
+            ->setUserId($this->currentUser->getId());
 
         if ($participantRepository->insertOne($participant)) {
-            $this->redirect('/event/show/'.$idEvent);
+            $this->redirect('/event/show/' . $idEvent);
         }
     }
 
@@ -45,14 +47,13 @@ class ParticipantController extends AbstractController
     public function deleteParticipant(int $idEvent): string
     {
         $participantList = $this->participantRepository->findBy(['event_id' => $idEvent]);
-        $connectedUser = $this->getUserConnected();
 
-        foreach ($participantList as $participant){
-            if ($participant->getUserId() == $connectedUser->getId()){
+        foreach ($participantList as $participant) {
+            if ($participant->getUserId() == $this->currentUser->getId()) {
                 $this->participantRepository->delete($participant);
             }
         }
 
-        $this->redirect('/event/show/'.$idEvent);
+        $this->redirect('/event/show/' . $idEvent);
     }
 }

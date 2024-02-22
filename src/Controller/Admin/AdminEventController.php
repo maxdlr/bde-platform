@@ -29,6 +29,11 @@ class AdminEventController extends AbstractController
     )
     {
         parent::__construct($twig);
+
+        if (!$this->isUserAllowedToRoute()) {
+            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
+            $this->redirect('/user/login');
+        }
     }
 
     /**
@@ -47,7 +52,6 @@ class AdminEventController extends AbstractController
         $participants = $this->participantRepository->findAll();
         $interesteds = $this->interestedRepository->findAll();
         $users = $this->userRepository->findAll();
-
 
         $eventsWithOwners = [];
         foreach ($events as $event) {

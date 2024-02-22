@@ -20,6 +20,11 @@ class AdminUserController extends AbstractController
     )
     {
         parent::__construct($twig);
+
+        if (!$this->isUserAllowedToRoute()) {
+            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
+            $this->redirect('/user/login');
+        }
     }
 
     #[Route('/admin/user/index', name: 'app_admin_user_index', httpMethod: ['GET'])]
@@ -29,6 +34,7 @@ class AdminUserController extends AbstractController
         $users = array_map(fn(User $user): array => $user->toArray(), $userObjects);
         $events = $this->eventRepository->findAll();
 
+        $user = $this->getUserConnected() ?? null;
 
         return $this->twig->render('admin/index.html.twig', [
             'items' => $users,
@@ -43,7 +49,6 @@ class AdminUserController extends AbstractController
     {
         $userRepository = new UserRepository();
         $user = $userRepository->findOneBy(['id' => $idUser]);
-
 
         if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
 

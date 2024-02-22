@@ -6,8 +6,117 @@
 
 {% block body %}
 
-    <main class="container">
-        {{ welcomeMsg }}
-    </main>
+    <nav>
+        <div class="nav nav-tabs justify-content-center my-4 fs-4" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-interested"
+                    type="button" role="tab" aria-controls="nav-interested" aria-selected="true">Interessé
+            </button>
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-participant"
+                    type="button" role="tab" aria-controls="nav-participant" aria-selected="false">Inscrit
+            </button>
+        </div>
+    </nav>
+
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-interested" role="tabpanel" aria-labelledby="nav-interested-tab"
+             tabindex="0">
+
+            {% for currentUserInterested in currentUserInteresteds %}
+
+                <div class="p-2">
+                    <div class="card">
+                        <div class="row g-2">
+                            <div class="col">
+
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div class="card-title fw-bolder">
+                                        {{ currentUserInterested.name }}
+                                    </div>
+                                    <div class="card-subtitle">
+                                        {{ currentUserInterested.startDate|date("d/m/y") }}
+                                    </div>
+                                </div>
+
+                                <div class="card-body row">
+
+                                    <div class="col-3">
+                                        <img src="{{ currentUserInterested.fileName }}"
+                                             alt="image de {{ currentUserInterested.name }}"
+                                             class="img-fluid">
+                                    </div>
+
+                                    <div class="col">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr>
+                                                <th>
+                                                    Participants
+                                                </th>
+                                                <td>
+                                                    {% set eventParticipantCount = [] %}
+                                                    {% for participant in participants %}
+                                                        {% if participant.eventId is same as currentUserInterested.id %}
+                                                            {% set eventParticipantCount = eventParticipantCount|merge([participant.id]) %}
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                    <span class="{{ eventParticipantCount|length is same as 0 ? 'bg-danger' : '' }} {{ eventParticipantCount|length <= 3 ? 'bg-warning' : '' }} {{ eventParticipantCount|length > 3 ? 'bg-success' : '' }} badge rounded-pill fs-5">
+                                                {{ eventParticipantCount|length }}
+                                                </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    Interessés
+                                                </th>
+                                                <td>
+                                                    {% set eventInterestedCount = [] %}
+                                                    {% for interested in interesteds %}
+                                                        {% if interested.eventId is same as currentUserInterested.id %}
+                                                            {% set eventInterestedCount = eventInterestedCount|merge([interested.id]) %}
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                    <span class="{{ eventInterestedCount|length < 5 ? 'bg-danger' : '' }} {{ eventInterestedCount|length <= 10 ? 'bg-warning' : '' }} {{ eventInterestedCount|length > 10 ? 'bg-success' : '' }} badge rounded-pill fs-5">
+                                                {{ eventInterestedCount|length }}
+                                                </span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-2 d-flex flex-column justify-content-center align-items-center gap-2">
+
+                                <a class="btn btn-primary px-3 py-2 rounded-pill d-block"
+                                   href="/event/show/{{ currentUserInterested.id }}">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a class="btn btn-danger px-3 py-2 rounded-pill d-block"
+                                   href="/admin/event/delete/{{ currentUserInterested.id }}"><i
+                                            class="bi bi-trash-fill"></i></a>
+
+                                <a class="btn btn-warning px-3 py-2 rounded-pill d-block"
+                                   href="/admin/event/edit/{{ currentUserInterested.id }}"><i
+                                            class="bi bi-pencil-fill"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="blockquote-footer my-3">Interessé à aucun évenement.</p>
+            {% endfor %}
+
+        </div>
+        <div class="tab-pane fade" id="nav-participant" role="tabpanel" aria-labelledby="nav-participant-tab"
+             tabindex="0">
+
+
+        </div>
+    </div>
+
 
 {% endblock %}

@@ -22,6 +22,11 @@ class AdminController extends AbstractController
     )
     {
         parent::__construct($twig);
+
+        if (!$this->isUserAllowedToRoute()) {
+            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
+            $this->redirect('/user/login');
+        }
     }
 
     #[Route('/admin/dashboard', name: 'app_admin_dashboard', httpMethod: ['GET'])]
