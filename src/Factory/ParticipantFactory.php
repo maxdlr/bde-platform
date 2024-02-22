@@ -62,7 +62,6 @@ class ParticipantFactory
 
     static private function mountObjectBase(): Participant
     {
-        $faker = Factory::create();
         $user = UserFactory::random();
         $event = EventFactory::random();
 

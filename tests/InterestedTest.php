@@ -1,16 +1,10 @@
 <?php
 
-use App\Entity\Event;
-use App\Entity\User;
 use App\Entity\Interested;
 use App\Factory\EventFactory;
 use App\Factory\InterestedFactory;
 use App\Factory\UserFactory;
-use App\Repository\EventRepository;
-use App\Repository\UserRepository;
 use App\Repository\InterestedRepository;
-use App\Mapping\Interested\InterestedOTD;
-use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 
 class InterestedTest extends TestCase
