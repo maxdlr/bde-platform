@@ -65,7 +65,7 @@ readonly class Router
     {
         $uriWithoutID = substr($uri, 0, strrpos($uri, "/"));
 
-        $regExpr2 = "#".$uriWithoutID."\/(\d+)#";
+        $regExpr2 = "#".$uriWithoutID."\/([A-Za-z0-9]+)#";
 
         $uriNew = $uriWithoutID."/{id}";
 
