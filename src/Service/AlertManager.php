@@ -34,7 +34,7 @@ public function alert()
             {
                 $body = $data['name'];
                 $body .= "est l'évènement auquel vous vous êtes inscrit, et il se déroule demain ! Ne le loupez pas !";
-                $mailManager->sendMail($data['user.email'], $subject, $body);
+                $mailManager->sendMail($data['email'], $subject, $body);
             }
         }
 
