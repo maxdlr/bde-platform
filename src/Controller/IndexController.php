@@ -11,7 +11,7 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-
+use App\Service\AlertManager;
 class IndexController extends AbstractController
 {
     public function __construct(
@@ -32,7 +32,8 @@ class IndexController extends AbstractController
     public function home(): string
     {
         $this->clearFlashs();
-
+        $alertManager = new AlertManager;
+        $alertManager->alert();
         $events = $this->eventRepository->findAll();
         $capacities = [];
         foreach ($events as $event) {

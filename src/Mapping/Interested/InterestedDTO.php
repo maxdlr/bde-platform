@@ -30,6 +30,7 @@ class InterestedDTO extends DTO implements DTOInterface
         $interested = new Interested();
 
         $interested
+            ->setId($this->from['id'])
             ->setEventId($this->from['event_id'])
             ->setUserId($this->from['user_id']);
 
