@@ -26,9 +26,11 @@ class EventController extends AbstractController
     public function show(int $id): string
     {
         $event = $this->eventRepository->findOneBy(['id' => $id]);
+        $remainingCapacity = $event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()]));
 
         return $this->twig->render('event/show.html.twig', [
             'event' => $event,
+            'remainingCapacity' => $remainingCapacity,
         ]);
     }
 
