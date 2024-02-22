@@ -16,14 +16,14 @@ public function alert()
         $eventRepository = new EventRepository;
         $participantRepository = new ParticipantRepository;
 
-        $event = EventFactory::make()->withName('Sortie à la plage ')->withStartDate(new \DateTime("tomorrow"))
-        ->withEndDate(new \DateTime("2024-02-24"))->generate();
-        $eventRepository->insertOne($event);
+        // $event = EventFactory::make()->withName('Sortie à la plage ')->withStartDate(new \DateTime("tomorrow"))
+        // ->withEndDate(new \DateTime("2024-02-24"))->generate();
+        // $eventRepository->insertOne($event);
 
-        $retrievedEvent = $eventRepository->findOneBy(['name' => 'Sortie à la plage ']);
+        // $retrievedEvent = $eventRepository->findOneBy(['name' => 'Sortie à la plage ']);
 
-        $participant = ParticipantFactory::make()->withEvent($retrievedEvent)->generate();
-        $participantRepository->insertOne($participant);
+        // $participant = ParticipantFactory::make()->withEvent($retrievedEvent)->generate();
+        // $participantRepository->insertOne($participant);
         $subject = "Attention !";
         $mailManager = new MailManager;
         $tomorrow = new \DateTime("tomorrow");
@@ -32,11 +32,9 @@ public function alert()
         {
             if($tomorrow->diff(\DateTime::createFromFormat('Y-m-j H:i:s', $data['startDate']))->days == 0)
             {
-                var_dump("ok");
                 $body = $data['name'];
                 $body .= "est l'évènement auquel vous vous êtes inscrit, et il se déroule demain ! Ne le loupez pas !";
                 $mailManager->sendMail($data['user.email'], $subject, $body);
-
             }
         }
 
