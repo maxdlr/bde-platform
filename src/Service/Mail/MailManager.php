@@ -42,12 +42,10 @@ class MailManager
         }
 
     }
-        public function sendValidateMail($emailto)
+        public function sendValidateMail($emailto, $token)
         {
-            $token = md5(uniqid(rand(), true));
             $userRepository = new UserRepository;
-            if($userRepository->executeRequest("UPDATE user SET user.lastname = '321c9fb495648978b9f821a698bb6016' WHERE user.email = 'mathieu.moyaerts.pro@gmail.com'"))
-            {
+            if($userRepository->executeRequest("UPDATE user SET token = '$token' WHERE email = '$emailto'"))
 
                 $subject = "Confirmation de votre compte";
                 $message = "Bonjour,\n\n";
@@ -57,18 +55,16 @@ class MailManager
                 $message .= "Cordialement,\nVotre BDE";
 
                 $this->sendMail($emailto, $subject, $message);
-            }
         }
         public function validationUser($token)
         {
             $userRepository = new UserRepository;
-            $userForValidate = $userRepository->findOneBy(["token" => $token]);
-            var_dump($userRepository->findOneBy(["token" => 'e8d9353740f56c2d39797aecdecc100d']));
-            die();
+            $userForValidate = $userRepository->findOneBy(["token"=> $token]);
             $userForValidate->setIsVerified(true);
             if($userRepository->update(["isVerified" => "1"], ["token" => $token]))
             {
-                echo "Bienvenu ". $userForValidate->getFirstName();
+
+            echo "Bienvenu ". $userForValidate->getFirstName();
             }
         }
 }

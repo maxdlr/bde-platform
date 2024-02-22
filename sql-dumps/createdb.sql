@@ -1,3 +1,4 @@
+set FOREIGN_KEY_CHECKS = 0;
 
 DROP DATABASE IF EXISTS bde_platform;
 CREATE DATABASE IF NOT EXISTS bde_platform;
@@ -31,7 +32,7 @@ CREATE TABLE user
     roles      varchar(255) not null,
     isVerified tinyint,
     signedUpOn dateTime     not null,
-    token      varchar(255) UNIQUE,
+    token      varchar(255) not null UNIQUE,
     PRIMARY KEY (id) 
 );
 DROP TABLE IF EXISTS interested;

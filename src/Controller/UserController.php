@@ -41,9 +41,12 @@ class UserController extends AbstractController
                 ->setRoles("student")
                 ->setIsVerified(false)
                 ->setSignedUpOn($dateCurrentDate);
-            $mailManager->sendValidateMail($_POST['email']);
 
             if ($userRepository->insertOne($user)) {
+                $token = md5(uniqid(rand(), true));
+
+                $mailManager->sendValidateMail($_POST['email'], $token);
+
                 $this->redirect('/admin/user/index');
             }
             else {
