@@ -37,7 +37,7 @@ try {
     echo $router->execute($uri, $httpMethod);
 } catch (RouteNotFoundException) {
     http_response_code(404);
-    echo "Page non trouvée";
+    header('Location: /error404');
 } catch (Exception $e) {
     http_response_code(500);
     var_dump($e);

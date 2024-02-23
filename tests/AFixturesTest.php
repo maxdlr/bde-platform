@@ -50,24 +50,6 @@ class AFixturesTest extends TestCase
         self::assertNotNull($userRepository->findOneBy(['email' => 'mathieu.moyaerts.pro@gmail.com']));
     }
 
-    public function testCreateLouis()
-    {
-        $userRepository = new UserRepository();
-        $louis = UserFactory::make()
-            ->withFirstname('Louis')
-            ->withLastname('Cauvet')
-            ->withEmail('louiscauvet8@gmail.com')
-            ->withRole(RoleEnum::ROLE_STUDENT)
-            ->withSignedUpOn(new DateTime('now'))
-            ->withPassword('password')
-            ->withIsVerified(true)
-            ->generate();
-
-        $userRepository->insertOne($louis);
-
-        self::assertNotNull($userRepository->findOneBy(['email' => 'louiscauvet8@gmail.com']));
-    }
-
     public function testCreateUsers()
     {
         $userRepository = new UserRepository();

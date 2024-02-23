@@ -101,4 +101,10 @@ class IndexController extends AbstractController
             'endEvent' => $lastEvent,
         ]);
     }
+
+    #[Route('/error404', name: 'app_error', httpMethod: ['GET'])]
+    public function error(): string
+    {
+        return $this->twig->render('404.html.twig', []);
+    }
 }
