@@ -10,6 +10,7 @@ use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\TagRepository;
 use App\Repository\UserRepository;
+use App\Service\Mail\MailManager;
 use DateTime;
 use Exception;
 use Twig\Environment;
@@ -226,6 +227,11 @@ class AdminEventController extends AbstractController
                     'tag' => $_POST['tag'],
                     'capacity' => $_POST['capacity']
                 ];
+                if($event->getStartDate() != $startDate)
+                {
+                    $mailManager = new MailManager;
+                    $mailManager->sendModifDate($event, $startDate);
+                }
 
                 if ($eventRepository->update($updatedEventArray, $event)) {
                     $this->redirect('/admin/event/index');
