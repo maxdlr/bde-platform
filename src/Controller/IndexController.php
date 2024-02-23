@@ -85,8 +85,8 @@ class IndexController extends AbstractController
             $connectedUser = $this->getUserConnected();
             $this->addFlash("success", "Vous êtes bien connecté !");
             $alertManager = new AlertManager;
-            $alertManager->alert();
-            $alertManager->alertj5();
+            $alertManager->alert($connectedUser);
+            $alertManager->alertj5($connectedUser);
         } else {
             $connectedUser = null;
         }
