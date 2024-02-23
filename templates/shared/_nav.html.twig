@@ -7,16 +7,19 @@
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/dashboard">Mes évenements</a>
+                    <a class="nav-link active" href="/user/dashboard">Mes évenements</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin/dashboard">Admin</a>
+                    <a class="nav-link active" href="/admin/dashboard">Admin</a>
                 </li>
             </ul>
             {% if connectedUser.id == null %}
-                <a class="btn btn-warning rounded-pill border-0" href="/user/login">Connexion</a>
+                <div class="d-flex flex-column flex-md-row gap-3">
+                    <a class="btn btn-warning rounded-pill border-0" href="/user/login">Connexion</a>
+                    <a class="btn btn-primary rounded-pill border-white" href="/user/new">Inscription</a>
+                </div>
             {% else %}
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 mt-5 mt-md-0">
                     <p class="mb-0">Bonjour {{ connectedUser.firstname }} {{ connectedUser.lastname }}</p>
                     <a class="btn btn-warning rounded-pill border-0" href="/user/logout">Déconnexion</a>
                 </div>

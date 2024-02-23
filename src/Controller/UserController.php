@@ -25,35 +25,48 @@ class UserController extends AbstractController
     #[Route('/user/new', name: 'app_user_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
+        $roles = $this->roleRepository->findAll();
+
         if (isset($_POST['new-user-submit']) && $_POST['new-user-submit'] == 'new-user') {
-            $user = new User();
+
             $userRepository = new UserRepository();
-            $mailManager = new MailManager;
+            if($userRepository->findOneBy(['email' => $_POST['email']])){
+                $this->addFlash("danger", "L'adresse mail saisie est déja occupée par l'un des utilisateurs !");
+                return $this->twig->render('user/user-new.html.twig', [
+                    'tags' => $roles,
+                    'admin' => false,
+                    'flashbag' => $_SESSION["flashbag"]
+                ]);
+            } else {
 
-            $stringCurrentDate = date('Y-m-d H:i:s');
-            $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
+                $user = new User();
+                $mailManager = new MailManager;
 
-            $user
-                ->setFirstname($_POST['firstname'])
-                ->setLastname($_POST['lastname'])
-                ->setEmail($_POST['email'])
-                ->setPassword($_POST['password'])
-                ->setRoles("student")
-                ->setIsVerified(false)
-                ->setSignedUpOn($dateCurrentDate);
+                $stringCurrentDate = date('Y-m-d H:i:s');
+                $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
 
-            if ($userRepository->insertOne($user)) {
-                $token = md5(uniqid(rand(), true));
+                $user
+                    ->setFirstname($_POST['firstname'])
+                    ->setLastname($_POST['lastname'])
+                    ->setEmail($_POST['email'])
+                    ->setPassword($_POST['password'])
+                    ->setRoles("student")
+                    ->setIsVerified(false)
+                    ->setSignedUpOn($dateCurrentDate);
 
-                $mailManager->sendValidateMail($_POST['email'], $token);
+                if ($userRepository->insertOne($user)) {
+                    $token = md5(uniqid(rand(), true));
 
-                $this->redirect('/admin/user/index');
+                    $mailManager->sendValidateMail($_POST['email'], $token);
+
+                    $this->redirect('/admin/user/index');
+                }
             }
         }
 
-        $roles = $this->roleRepository->findAll();
         return $this->twig->render('user/user-new.html.twig', [
             'tags' => $roles,
+            'admin' => false,
         ]);
     }
 

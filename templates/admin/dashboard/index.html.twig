@@ -10,7 +10,7 @@
         {{ include('admin/shared/_admin-header.html.twig') }}
 
         <h2>Programmation</h2>
-        <p>Les Evenements futur</p>
+        <p>Les évènements à venir !</p>
 
         <div class="row row-cols-lg-3 g-2">
 
@@ -21,7 +21,7 @@
                         <div class="row g-2">
                             <div class="col">
 
-                                <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="card-header d-flex gap-2 px-3 justify-content-between align-items-center">
                                     <div class="card-title fw-bolder">
                                         {{ futureEvent.name }}
                                     </div>
@@ -32,7 +32,7 @@
 
                                 <div class="card-body row">
 
-                                    <div class="col-3">
+                                    <div class="d-none d-md-block col-3">
                                         <img src="{{ futureEvent.fileName }}" alt="image de {{ futureEvent.name }}"
                                              class="img-fluid">
                                     </div>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-2 d-flex flex-column justify-content-center align-items-center gap-2">
+                            <div class="col-3 col-md-2 d-flex flex-column justify-content-center align-items-center gap-2">
 
                                 <a class="btn btn-primary px-3 py-2 rounded-pill d-block"
                                    href="/event/show/{{ futureEvent.id }}">

@@ -9,6 +9,7 @@ use App\Repository\EventRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Twig\Environment;
+use DateTime;
 
 class AdminUserController extends AbstractController
 {
@@ -41,35 +42,42 @@ class AdminUserController extends AbstractController
     #[Route('/admin/user/new', name: 'app_admin_user_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
-        if (isset($_POST['new-user-submit']) && $_POST['new-user-submit'] == 'new-user') {
-            $user = new User();
+        $roles = $this->roleRepository->findAll();
+
+        if (isset($_POST['admin-new-user-submit']) && $_POST['admin-new-user-submit'] == 'admin-new-user') {
+
             $userRepository = new UserRepository();
-            $mailManager = new MailManager;
+            if($userRepository->findOneBy(['email' => $_POST['email']])){
+                $this->addFlash("danger", "L'adresse mail saisie est déja occupée par l'un des utilisateurs !");
+                return $this->twig->render('user/user-new.html.twig', [
+                    'tags' => $roles,
+                    'admin' => true,
+                    'flashbag' => $_SESSION["flashbag"]
+                ]);
+            } else {
 
-            $stringCurrentDate = date('Y-m-d H:i:s');
-            $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
+                $user = new User();
+                $stringCurrentDate = date('Y-m-d H:i:s');
+                $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
 
-            $user
-                ->setFirstname($_POST['firstname'])
-                ->setLastname($_POST['lastname'])
-                ->setEmail($_POST['email'])
-                ->setPassword($_POST['password'])
-                ->setRoles("student")
-                ->setIsVerified(false)
-                ->setSignedUpOn($dateCurrentDate);
+                $user
+                    ->setFirstname($_POST['firstname'])
+                    ->setLastname($_POST['lastname'])
+                    ->setEmail($_POST['email'])
+                    ->setPassword($_POST['password'])
+                    ->setRoles($_POST['role'])
+                    ->setIsVerified(true)
+                    ->setSignedUpOn($dateCurrentDate);
 
-            if ($userRepository->insertOne($user)) {
-                $token = md5(uniqid(rand(), true));
-
-                $mailManager->sendValidateMail($_POST['email'], $token);
-
-                $this->redirect('/admin/user/index');
+                if ($userRepository->insertOne($user)) {
+                    $this->redirect('/admin/user/index');
+                }
             }
         }
 
-        $roles = $this->roleRepository->findAll();
         return $this->twig->render('user/user-new.html.twig', [
             'tags' => $roles,
+            'admin' => true,
         ]);
     }
 
@@ -79,27 +87,37 @@ class AdminUserController extends AbstractController
         $userRepository = new UserRepository();
         $user = $userRepository->findOneBy(['id' => $idUser]);
 
+        $roles = $this->roleRepository->findAll();
 
         if (isset($_POST['edit-user-submit']) && $_POST['edit-user-submit'] == 'edit-user') {
 
-            $updatedUserArray = [
-                'firstname' => $_POST['firstname'],
-                'lastname' => $_POST['lastname'],
-                'email' => $_POST['email'],
-                'roles' => $_POST['role']
-            ];
-
-            if ($_POST['isVerified'] === "on") {
-                $updatedUserArray['isVerified'] = 1;
+            $userRepository = new UserRepository();
+            $mailOriginUser = $user->getEmail();
+            if($_POST['email'] != $mailOriginUser && $userRepository->findOneBy(['email' => $_POST['email']])){
+                $this->addFlash("danger", "L'adresse mail saisie est déja occupée par l'un des utilisateurs !");
+                return $this->twig->render('admin/edit/user-edit.html.twig', [
+                    'tags' => $roles,
+                    'flashbag' => $_SESSION["flashbag"]
+                ]);
             } else {
-                $updatedUserArray['isVerified'] = 0;
-            }
+                $updatedUserArray = [
+                    'firstname' => $_POST['firstname'],
+                    'lastname' => $_POST['lastname'],
+                    'email' => $_POST['email'],
+                    'roles' => $_POST['role']
+                ];
 
-            if ($userRepository->update($updatedUserArray, $user)) {
-                $this->redirect('/admin/user/index');
+                if ($_POST['isVerified'] === "on") {
+                    $updatedUserArray['isVerified'] = 1;
+                } else {
+                    $updatedUserArray['isVerified'] = 0;
+                }
+
+                if ($userRepository->update($updatedUserArray, $user)) {
+                    $this->redirect('/admin/user/index');
+                }
             }
         } elseif (!is_null($user)) {
-            $roles = $this->roleRepository->findAll();
             return $this->twig->render('admin/edit/user-edit.html.twig', [
                 'item' => $user,
                 'roles' => $roles
