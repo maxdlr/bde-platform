@@ -21,7 +21,7 @@ class AFixturesTest extends TestCase
             ->withFirstname('Maxime')
             ->withLastname('de la Rocheterie')
             ->withEmail('contact@maxdlr.com')
-            ->withRole(RoleEnum::ROLE_ADMIN)
+            ->withRole(RoleEnum::ROLE_MANAGER)
             ->withSignedUpOn(new DateTime('now'))
             ->withPassword('password')
             ->withIsVerified(true)
@@ -31,6 +31,7 @@ class AFixturesTest extends TestCase
 
         self::assertNotNull($userRepository->findOneBy(['email' => 'contact@maxdlr.com']));
     }
+
     public function testCreateMathieu()
     {
         $userRepository = new UserRepository();
@@ -56,9 +57,9 @@ class AFixturesTest extends TestCase
             ->withFirstname('Louis')
             ->withLastname('Cauvet')
             ->withEmail('louiscauvet8@gmail.com')
-            ->withRole(RoleEnum::ROLE_ADMIN)
+            ->withRole(RoleEnum::ROLE_STUDENT)
             ->withSignedUpOn(new DateTime('now'))
-            ->withPassword('9B6rc43*>')
+            ->withPassword('password')
             ->withIsVerified(true)
             ->generate();
 
@@ -147,5 +148,47 @@ class AFixturesTest extends TestCase
         $eventId = $eventRepo->getId();
         $participantRepository->executeRequest("DELETE FROM participant WHERE event_id = $eventId");
         self::assertNotNull($eventRepository->findOneBy(["owner_id" => $moi->getId()]));
+    }
+
+    public function testCreateInterestedAndParticipantForMaxime()
+    {
+        $userRepository = new UserRepository();
+        $participantRepository = new ParticipantRepository();
+        $interestedRepository = new InterestedRepository();
+
+        $maxFromDb = $userRepository->findOneBy(['lastname' => 'de la Rocheterie']);
+
+        $participants = ParticipantFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
+        $interesteds = InterestedFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
+
+        foreach ($participants as $participant) {
+            $participantRepository->insertOne($participant);
+        }
+
+        foreach ($interesteds as $interested) {
+            $interestedRepository->insertOne($interested);
+        }
+
+        self::assertTrue(true);
+    }
+
+    public function testPresentation()
+    {
+        $eventRepository = new EventRepository();
+        $event = EventFactory::make()->withName('Event complet')->withCapacity(22)->generate();
+        $eventRepository->insertOne($event);
+
+        $eventObject = $eventRepository->findOneBy(['name' => 'Event complet']);
+
+        // -----------------------
+
+        $participantRepository = new ParticipantRepository();
+        $participants = ParticipantFactory::make(22)->withEvent($eventObject)->generate();
+
+        foreach ($participants as $participant) {
+            $participantRepository->insertOne($participant);
+        }
+        self::assertTrue(true);
+
     }
 }

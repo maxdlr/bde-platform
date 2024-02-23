@@ -8,9 +8,10 @@ use App\Repository\EventRepository;
 use App\Service\Mail\MailManager;
 use App\Repository\ParticipantRepository;
 
-class AlertManager {
+class AlertManager
+{
 
-public function alert()
+    public function alert()
     {
         $entityManager = new EntityManager;
         $eventRepository = new EventRepository;

@@ -4,15 +4,19 @@ namespace App\Controller\Admin;
 
 use App\Attribute\Route;
 use App\Controller\AbstractController;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use App\Service\EventFilter;
+use DateTime;
 use Twig\Environment;
 
 class AdminController extends AbstractController
 {
+    private User|null|bool $currentUser;
+
     public function __construct(
         Environment                            $twig,
         private readonly UserRepository        $userRepository,
@@ -22,6 +26,9 @@ class AdminController extends AbstractController
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
+
+        $this->redirectIfForbidden();
     }
 
     #[Route('/admin/dashboard', name: 'app_admin_dashboard', httpMethod: ['GET'])]
@@ -35,7 +42,7 @@ class AdminController extends AbstractController
 
         $futureEvents = [];
         foreach ($events as $event) {
-            if ($eventFilter->isEventDateGreaterThan($event, new \DateTime('now'))) {
+            if ($eventFilter->isEventDateGreaterThan($event, new DateTime('now'))) {
                 $futureEvents[] = $event;
             }
         }
@@ -45,7 +52,8 @@ class AdminController extends AbstractController
             'events' => $events,
             'interesteds' => $interesteds,
             'participants' => $participants,
-            'futureEvents' => $futureEvents
+            'futureEvents' => $futureEvents,
+            'currentUser' => $this->currentUser
         ]);
     }
 }

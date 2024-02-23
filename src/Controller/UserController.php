@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Attribute\Route;
 use App\Entity\User;
+use App\Repository\EventRepository;
+use App\Repository\InterestedRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use App\Service\AlertManager;
@@ -13,13 +16,18 @@ use DateTime;
 
 class UserController extends AbstractController
 {
+    private User|null|bool $currentUser;
+
     public function __construct(
-        Environment                      $twig,
-        private readonly UserRepository $userRepository,
-        private readonly RoleRepository $roleRepository
+        Environment                            $twig,
+        private readonly RoleRepository        $roleRepository,
+        private readonly EventRepository       $eventRepository,
+        private readonly ParticipantRepository $participantRepository,
+        private readonly InterestedRepository  $interestedRepository,
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
     }
 
 
@@ -31,7 +39,7 @@ class UserController extends AbstractController
         if (isset($_POST['new-user-submit']) && $_POST['new-user-submit'] == 'new-user') {
 
             $userRepository = new UserRepository();
-            if($userRepository->findOneBy(['email' => $_POST['email']])){
+            if ($userRepository->findOneBy(['email' => $_POST['email']])) {
                 $this->addFlash("danger", "L'adresse mail saisie est déja occupée par l'un des utilisateurs !");
                 return $this->twig->render('user/user-new.html.twig', [
                     'tags' => $roles,
@@ -43,8 +51,8 @@ class UserController extends AbstractController
                 $user = new User();
                 $mailManager = new MailManager;
 
-                $stringCurrentDate = date('Y-m-d H:i:s');
-                $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
+                $dateCurrentDate = new DateTime('now');
+//                $this->dd($dateCurrentDate);
 
                 $user
                     ->setFirstname($_POST['firstname'])
@@ -76,32 +84,33 @@ class UserController extends AbstractController
     {
         $this->clearFlashs();
 
-
         if (isset($_POST['connect-user-submit']) && $_POST['connect-user-submit'] == 'connect-user') {
 
             $userRepository = new UserRepository();
 
             $user = $userRepository->findOneBy(['email' => $_POST['email']]);
-            if(!is_null($user)){
+            if (!is_null($user)) {
                 $verifyHashPassword = password_verify($_POST['password'], $user->getPassword());
-                if($verifyHashPassword === true){
+                if ($verifyHashPassword === true) {
                     $_SESSION["user_connected"] = $user->getEmail();
     
                     $this->redirect('/');
-                    exit();
                 } else {
                     $this->addFlash("danger", "Le mot de passe saisi ne correspond pas à l'adresse mail");
                 }
-            }else {
+            } else {
                 $this->addFlash("danger", "L'adresse mail saisie ne correspond à aucun compte");
             }
 
             return $this->twig->render('user/login.html.twig', [
-                'flashbag' => $_SESSION["flashbag"]
+                'flashbag' => $_SESSION["flashbag"],
+                'currentUser' => $this->currentUser,
             ]);
         }
 
-        return $this->twig->render('user/login.html.twig', []);
+        return $this->twig->render('user/login.html.twig', [
+            'currentUser' => $this->currentUser,
+        ]);
     }
 
     #[Route('/user/logout', name: 'app_user_logout', httpMethod: ['GET'])]
@@ -117,7 +126,34 @@ class UserController extends AbstractController
     #[Route('/user/dashboard', name: 'app_user_dashboard', httpMethod: ['GET'])]
     public function dahsboard(): string
     {
+        $this->redirectIfForbidden();
+
+        $participants = $this->participantRepository->findAll();
+        $interesteds = $this->interestedRepository->findAll();
+
+        $currentInteresteds = $this->interestedRepository->findBy(['user_id' => $this->currentUser->getId()]);
+        $currentParticipants = $this->participantRepository->findBy(['user_id' => $this->currentUser->getId()]);
+
+        $interestedEvents = [];
+        foreach ($currentInteresteds as $interested) {
+            $event = $this->eventRepository->findOneBy(['id' => $interested->getEventId()]);
+            $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
+            $interestedEvents[] = $event;
+        }
+
+        $participantEvents = [];
+        foreach ($currentParticipants as $participant) {
+            $event = $this->eventRepository->findOneBy(['id' => $participant->getEventId()]);
+            $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
+            $participantEvents[] = $event;
+        }
+
         return $this->twig->render('user/index.html.twig', [
+            'currentUser' => $this->currentUser,
+            'interestedEvents' => $interestedEvents,
+            'participantEvents' => $participantEvents,
+            'interesteds' => $interesteds,
+            'participants' => $participants,
         ]);
     }
 

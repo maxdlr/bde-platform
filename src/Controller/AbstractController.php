@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
+use App\Service\Security;
 use JetBrains\PhpStorm\NoReturn;
 use Twig\Environment;
 
@@ -31,18 +33,21 @@ abstract class AbstractController
         exit();
     }
 
-    protected function getUserConnected(): User
+    protected function getUserConnected(): User|null|false
     {
-        if (isset($_SESSION["user_connected"])){
+        if (isset($_SESSION["user_connected"])) {
             $userRepository = new UserRepository();
             $userConnected = $userRepository->findOneBy(['email' => $_SESSION["user_connected"]]);
 
-            return $userConnected;
+            return $userConnected ?? null;
+        } else {
+            return false;
         }
     }
 
-    public function addFlash(string $flashType, string $flashMessage):void{
-        if(isset($_SESSION)){
+    public function addFlash(string $flashType, string $flashMessage): void
+    {
+        if (isset($_SESSION)) {
 
             $newFlash = ["type" => $flashType, "message" => $flashMessage];
 
@@ -50,7 +55,8 @@ abstract class AbstractController
         }
     }
 
-    public function clearFlashs():void{
+    public function clearFlashs(): void
+    {
         unset($_SESSION["flashbag"]);
     }
 
@@ -58,5 +64,40 @@ abstract class AbstractController
     {
         $result = substr($string, 0, $charMax);
         return $result . $suffix;
+    }
+
+    protected function isUserAllowedToRoute(): bool
+    {
+        $user = $this->getUserConnected() ? $this->getUserConnected() : null;
+        $url = $_SERVER['REQUEST_URI'];
+
+        if (str_contains('/event/show', $url)) return true;
+
+
+        if (!$user || $user === null) {
+            $this->redirect('/user/login');
+        }
+
+        if ($user->getRoles() === RoleEnum::ROLE_ADMIN->value) return true;
+
+        $forbiddenroutesForUser = Security::getForbiddenRoutes(RoleEnum::tryFrom($user->getRoles()));
+
+
+        $allowed = true;
+        foreach ($forbiddenroutesForUser as $routes) {
+            if (str_contains($routes, $url)) {
+                $allowed = false;
+            }
+        }
+
+        return $allowed;
+    }
+
+    protected function redirectIfForbidden()
+    {
+        if (!$this->isUserAllowedToRoute()) {
+            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
+            $this->redirect('/user/login');
+        }
     }
 }

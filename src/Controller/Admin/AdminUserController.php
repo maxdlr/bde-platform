@@ -13,6 +13,8 @@ use DateTime;
 
 class AdminUserController extends AbstractController
 {
+    private User|null|bool $currentUser;
+
     public function __construct(
         Environment                      $twig,
         private readonly UserRepository  $userRepository,
@@ -21,6 +23,10 @@ class AdminUserController extends AbstractController
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
+        $this->isUserAllowedToRoute();
+        $this->redirectIfForbidden();
+
     }
 
     #[Route('/admin/user/index', name: 'app_admin_user_index', httpMethod: ['GET'])]
@@ -36,6 +42,7 @@ class AdminUserController extends AbstractController
             'users' => $users,
             'entityName' => 'user',
             'events' => $events,
+            'currentUser' => $this->currentUser
         ]);
     }
 
@@ -47,7 +54,7 @@ class AdminUserController extends AbstractController
         if (isset($_POST['admin-new-user-submit']) && $_POST['admin-new-user-submit'] == 'admin-new-user') {
 
             $userRepository = new UserRepository();
-            if($userRepository->findOneBy(['email' => $_POST['email']])){
+            if ($userRepository->findOneBy(['email' => $_POST['email']])) {
                 $this->addFlash("danger", "L'adresse mail saisie est déja occupée par l'un des utilisateurs !");
                 return $this->twig->render('user/user-new.html.twig', [
                     'tags' => $roles,
@@ -93,7 +100,7 @@ class AdminUserController extends AbstractController
 
             $userRepository = new UserRepository();
             $mailOriginUser = $user->getEmail();
-            if($_POST['email'] != $mailOriginUser && $userRepository->findOneBy(['email' => $_POST['email']])){
+            if ($_POST['email'] != $mailOriginUser && $userRepository->findOneBy(['email' => $_POST['email']])) {
                 $this->addFlash("danger", "L'adresse mail saisie est déja occupée par l'un des utilisateurs !");
                 return $this->twig->render('admin/edit/user-edit.html.twig', [
                     'tags' => $roles,

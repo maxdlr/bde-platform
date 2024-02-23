@@ -24,11 +24,20 @@
                         </h2>
                     </div>
 
-                    <div>
-                        <a class="btn btn-primary rounded-pill my-3" href="/admin/{{ entityName }}/new">Ajouter
-                            un {{ entityValue }}</a>
+                    {% if currentUser.roles is same as 'admin' %}
+                        <div>
+                            <a class="btn btn-primary rounded-pill my-3" href="/admin/{{ entityName }}/new">Ajouter
+                                un {{ entityValue }}</a>
+                        </div>
+                    {% endif %}
 
-                    </div>
+                    {% if currentUser.roles is same as 'manager' and entityName is same as 'event' %}
+                        <div>
+                            <a class="btn btn-primary rounded-pill my-3" href="/admin/{{ entityName }}/new">Ajouter
+                                un {{ entityValue }}</a>
+                        </div>
+                    {% endif %}
+
                 </div>
 
 

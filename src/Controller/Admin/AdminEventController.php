@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Attribute\Route;
 use App\Controller\AbstractController;
 use App\Entity\Event;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
@@ -20,6 +21,8 @@ use Twig\Error\SyntaxError;
 
 class AdminEventController extends AbstractController
 {
+    private User|null|bool $currentUser;
+
     public function __construct(
         Environment                            $twig,
         private readonly EventRepository       $eventRepository,
@@ -30,6 +33,9 @@ class AdminEventController extends AbstractController
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
+
+        $this->redirectIfForbidden();
     }
 
     /**
@@ -48,7 +54,6 @@ class AdminEventController extends AbstractController
         $participants = $this->participantRepository->findAll();
         $interesteds = $this->interestedRepository->findAll();
         $users = $this->userRepository->findAll();
-
 
         $eventsWithOwners = [];
         foreach ($events as $event) {
@@ -71,7 +76,8 @@ class AdminEventController extends AbstractController
             'interesteds' => $interesteds,
             'participants' => $participants,
             'events' => $eventObjects,
-            'users' => $users
+            'users' => $users,
+            'currentUser' => $this->currentUser
         ]);
     }
 
@@ -90,7 +96,7 @@ class AdminEventController extends AbstractController
 
             $validData = true;
 
-            if(intval($_POST['capacity']) < 1){
+            if (intval($_POST['capacity']) < 1) {
                 $validData = false;
                 $this->addFlash("danger", "La capacité de l'évènement doit être de 1 au minimum");
             }
@@ -98,18 +104,18 @@ class AdminEventController extends AbstractController
             $nowDate = new DateTime('now');
 
             $startDate = new DateTime($_POST['startDate']);
-            if($startDate < $nowDate){
+            if ($startDate < $nowDate) {
                 $validData = false;
                 $this->addFlash("danger", "Votre date de début est antérieure à la date actuelle");
             }
 
             $endDate = new DateTime($_POST['endDate']);
-            if($endDate < $nowDate){
+            if ($endDate < $nowDate) {
                 $validData = false;
                 $this->addFlash("danger", "Votre date de fin est antérieure à la date actuelle");
             }
 
-            if($endDate < $startDate){
+            if ($endDate < $startDate) {
                 $validData = false;
                 $this->addFlash("danger", "Votre date de fin est antérieure à la date de début");
             }
@@ -137,14 +143,14 @@ class AdminEventController extends AbstractController
             }
 
 
-            if($validData === false){
+            if ($validData === false) {
                 return $this->twig->render('admin/new/event-new.html.twig', [
                     'tags' => $tags,
                     'flashbag' => $_SESSION["flashbag"]
                 ]);
             } else {
                 $currentUser = $this->getUserConnected();
-                $currentUserId =  $currentUser->getId();
+                $currentUserId = $currentUser->getId();
 
                 $event
                     ->setName($_POST['name'])
@@ -155,7 +161,7 @@ class AdminEventController extends AbstractController
                     ->setCapacity($_POST['capacity'])
                     ->setOwnerId($currentUserId);
 
-                if(isset($newFileName) && isset($fileSize)){
+                if (isset($newFileName) && isset($fileSize)) {
                     $event
                         ->setFileName($newFileName)
                         ->setFileSize($fileSize);
@@ -188,7 +194,7 @@ class AdminEventController extends AbstractController
 
             $validData = true;
 
-            if(intval($_POST['capacity']) < 1){
+            if (intval($_POST['capacity']) < 1) {
                 $validData = false;
                 $this->addFlash("danger", "La capacité de l'évènement doit être de 1 au minimum");
             }
@@ -196,23 +202,23 @@ class AdminEventController extends AbstractController
             $nowDate = new DateTime('now');
 
             $startDate = new DateTime($_POST['startDate']);
-            if($startDate < $nowDate){
+            if ($startDate < $nowDate) {
                 $validData = false;
                 $this->addFlash("danger", "Votre date de début est antérieure à la date actuelle");
             }
 
             $endDate = new DateTime($_POST['endDate']);
-            if($endDate < $nowDate){
+            if ($endDate < $nowDate) {
                 $validData = false;
                 $this->addFlash("danger", "Votre date de fin est antérieure à la date actuelle");
             }
 
-            if($endDate < $startDate){
+            if ($endDate < $startDate) {
                 $validData = false;
                 $this->addFlash("danger", "Votre date de fin est antérieure à la date de début");
             }
 
-            if($validData === false){
+            if ($validData === false) {
                 return $this->twig->render('admin/edit/event-edit.html.twig', [
                     'item' => $event,
                     'tags' => $tags,
@@ -227,8 +233,7 @@ class AdminEventController extends AbstractController
                     'tag' => $_POST['tag'],
                     'capacity' => $_POST['capacity']
                 ];
-                if($event->getStartDate() != $startDate)
-                {
+                if ($event->getStartDate() != $startDate) {
                     $mailManager = new MailManager;
                     $mailManager->sendModifDate($event, $startDate);
                 }
