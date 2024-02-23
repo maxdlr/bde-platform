@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Attribute\Route;
 use App\Controller\AbstractController;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\InterestedRepository;
 use App\Repository\ParticipantRepository;
@@ -14,6 +15,8 @@ use Twig\Environment;
 
 class AdminController extends AbstractController
 {
+    private User|null|bool $currentUser;
+
     public function __construct(
         Environment                            $twig,
         private readonly UserRepository        $userRepository,
@@ -23,11 +26,9 @@ class AdminController extends AbstractController
     )
     {
         parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
 
-        if (!$this->isUserAllowedToRoute()) {
-            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
-            $this->redirect('/user/login');
-        }
+        $this->redirectIfForbidden();
     }
 
     #[Route('/admin/dashboard', name: 'app_admin_dashboard', httpMethod: ['GET'])]
@@ -51,7 +52,8 @@ class AdminController extends AbstractController
             'events' => $events,
             'interesteds' => $interesteds,
             'participants' => $participants,
-            'futureEvents' => $futureEvents
+            'futureEvents' => $futureEvents,
+            'currentUser' => $this->currentUser
         ]);
     }
 }

@@ -38,11 +38,11 @@ class EventFilter
             case "date":
                 if (!$reverse) {
                     usort(self::$events, function ($a, $b) {
-                        return strcasecmp($b->getStartDate()->format('Y-m-d'), $a->getStartDate()->format('Y-m-d'));
+                        return strcasecmp($b->getStartDate()->format('d-m-Y'), $a->getStartDate()->format('d-m-Y'));
                     });
                 } else {
                     usort(self::$events, function ($a, $b) {
-                        return strcasecmp($a->getStartDate()->format('Y-m-d'), $b->getStartDate()->format('Y-m-d'));
+                        return strcasecmp($a->getStartDate()->format('d-m-Y'), $b->getStartDate()->format('d-m-Y'));
                     });
                 }
                 break;

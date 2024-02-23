@@ -33,13 +33,13 @@ abstract class AbstractController
         exit();
     }
 
-    protected function getUserConnected(): User|false
+    protected function getUserConnected(): User|null|false
     {
         if (isset($_SESSION["user_connected"])) {
             $userRepository = new UserRepository();
             $userConnected = $userRepository->findOneBy(['email' => $_SESSION["user_connected"]]);
 
-            return $userConnected;
+            return $userConnected ?? null;
         } else {
             return false;
         }
@@ -68,15 +68,35 @@ abstract class AbstractController
 
     protected function isUserAllowedToRoute(): bool
     {
-        $user = $this->getUserConnected();
+        $user = $this->getUserConnected() ? $this->getUserConnected() : null;
+        $url = $_SERVER['REQUEST_URI'];
 
-        if (!$user) {
+        if (str_contains('/event/show', $url)) return true;
+
+
+        if (!$user || $user === null) {
             $this->redirect('/user/login');
         }
 
-        $url = $_SERVER['REQUEST_URI'];
         $allowedroutesForUser = Security::getAllowedRoutes(RoleEnum::tryFrom($user->getRoles()));
 
-        return in_array($url, $allowedroutesForUser);
+        if ($user->getRoles() === RoleEnum::ROLE_ADMIN->value) return true;
+
+        $allowed = false;
+        foreach ($allowedroutesForUser as $routes) {
+            if (str_contains($routes, $url)) {
+                $allowed = true;
+            }
+        }
+
+        return $allowed;
+    }
+
+    protected function redirectIfForbidden()
+    {
+        if (!$this->isUserAllowedToRoute()) {
+            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
+            $this->redirect('/user/login');
+        }
     }
 }

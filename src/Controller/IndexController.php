@@ -17,7 +17,7 @@ use App\Service\AlertManager;
 
 class IndexController extends AbstractController
 {
-    private User|bool $currentUser;
+    private User|null|bool $currentUser;
 
     public function __construct(
         Environment                            $twig,
@@ -45,6 +45,7 @@ class IndexController extends AbstractController
         $events = $this->eventRepository->findAll();
         $title = 'Les prochains évenements !';
 
+
         if (isset($_POST['tagfilter']) && $_POST['tagfilter'] == 'tagfilter') {
             $filteredEvents = [];
             foreach ($events as $event) {
@@ -69,6 +70,9 @@ class IndexController extends AbstractController
             $title = 'Les évenements entre le ' . $startDate->format('d-m-Y') . ' et le ' . $endDate->format('d-m-Y');
         }
 
+        $firstEvent = EventFilter::use($events)->sortBy('date')->return()[0];
+        $lastEvent = EventFilter::use($events)->sortBy('date', true)->return()[0];
+        
         $capacities = [];
         foreach ($events as $event) {
             $capacities[] = [$event->getId(), $event->getCapacity()];
@@ -81,7 +85,9 @@ class IndexController extends AbstractController
             'capacities' => $capacities,
             'currentUser' => $this->currentUser,
             'flashbag' => $_SESSION["flashbag"],
-            'title' => $title
+            'title' => $title,
+            'firstEvent' => $firstEvent,
+            'endEvent' => $lastEvent,
         ]);
     }
 }

@@ -15,12 +15,11 @@ use DateTime;
 
 class UserController extends AbstractController
 {
-    private User|bool $currentUser;
+    private User|null|bool $currentUser;
 
     public function __construct(
         Environment                            $twig,
         private readonly RoleRepository        $roleRepository,
-        private readonly UserRepository        $userRepository,
         private readonly EventRepository       $eventRepository,
         private readonly ParticipantRepository $participantRepository,
         private readonly InterestedRepository  $interestedRepository,
@@ -39,8 +38,8 @@ class UserController extends AbstractController
             $userRepository = new UserRepository();
             $mailManager = new MailManager;
 
-            $stringCurrentDate = date('Y-m-d H:i:s');
-            $dateCurrentDate = DateTime::createFromFormat('Y-m-d H:i:s', $stringCurrentDate);
+            $stringCurrentDate = date('d-m-Y H:i:s');
+            $dateCurrentDate = DateTime::createFromFormat('d-m-Y H:i:s', $stringCurrentDate);
 
             $user
                 ->setFirstname($_POST['firstname'])
@@ -83,7 +82,6 @@ class UserController extends AbstractController
                     $_SESSION["user_connected"] = $user->getEmail();
 
                     $this->redirect('/');
-                    exit();
                 } else {
                     $this->addFlash("danger", "Le mot de passe saisi ne correspond pas à l'adresse mail");
                 }
@@ -112,6 +110,8 @@ class UserController extends AbstractController
     #[Route('/user/dashboard', name: 'app_user_dashboard', httpMethod: ['GET'])]
     public function dahsboard(): string
     {
+        $this->redirectIfForbidden();
+
         $participants = $this->participantRepository->findAll();
         $interesteds = $this->interestedRepository->findAll();
 

@@ -24,13 +24,14 @@
                         </h2>
                     </div>
 
-                    <div>
-                        <a class="btn btn-primary rounded-pill my-3" href="/{{ entityName }}/new">Ajouter
-                            un {{ entityValue }}</a>
+                    {% if entityName is not same as 'user' or currentUser is same as 'admin' %}
+                        <div>
+                            <a class="btn btn-primary rounded-pill my-3" href="/{{ entityName }}/new">Ajouter
+                                un {{ entityValue }}</a>
+                        </div>
+                    {% endif %}
 
-                    </div>
                 </div>
-
 
                 {{ include('admin/shared/_data-table.html.twig', {
                     items: items,

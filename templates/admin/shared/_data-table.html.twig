@@ -4,7 +4,7 @@
     <tr>
         {% for item in items %}
             {% for name, value in item %}
-                {% if name is not same as 'owner_id' %}
+                {% if name is not same as 'owner_id' and name is not same as 'fileName' and name is not same as 'fileSize' %}
                     {% if name not in names %}
                         <th>{{ name }}</th>
                         {% set names = names|merge([name]) %}
@@ -19,7 +19,7 @@
     {% for item in items %}
         <tr>
             {% for name, value in item %}
-                {% if name is not same as 'owner_id' %}
+                {% if name is not same as 'owner_id' and name is not same as 'fileName' and name is not same as 'fileSize' %}
                     <td>
                         {% if value is same as true or value is same as false %}
                             <div class="form-check form-switch">
@@ -36,14 +36,32 @@
                     </td>
                 {% endif %}
             {% endfor %}
-            <td>
-                <a class="px-3 py-2 bg-danger text-white rounded-pill text-decoration-none"
-                   href="/admin/{{ entityName }}/delete/{{ item.id }}">Supprimer</a>
-            </td>
-            <td>
-                <a class="px-3 py-2 bg-warning text-white rounded-pill text-decoration-none"
-                   href="/admin/{{ entityName }}/edit/{{ item.id }}">Modifier</a>
-            </td>
+
+            {% if entityName is same as 'user' %}
+
+                {% if currentUser.roles is same as 'admin' %}
+                    <td>
+                        <a class="px-3 py-2 bg-danger text-white rounded-pill text-decoration-none"
+                           href="/admin/{{ entityName }}/delete/{{ item.id }}">Supprimer</a>
+                    </td>
+                    <td>
+                        <a class="px-3 py-2 bg-warning text-white rounded-pill text-decoration-none"
+                           href="/admin/{{ entityName }}/edit/{{ item.id }}">Modifier</a>
+                    </td>
+                {% endif %}
+
+            {% else %}
+
+                <td>
+                    <a class="px-3 py-2 bg-danger text-white rounded-pill text-decoration-none"
+                       href="/admin/{{ entityName }}/delete/{{ item.id }}">Supprimer</a>
+                </td>
+                <td>
+                    <a class="px-3 py-2 bg-warning text-white rounded-pill text-decoration-none"
+                       href="/admin/{{ entityName }}/edit/{{ item.id }}">Modifier</a>
+                </td>
+
+            {% endif %}
         </tr>
     {% else %}
         Aucun {{ entityName }}

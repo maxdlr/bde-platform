@@ -13,7 +13,7 @@ use Twig\Environment;
 
 class ParticipantController extends AbstractController
 {
-    private User|bool $currentUser;
+    private User|null|bool $currentUser;
 
     public function __construct(
         Environment                            $twig,
@@ -23,8 +23,8 @@ class ParticipantController extends AbstractController
     {
         parent::__construct($twig);
         $this->currentUser = $this->getUserConnected();
+        $this->redirectIfForbidden();
     }
-
 
     #[Route('/event/new/participant/{id}', name: 'app_participant_new', httpMethod: ['GET'])]
     public function newParticipant(int $idEvent): void

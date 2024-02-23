@@ -30,7 +30,7 @@ class User extends Entity
             'email' => $this->getEmail(),
             'roles' => $this->getRoles(),
             'isVerified' => $this->getIsVerified(),
-            'signedUpOn' => $this->getSignedUpOn()->format('Y-m-d hH:i:s')
+            'signedUpOn' => $this->getSignedUpOn()->format('d-m-Y H:i:s')
         ];
     }
 
@@ -127,7 +127,7 @@ class User extends Entity
         return $this->token;
     }
 
-    public function setToken(string $token): static 
+    public function setToken(string $token): static
     {
         $this->token = $token;
         return $this;

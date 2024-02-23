@@ -11,7 +11,7 @@ use Twig\Environment;
 
 class EventController extends AbstractController
 {
-    private User|bool $currentUser;
+    private User|null|bool $currentUser;
 
     public function __construct(
         Environment                            $twig,
@@ -21,9 +21,10 @@ class EventController extends AbstractController
     {
         parent::__construct($twig);
         $this->currentUser = $this->getUserConnected();
+//        $this->redirectIfForbidden();
     }
 
-    #[Route('/event/show/{id}', name: 'app_event_show', httpMethod: ['POST'])]
+    #[Route('/event/show/{id}', name: 'app_event_show', httpMethod: ['GET'])]
     public function show(int $idEvent): string
     {
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);

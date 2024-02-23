@@ -9,15 +9,23 @@
     <main class="container my-5">
 
         <div class="d-flex justify-content-between align-items-center">
-            <h1 class="my-3 fs-3">{{ title }}</h1>
+            {% if title is not same as 'Les prochains évenements !' %}
+                <h1 class="my-3 fs-3 bg-info px-3 py-2 text-light rounded-pill">{{ title }}</h1>
+            {% else %}
+                <h1 class="my-3 fs-3">{{ title }}</h1>
+            {% endif %}
 
             {% if title is not same as 'Les prochains évenements !' %}
                 <a class="btn btn-outline-info rounded-pill" href="/">Retirer le filtre</a>
             {% else %}
                 <form action="/" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-                    <input type="date" name="startDate" class="form-control">
-                    <input type="date" name="endDate" class="form-control">
-                    <button type="submit" name="datefilter" value="datefilter" class="btn btn-info">Filter par date
+                    <input type="date" name="startDate" value="{{ firstEvent.startDate|date('d/m/Y') }}"
+                           class="form-control">
+                    <input type="date" name="endDate" value="{{ lastEvent.startDate|date('d/m/Y') }}"
+                           class="form-control">
+                    <button type="submit" name="datefilter" value="datefilter"
+                            class="btn btn-info rounded-pill text-nowrap">Filter
+                        par date
                     </button>
                 </form>
             {% endif %}

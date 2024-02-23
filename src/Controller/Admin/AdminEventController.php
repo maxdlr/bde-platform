@@ -30,10 +30,7 @@ class AdminEventController extends AbstractController
     {
         parent::__construct($twig);
 
-        if (!$this->isUserAllowedToRoute()) {
-            $this->addFlash('danger', 'Zone controlée, veuillez contacter un admin.');
-            $this->redirect('/user/login');
-        }
+        $this->redirectIfForbidden();
     }
 
     /**

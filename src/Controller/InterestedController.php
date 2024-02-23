@@ -14,7 +14,7 @@ use Twig\Environment;
 
 class InterestedController extends AbstractController
 {
-    private User|bool $currentUser;
+    private User|null|bool $currentUser;
 
     public function __construct(
         Environment                           $twig,
@@ -24,6 +24,7 @@ class InterestedController extends AbstractController
     {
         parent::__construct($twig);
         $this->currentUser = $this->getUserConnected();
+        $this->redirectIfForbidden();
     }
 
 

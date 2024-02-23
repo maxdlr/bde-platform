@@ -11,28 +11,27 @@ class Security
         $role = $roleEnum;
 
         return match ($role) {
-            RoleEnum::ROLE_ADMIN => [
-                '/admin',
-                '/admin/dashboard',
+            RoleEnum::ROLE_MANAGER => [
                 '/admin/event/index',
+                '/admin/dashboard',
                 '/admin/event/new',
                 '/admin/event/edit',
                 '/admin/event/delete',
                 '/admin/user/index',
-                '/admin/user/new',
-                '/admin/user/edit',
-                '/admin/user/delete'
+                ...self::getAllowedRoutes(RoleEnum::ROLE_STUDENT)
             ],
-            RoleEnum::ROLE_MANAGER => [
-                '/admin',
-                '/admin/dashboard',
-                '/admin/event/index',
-                '/admin/event/new',
-                '/admin/event/edit',
-                '/admin/event/delete',
-                '/admin/user/index'
+            RoleEnum::ROLE_STUDENT => [
+                '/user/new',
+                '/user/login',
+                '/user/logout',
+                '/user/dashboard',
+                '/user/validate',
+                '/event/show',
+                '/event/new/interested',
+                '/event/delete/interested',
+                '/event/new/participant',
+                '/event/delete/participant',
             ],
-            RoleEnum::ROLE_STUDENT => [],
         };
     }
 }

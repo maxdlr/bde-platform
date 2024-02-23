@@ -22,7 +22,7 @@ class AFixturesTest extends TestCase
             ->withFirstname('Maxime')
             ->withLastname('de la Rocheterie')
             ->withEmail('contact@maxdlr.com')
-            ->withRole(RoleEnum::ROLE_ADMIN)
+            ->withRole(RoleEnum::ROLE_MANAGER)
             ->withSignedUpOn(new DateTime('now'))
             ->withPassword('password')
             ->withIsVerified(true)

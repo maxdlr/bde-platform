@@ -88,8 +88,8 @@ class EventTest extends TestCase
 
         self::assertSame($name, $read->getName());
         self::assertSame($description, $read->getDescription());
-        self::assertSame($startDate->format('Y-m-d H:i:s'), $read->getStartDate()->format('Y-m-d H:i:s'));
-        self::assertSame($endDate->format('Y-m-d H:i:s'), $read->getEndDate()->format('Y-m-d H:i:s'));
+        self::assertSame($startDate->format('d-m-Y H:i:s'), $read->getStartDate()->format('d-m-Y H:i:s'));
+        self::assertSame($endDate->format('d-m-Y H:i:s'), $read->getEndDate()->format('d-m-Y H:i:s'));
         self::assertSame($tag, $read->getTag());
         self::assertSame($capacity, (int)$read->getCapacity());
         self::assertSame($owner_id, (int)$read->getOwnerId());
@@ -138,8 +138,8 @@ class EventTest extends TestCase
         foreach ($events as $eventItem) {
             assertSame($event->getName(), $eventItem->getName());
             assertSame($event->getDescription(), $eventItem->getDescription());
-            assertSame($event->getStartDate()->format('Y-m-d H:i:s'), $eventItem->getStartDate()->format('Y-m-d H:i:s'));
-            assertSame($event->getEndDate()->format('Y-m-d H:i:s'), $eventItem->getEndDate()->format('Y-m-d H:i:s'));
+            assertSame($event->getStartDate()->format('d-m-Y H:i:s'), $eventItem->getStartDate()->format('d-m-Y H:i:s'));
+            assertSame($event->getEndDate()->format('d-m-Y H:i:s'), $eventItem->getEndDate()->format('d-m-Y H:i:s'));
             assertSame($event->getTag(), $eventItem->getTag());
             assertSame($event->getCapacity(), $eventItem->getCapacity());
             assertSame($event->getFileSize(), $eventItem->getFileSize());
@@ -334,7 +334,7 @@ class EventTest extends TestCase
         $eventRepository = new EventRepository();
         $eventRepository->insertOne($event);
 
-        $result = $eventRepository->findOneBy(['startDate' => $event->getStartDate()->format('Y-m-d H:i:s')]);
+        $result = $eventRepository->findOneBy(['startDate' => $event->getStartDate()->format('d-m-Y H:i:s')]);
 
         assertSame($event->getName(), $result->getName());
 

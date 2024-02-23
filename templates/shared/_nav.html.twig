@@ -6,10 +6,12 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/user/dashboard">Mes évenements</a>
-                </li>
-                {% if currentUser.roles is same as 'admin' %}
+                {% if currentUser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/dashboard">Mes évenements</a>
+                    </li>
+                {% endif %}
+                {% if currentUser.roles is not same as 'student' %}
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/dashboard">Admin</a>
                     </li>
