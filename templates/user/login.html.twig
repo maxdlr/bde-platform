@@ -6,16 +6,16 @@
 
 {% block body %}
 
-    <main class="container bg-info h-100">
+    <main class="container d-flex flex-column justify-content-start align-items-start">
         <h1 class="my-5">Connexion</h1>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" class="w-100">
 
-            <div class="row row-cols-sm-2">
+            <div class="row row-cols-1 row-cols-md-2  d-flex justify-content-center align-items-center">
 
                 <div>
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Adresse mail',
+                        label: 'Adresse mail *',
                         type: 'email',
                         name: 'email',
                         required: true,
@@ -23,12 +23,14 @@
                     }) }}
 
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Mot de passe',
+                        label: 'Mot de passe *',
                         type: 'password',
                         name: 'password',
                         required: true,
                         placeholder: "Saisissez votre mot de passe"
                     }) }}
+                </div>
+                <div class="mt-5 row row-cols-2 offset-6 row-cols-sm-3 offset-sm-8 row-cols-lg-5 offset-md-4">
                     <button class="btn btn-primary" type="submit" name="connect-user-submit" value="connect-user">Valider</button>
                 </div>
             </div>
