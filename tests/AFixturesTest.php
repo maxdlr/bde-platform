@@ -139,10 +139,13 @@ class AFixturesTest extends TestCase
     {
         $eventRepository = new EventRepository;
         $userRepository = new UserRepository;
+        $participantRepository = new ParticipantRepository;
         $moi = $userRepository->findOneBy(["email" => "mathieu.moyaerts.pro@gmail.com"]);
         $event = EventFactory::make()->withStartDate(new DateTime("+5 days"))->withEndDate(new DateTime("+8 days"))->withOwner($moi)->generate();
         $eventRepository->insertOne($event);
-
+        $eventRepo = $eventRepository->findOneBy(["owner_id" => $moi->getId()]);
+        $eventId = $eventRepo->getId();
+        $participantRepository->executeRequest("DELETE FROM participant WHERE event_id = $eventId");
         self::assertNotNull($eventRepository->findOneBy(["owner_id" => $moi->getId()]));
     }
 }
