@@ -77,15 +77,44 @@ class AdminEventController extends AbstractController
     #[Route('/admin/event/new', name: 'app_admin_event_new', httpMethod: ['GET', 'POST'])]
     public function new(): string
     {
+        $this->clearFlashs();
+        $tags = $this->tagRepository->findAll();
+
+        array_map('trim', $_POST);
+
         if (isset($_POST['new-event-submit']) && $_POST['new-event-submit'] == 'new-event') {
             $event = new Event();
             $eventRepository = new EventRepository();
 
-            array_map('trim', $_POST);
+
+            $validData = true;
+
+            if(intval($_POST['capacity']) < 1){
+                $validData = false;
+                $this->addFlash("danger", "La capacité de l'évènement doit être de 1 au minimum");
+            }
+
+            $nowDate = new DateTime('now');
+
+            $startDate = new DateTime($_POST['startDate']);
+            if($startDate < $nowDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de début est antérieure à la date actuelle");
+            }
+
+            $endDate = new DateTime($_POST['endDate']);
+            if($endDate < $nowDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de fin est antérieure à la date actuelle");
+            }
+
+            if($endDate < $startDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de fin est antérieure à la date de début");
+            }
+
 
             if (isset($_FILES['new-event-file']) && $_FILES['new-event-file']['error'] === UPLOAD_ERR_OK) {
-
-                var_dump('in file upload if');
 
                 $originalFileName = $_FILES['new-event-file']['name'];
                 $tmpFileName = $_FILES['new-event-file']['tmp_name'];
@@ -96,7 +125,7 @@ class AdminEventController extends AbstractController
                 $fileSize = $_FILES['new-event-file']['size'];
 
                 $newFileName = md5(time() . $tmpFileName) . '.' . $fileExtension;
-                $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+                $allowedfileExtensions = array('jpg', 'jpeg', 'png');
 
                 if (in_array($fileExtension, $allowedfileExtensions)) {
                     $uploadFileDir = __DIR__ . '/../../../public/assets/images/';
@@ -106,25 +135,41 @@ class AdminEventController extends AbstractController
                 }
             }
 
-            var_dump($_FILES['new-event-file']['error']);
 
-            $event
-                ->setName($_POST['name'])
-                ->setDescription($_POST['description'])
-                ->setStartDate(new DateTime($_POST['startDate']))
-                ->setEndDate(new DateTime($_POST['endDate']))
-                ->setTag($_POST['tag'])
-                ->setCapacity($_POST['capacity'])
-                ->setOwnerId(1)
-                ->setFileName($newFileName)
-                ->setFileSize($fileSize);
+            if($validData === false){
+                return $this->twig->render('admin/new/event-new.html.twig', [
+                    'tags' => $tags,
+                    'flashbag' => $_SESSION["flashbag"]
+                ]);
+            } else {
+                $currentUser = $this->getUserConnected();
+                $currentUserId =  $currentUser->getId();
 
-            if ($eventRepository->insertOne($event)) {
-                $this->redirect('/admin/event/index');
+                $event
+                    ->setName($_POST['name'])
+                    ->setDescription($_POST['description'])
+                    ->setStartDate(new DateTime($_POST['startDate']))
+                    ->setEndDate(new DateTime($_POST['endDate']))
+                    ->setTag($_POST['tag'])
+                    ->setCapacity($_POST['capacity'])
+                    ->setOwnerId($currentUserId);
+
+                if(isset($newFileName) && isset($fileSize)){
+                    $event
+                        ->setFileName($newFileName)
+                        ->setFileSize($fileSize);
+                } else {
+                    $event
+                        ->setFileName("")
+                        ->setFileSize(0);
+                }
+
+                if ($eventRepository->insertOne($event)) {
+                    $this->redirect('/admin/event/index');
+                }
             }
         }
 
-        $tags = $this->tagRepository->findAll();
         return $this->twig->render('admin/new/event-new.html.twig', [
             'tags' => $tags,
         ]);
@@ -136,23 +181,57 @@ class AdminEventController extends AbstractController
         $eventRepository = new EventRepository();
         $event = $eventRepository->findOneBy(['id' => $idEvent]);
 
-        // Case when the edit form was submitted
+        $tags = $this->tagRepository->findAll();
+
         if (isset($_POST['edit-event-submit']) && $_POST['edit-event-submit'] == 'edit-event') {
 
-            $updatedEventArray = [
-                'name' => $_POST['name'],
-                'description' => $_POST['description'],
-                'startDate' => $_POST['startDate'],
-                'endDate' => $_POST['endDate'],
-                'tag' => $_POST['tag'],
-                'capacity' => $_POST['capacity']
-            ];
+            $validData = true;
 
-            if ($eventRepository->update($updatedEventArray, $event)) {
-                $this->redirect('/admin/event/index');
+            if(intval($_POST['capacity']) < 1){
+                $validData = false;
+                $this->addFlash("danger", "La capacité de l'évènement doit être de 1 au minimum");
+            }
+
+            $nowDate = new DateTime('now');
+
+            $startDate = new DateTime($_POST['startDate']);
+            if($startDate < $nowDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de début est antérieure à la date actuelle");
+            }
+
+            $endDate = new DateTime($_POST['endDate']);
+            if($endDate < $nowDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de fin est antérieure à la date actuelle");
+            }
+
+            if($endDate < $startDate){
+                $validData = false;
+                $this->addFlash("danger", "Votre date de fin est antérieure à la date de début");
+            }
+
+            if($validData === false){
+                return $this->twig->render('admin/edit/event-edit.html.twig', [
+                    'item' => $event,
+                    'tags' => $tags,
+                    'flashbag' => $_SESSION["flashbag"]
+                ]);
+            } else {
+                $updatedEventArray = [
+                    'name' => $_POST['name'],
+                    'description' => $_POST['description'],
+                    'startDate' => $_POST['startDate'],
+                    'endDate' => $_POST['endDate'],
+                    'tag' => $_POST['tag'],
+                    'capacity' => $_POST['capacity']
+                ];
+
+                if ($eventRepository->update($updatedEventArray, $event)) {
+                    $this->redirect('/admin/event/index');
+                }
             }
         } elseif (!is_null($event)) {
-            $tags = $this->tagRepository->findAll();
             return $this->twig->render('admin/edit/event-edit.html.twig', [
                 'item' => $event,
                 'tags' => $tags,

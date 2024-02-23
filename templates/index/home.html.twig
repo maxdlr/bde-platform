@@ -7,7 +7,7 @@
 {% block body %}
 
     <main class="container my-5">
-        <section class="row row-cols-1 row-cols-lg-2 g-3">
+        <section class="home-container row row-cols-1 row-cols-lg-2 g-3">
             {% for event in events %}
                 <article class="p-2">
 
@@ -52,7 +52,7 @@
                                     <span>{{ capacities[loop.index0][0] is same as event.id ? capacities[loop.index0][1] }}</span>
                                     <span> places restantes</span>
                                 </div>
-                                <a href="/event/show/{{ event.id }}" class="btn btn-primary rounded-pill">
+                                <a href="/event/show/{{ event.id }}" class="btn btn-primary rounded-pill w-50 align-self-end">
                                     Voir
                                 </a>
                             </div>

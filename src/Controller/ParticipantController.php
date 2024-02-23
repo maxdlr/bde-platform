@@ -27,21 +27,32 @@ class ParticipantController extends AbstractController
     #[Route('/event/new/participant/{id}', name: 'app_participant_new', httpMethod: ['GET'])]
     public function newParticipant(int $idEvent): string
     {
-        $mailManager = new MailManager;
+        $this->clearFlashs();
+
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
         $currentUser = $this->getUserConnected();
 
         $participant = new Participant();
         $participantRepository = new ParticipantRepository();
         $user = $this->userRepository->findOneBy(['id'=>$currentUser->getId()]);
-        $mailManager->sendMailParticipant($user, $event);
 
-        $participant
-            ->setEventId($event->getId())
-            ->setUserId($currentUser->getId());
+        $listParticipant = $participantRepository->findBy(["event_id" => $idEvent]);
+        if(!is_null($listParticipant) && sizeof($listParticipant) >= $event->getCapacity()){
+            $this->addFlash("danger", "Vous ne pouvez pas vous inscrire à cet évènement : il n'y a plus de place !");
+            return $this->twig->render('event/show.html.twig', [
+                'flashbag' => $_SESSION["flashbag"]
+            ]);
+        } else {
+            $mailManager = new MailManager;
+            $mailManager->sendMailParticipant($user, $event);
 
-        if ($participantRepository->insertOne($participant)) {
-            $this->redirect('/event/show/'.$idEvent);
+            $participant
+                ->setEventId($event->getId())
+                ->setUserId($currentUser->getId());
+
+            if ($participantRepository->insertOne($participant)) {
+                $this->redirect('/event/show/'.$idEvent);
+            }
         }
     }
 
