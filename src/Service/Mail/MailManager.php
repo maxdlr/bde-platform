@@ -78,7 +78,11 @@ class MailManager
             $userRepository = new UserRepository;
             $userForValidate = $userRepository->findOneBy(["token"=> $token]);
             $userForValidate->setIsVerified(true);
-            $userRepository->update(["isVerified" => "1"], ["token" => $token]);
+            if($userRepository->update(["isVerified" => "1"], ["token" => $token]))
+            {
+                $this->sendMailToAdmin($userForValidate);
+            }
+
  
         }
 
