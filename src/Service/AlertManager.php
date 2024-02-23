@@ -44,7 +44,9 @@ public function alert()
         $j5 = new \DateTime(" + 5 days ");
         foreach($datas as $data)
         {
-            if($j5->diff(\DateTime::createFromFormat('Y-m-j H:i:s', $data['startDate']))->days == 0)
+            $eventid = $data['id'];
+            $participantCount = $participantRepository->executeRequest("SELECT COUNT(*) AS participant_count FROM participant WHERE event_id = '$eventid'");
+            if ($j5->diff(\DateTime::createFromFormat('Y-m-j H:i:s', $data['startDate']))->days == 0 && $participantCount == 0)
             {
                 $body = $data['name'];
                 $body .= " est l'évènement que vous avez créer, il commence dans 5 jours mais personne n'est inscrit...";
