@@ -11,7 +11,7 @@
                         <a class="nav-link" href="/user/dashboard">Mes évenements</a>
                     </li>
                 {% endif %}
-                {% if currentUser is not same as false %}
+                {% if currentUser is not same as null and currentUser is not same as false %}
                     {% if currentUser.roles is not same as 'student' %}
                         <li class="nav-item">
                             <a class="nav-link" href="/admin/dashboard">Admin</a>
