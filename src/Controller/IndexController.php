@@ -3,34 +3,102 @@
 namespace App\Controller;
 
 use App\Attribute\Route;
-use App\Repository\ProductRepository;
+use App\Entity\Participant;
+use App\Entity\User;
+use App\Repository\EventRepository;
+use App\Repository\ParticipantRepository;
+use App\Service\EventFilter;
+use DateTime;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use App\Service\AlertManager;
 
 class IndexController extends AbstractController
 {
-    #[Route('/', name: 'app_home', httpMethod: ['GET'])]
-    public function home(ProductRepository $productRepository): string
-    {
-        $products = $productRepository->findAll();
-        $countOfProducts = count($products);
+    private User|null|bool $currentUser;
 
-        $sumOfAllProductPrices = 0;
-        foreach ($products as $product) {
-            $sumOfAllProductPrices += $product->getPrice();
+    public function __construct(
+        Environment                            $twig,
+        private readonly EventRepository       $eventRepository,
+        private readonly ParticipantRepository $participantRepository
+    )
+    {
+        parent::__construct($twig);
+        $this->currentUser = $this->getUserConnected();
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     * @throws \Exception
+     */
+    #[Route('/', name: 'app_home', httpMethod: ['GET', 'POST'])]
+    public function home(): string
+    {
+        $this->clearFlashs();
+
+        $eventFilter = new EventFilter();
+
+        $events = $this->eventRepository->findAll();
+        $title = 'Les prochains évenements !';
+
+
+        if (isset($_POST['tagfilter']) && $_POST['tagfilter'] == 'tagfilter') {
+            $filteredEvents = [];
+            foreach ($events as $event) {
+                if ($eventFilter->isOnTag($event, $_POST['tag'])) {
+                    $filteredEvents[] = $event;
+                }
+            }
+            $events = $filteredEvents;
+            $title = 'Les évenements ' . strtoupper($_POST['tag']);
+        }
+
+        if (isset($_POST['datefilter']) && $_POST['datefilter'] == 'datefilter') {
+            $startDate = new DateTime($_POST['startDate']);
+            $endDate = new DateTime($_POST['endDate']);
+            $filteredEvents = [];
+            foreach ($events as $event) {
+                if ($eventFilter->isEventBetween($event, $startDate, $endDate)) {
+                    $filteredEvents[] = $event;
+                }
+            }
+            $events = $filteredEvents;
+            $title = 'Les évenements entre le ' . $startDate->format('Y-m-d') . ' et le ' . $endDate->format('Y-m-d');
+        }
+
+        $firstEvent = EventFilter::use($events)->sortBy('date')->return()[0];
+        $lastEvent = EventFilter::use($events)->sortBy('date', true)->return()[0];
+
+        $capacities = [];
+        foreach ($events as $event) {
+            $capacities[] = [$event->getId(), $event->getCapacity()];
+            $event->setCapacity($event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()])));
+
+            $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
+        }
+
+        if(!is_null($_SESSION["user_connected"])){
+            $connectedUser = $this->getUserConnected();
+            $this->addFlash("success", "Vous êtes bien connecté !");
+            $alertManager = new AlertManager;
+            $alertManager->alert($connectedUser);
+            $alertManager->alertj5($connectedUser);
+        } else {
+            $connectedUser = null;
         }
 
         return $this->twig->render('index/home.html.twig', [
-            'countOfProducts' => $countOfProducts,
-            'sumOfAllProductPrices' => $sumOfAllProductPrices,
-        ]);
-    }
-
-    #[Route('/contact', name: 'app_contact', httpMethod: ['GET'])]
-    public function contact(): string
-    {
-        $content = 'Page Contact';
-
-        return $this->twig->render('index/contact.html.twig', [
-            'content' => $content
+            'events' => $events,
+            'capacities' => $capacities,
+            'currentUser' => $this->currentUser,
+            'flashbag' => $_SESSION["flashbag"],
+            'title' => $title,
+            'firstEvent' => $firstEvent,
+            'endEvent' => $lastEvent,
         ]);
     }
 }

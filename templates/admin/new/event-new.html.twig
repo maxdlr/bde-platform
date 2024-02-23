@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Création d'évènement
+{% endblock %}
+
+{% block body %}
+
+    <main class="container">
+        <h1 class="my-5">Ajouter un évènement au calendrier</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="row row-cols-lg-2">
+
+                <div>
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Intitulé *',
+                        type: 'text',
+                        name: 'name',
+                        required: true
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Date de début *',
+                        type: 'datetime-local',
+                        name: 'startDate',
+                        required: true,
+                        placeholder: "Début"
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Date de fin *',
+                        type: 'datetime-local',
+                        name: 'endDate',
+                        required: true,
+                        placeholder: "Fin"
+                    }) }}
+
+                    <div class="d-flex flex-column flex-sm-row gap-2 ">
+                        {{ include('shared/form/_dropdown.html.twig', {
+                            label: 'Catégorie *',
+                            choices: tags,
+                            name: 'tag',
+                            required: true
+                        }) }}
+
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Nombre de places *',
+                            type: 'number',
+                            name: 'capacity',
+                            required: true
+                        }) }}
+                    </div>
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: "Image d'illustration :  ",
+                        type: 'file',
+                        name: 'new-event-file',
+                        accept: ".jpeg, .jpg, .png",
+                    }) }}
+
+                </div>
+                <div>
+                    {{ include('shared/form/_textarea.html.twig', {
+                        label: 'Description *',
+                        type: 'text',
+                        name: 'description',
+                        required: true,
+                        placeholder: "Ajoutez une description"
+                    }) }}
+                </div>
+            </div>
+            <div class="mt-5 row row-cols-2 offset-4 row-cols-sm-3 offset-sm-5 row-cols-lg-5">
+                <button class="btn btn-primary" type="submit" name="new-event-submit" value="new-event">Enregistrer</button>
+            </div>
+        </form>
+
+        <a class="px-4 py-1 my-5 btn btn-secondary rounded-pill border-0" href="/admin/event/index">Retour</a>
+    </main>
+
+{% endblock %}

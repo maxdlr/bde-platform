@@ -1,30 +1,102 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Tableau de bord
+    Les évenements du BDE
 {% endblock %}
 
 {% block body %}
-    {% if countOfProducts > 0 or sumOfAllProductPrices != 0 %}
-        <h3>
-            Bienvenue sur votre site, vous avez {{ countOfProducts }} produits, pour une valeur total
-            de {{ sumOfAllProductPrices }} € ! - <a href="/products">Aller voir</a>
-        </h3>
-    {% else %}
-        <h3>
-            Vous n'avez pas encore de produits
-        </h3>
 
-        <ul style="list-style: none; display: flex; justify-content: center; align-items: start">
-            <li>
-                <a href="/products">Ajoutez un produits</a>
-            </li>
-            <li>
-                <a href="/product/fake10">Créer 10 faux produits.</a>
-            </li>
-        </ul>
+    <main class="container my-5">
 
-    {% endif %}
+        <div class="d-flex justify-content-between align-items-center">
+            {% if title is not same as 'Les prochains évenements !' %}
+                <h1 class="my-3 fs-3 bg-info px-3 py-2 text-light rounded-pill">{{ title }}</h1>
+            {% else %}
+                <h1 class="my-3 fs-3">{{ title }}</h1>
+            {% endif %}
 
+            {% if title is not same as 'Les prochains évenements !' %}
+                <a class="btn btn-outline-info rounded-pill" href="/">Retirer le filtre</a>
+            {% else %}
+                <form action="/" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+                    <input type="date" name="startDate" value="{{ firstEvent.startDate|date('d/m/Y') }}"
+                           class="form-control">
+                    <input type="date" name="endDate" value="{{ lastEvent.startDate|date('d/m/Y') }}"
+                           class="form-control">
+                    <button type="submit" name="datefilter" value="datefilter"
+                            class="btn btn-info rounded-pill text-nowrap">Filter
+                        par date
+                    </button>
+                </form>
+            {% endif %}
+
+        </div>
+
+        <section class="home-container row row-cols-1 row-cols-lg-2 g-3">
+            {% for event in events %}
+                <article class="p-2 home-event-item py-3">
+
+                    <div class="border border-{{ event.capacity <= 0 ? '1' : '0' }} {{ event.capacity <= 0 ? 'border-danger bg-danger bg-opacity-10' : 'border-success' }} rounded-3 p-4">
+
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <h2 class="fs-2">{{ event.name|capitalize }}</h2>
+                            <form action="/" method="POST" enctype="multipart/form-data">
+                                <input type="text" value="{{ event.tag }}" name="tag" class="d-none">
+                                <button type="submit" name="tagfilter" value="tagfilter"
+                                        class="btn btn-outline-info fw-bold rounded-pill">
+                                    {{ event.tag|capitalize }}
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="row row-cols-2">
+                            <div class="rounded-3">
+                                <img src="{{ event.filename }}" alt="image de l'evenement {{ event.name }}"
+                                     class="img-fluid rounded-5">
+
+                            </div>
+
+                            <div class="d-flex flex-column justify-content-start gap-3">
+                                {% if event.capacity <= 0 %}
+                                    <div class="bg-danger rounded-pill px-3 py-2 fs-6 text-light text-center ">
+                                        Complet !!
+                                    </div>
+                                {% endif %}
+                                <div class="rounded-pill bg-success bg-opacity-75 text-light text-center py-3">
+                                    <div class="fw-bold">
+                                        <span>Du {{ event.startDate|date("d/m/y") }}</span>
+                                        <span> à </span>
+                                        <span>{{ event.startDate|date('H:i') }}</span>
+                                    </div>
+                                    <div>
+                                        <span> au </span>
+                                        <span>{{ event.endDate|date("d/m/y") }}</span>
+                                        <span> à </span>
+                                        <span>{{ event.endDate|date('H:i') }}</span>
+                                    </div>
+                                </div>
+                                <p>{{ event.description }}</p>
+
+                                {% if event.capacity > 0 %}
+                                    <div>
+                                        <span class="fs-2 fw-bolder">{{ event.capacity }}</span>
+                                        <span>/</span>
+                                        <span>{{ capacities[loop.index0][0] is same as event.id ? capacities[loop.index0][1] }}</span>
+                                        <span> places restantes</span>
+                                    </div>
+                                {% endif %}
+                                <a href="/event/show/{{ event.id }}"
+                                   class="btn btn-primary rounded-pill w-50 align-self-end">
+                                    Voir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+
+            {% endfor %}
+        </section>
+    </main>
 
 {% endblock %}

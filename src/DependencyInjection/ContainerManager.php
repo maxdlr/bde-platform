@@ -3,13 +3,15 @@
 namespace App\DependencyInjection;
 
 use App\Attribute\AttributeManager;
-use App\DB\DatabaseManager;
-use App\DB\EntityManager;
+use App\Service\DB\DatabaseManager;
+use App\Service\DB\EntityManager;
 use App\Service\EnvironmentManager;
 use Exception;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\TwigFilter;
 
 class ContainerManager
 {
@@ -26,6 +28,8 @@ class ContainerManager
         $this->entityManager = $this->databaseManager->getEntityManager();
         $this->environmentManager = new EnvironmentManager();
         $this->twig = $this->environmentManager->getTemplateEngine();
+
+
     }
 
     /**
@@ -34,8 +38,10 @@ class ContainerManager
     public function buildContainer(): ContainerInterface
     {
         $container = new Container();
-        $repositoriesFQCN = $this->getEntityRepositoriesFQCN($this->getEntityFileNames());
+        $repositoriesFQCN = $this->getEntityRepositoriesFQCN($this->getEntityFileNames(), $this->getEnumFileNames());
         $repositoryObjects = $this->getEntityRepositoryObjects($repositoriesFQCN);
+
+        $this->twig->addExtension(new DebugExtension());
 
         try {
             $container
@@ -58,12 +64,18 @@ class ContainerManager
     /**
      * @throws Exception
      */
-    private function getEntityRepositoriesFQCN(array $entityFileNames): array
+    private function getEntityRepositoriesFQCN(array $entityFileNames, array $enumFileNames): array
     {
         $repositoryFQCNs = [];
         foreach ($entityFileNames as $name) {
             $entityInfo = new ReflectionClass("App\Entity\\" . $name);
-            $entityClassAttribute = $entityInfo->getAttributes('Doctrine\ORM\Mapping\Entity')[0];
+            $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\AsEntity')[0];
+            ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
+        }
+
+        foreach ($enumFileNames as $name) {
+            $entityInfo = new ReflectionClass("App\Enum\\" . $name);
+            $entityClassAttribute = $entityInfo->getAttributes('App\Attribute\AsEntity')[0];
             ['repositoryClass' => $repositoryFQCNs[]] = $entityClassAttribute->getArguments();
         }
 
@@ -77,6 +89,13 @@ class ContainerManager
     {
         return $this->attributeManager->getPhpFileNamesFromDir(
             __DIR__ . '/../Entity'
+        );
+    }
+
+    private function getEnumFileNames(): array
+    {
+        return $this->attributeManager->getPhpFileNamesFromDir(
+            __DIR__ . '/../Enum'
         );
     }
 
