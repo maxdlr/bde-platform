@@ -20,7 +20,7 @@ textarea {
 }
 
 .table-container {
-    max-height: 470px;
+    max-height: 100vh;
     overflow-y: scroll;
 }
 

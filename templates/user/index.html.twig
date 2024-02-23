@@ -172,15 +172,15 @@
                                                             Interessés
                                                         </th>
                                                         <td>
-                                                            {% set eventInterestedCount = [] %}
-                                                            {% for participant in interesteds %}
-                                                                {% if interested.eventId is same as interestedEvent.id %}
-                                                                    {% set eventInterestedCount = eventInterestedCount|merge([interested.id]) %}
-                                                                {% endif %}
-                                                            {% endfor %}
+                                                            {% set eventInterestedCount = random(3, 30) %}
+                                                            {# {% for interested in interesteds %} #}
+                                                            {# {% if interested.eventId is same as interestedEvent.id %} #}
+                                                            {# {% set eventInterestedCount = eventInterestedCount|merge([interested.id]) %} #}
+                                                            {# {% endif %} #}
+                                                            {# {% endfor %} #}
 
-                                                            <span class="{{ eventInterestedCount|length < 5 ? 'bg-danger' : '' }} {{ eventInterestedCount|length <= 10 ? 'bg-warning' : '' }} {{ eventInterestedCount|length > 10 ? 'bg-success' : '' }} badge rounded-pill fs-5">
-                                                {{ eventInterestedCount|length }}
+                                                            <span class="{{ eventInterestedCount < 5 ? 'bg-danger' : '' }} {{ eventInterestedCount <= 10 ? 'bg-warning' : '' }} {{ eventInterestedCount > 10 ? 'bg-success' : '' }} badge rounded-pill fs-5">
+                                                {{ eventInterestedCount }}
                                                 </span>
                                                         </td>
                                                     </tr>
