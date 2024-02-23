@@ -78,14 +78,15 @@ abstract class AbstractController
             $this->redirect('/user/login');
         }
 
-        $allowedroutesForUser = Security::getAllowedRoutes(RoleEnum::tryFrom($user->getRoles()));
-
         if ($user->getRoles() === RoleEnum::ROLE_ADMIN->value) return true;
 
-        $allowed = false;
-        foreach ($allowedroutesForUser as $routes) {
+        $forbiddenroutesForUser = Security::getForbiddenRoutes(RoleEnum::tryFrom($user->getRoles()));
+
+
+        $allowed = true;
+        foreach ($forbiddenroutesForUser as $routes) {
             if (str_contains($routes, $url)) {
-                $allowed = true;
+                $allowed = false;
             }
         }
 

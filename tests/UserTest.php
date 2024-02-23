@@ -55,8 +55,8 @@ class UserTest extends TestCase
         self::assertSame($userFromDb->getRoles(), $user->getRoles());
         self::assertSame($userFromDb->getIsVerified(), $user->getIsVerified());
         self::assertSame(
-            $userFromDb->getSignedUpOn()->format('d-m-Y H:i:s'),
-            $user->getSignedUpOn()->format('d-m-Y H:i:s')
+            $userFromDb->getSignedUpOn()->format('Y-m-d H:i:s'),
+            $user->getSignedUpOn()->format('Y-m-d H:i:s')
         );
 
         $userRepository->delete($user);

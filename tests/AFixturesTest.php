@@ -58,9 +58,9 @@ class AFixturesTest extends TestCase
             ->withFirstname('Louis')
             ->withLastname('Cauvet')
             ->withEmail('louiscauvet8@gmail.com')
-            ->withRole(RoleEnum::ROLE_ADMIN)
+            ->withRole(RoleEnum::ROLE_STUDENT)
             ->withSignedUpOn(new DateTime('now'))
-            ->withPassword('9B6rc43*>')
+            ->withPassword('password')
             ->withIsVerified(true)
             ->generate();
 
@@ -130,7 +130,7 @@ class AFixturesTest extends TestCase
         $maxFromDb = $userRepository->findOneBy(['lastname' => 'de la Rocheterie']);
 
         $participants = ParticipantFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
-        $interesteds = ParticipantFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
+        $interesteds = InterestedFactory::make(rand(0, 10))->withUser($maxFromDb)->generate();
 
         foreach ($participants as $participant) {
             $participantRepository->insertOne($participant);
@@ -141,5 +141,25 @@ class AFixturesTest extends TestCase
         }
 
         self::assertTrue(true);
+    }
+
+    public function testPresentation()
+    {
+        $eventRepository = new EventRepository();
+        $event = EventFactory::make()->withName('Event complet')->withCapacity(22)->generate();
+        $eventRepository->insertOne($event);
+
+        $eventObject = $eventRepository->findOneBy(['name' => 'Event complet']);
+
+        // -----------------------
+
+        $participantRepository = new ParticipantRepository();
+        $participants = ParticipantFactory::make(22)->withEvent($eventObject)->generate();
+
+        foreach ($participants as $participant) {
+            $participantRepository->insertOne($participant);
+        }
+        self::assertTrue(true);
+
     }
 }

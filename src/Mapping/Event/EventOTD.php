@@ -31,8 +31,8 @@ class EventOTD extends OTD implements OTDInterface
         return [
             'name' => $event->getName(),
             'description' => $event->getDescription(),
-            'startDate' => $event->getStartDate()->format('d-m-Y H:i:s'),
-            'endDate' => $event->getEndDate()->format('d-m-Y H:i:s'),
+            'startDate' => $event->getStartDate()->format('Y-m-d H:i:s'),
+            'endDate' => $event->getEndDate()->format('Y-m-d H:i:s'),
             'tag' => $event->getTag(),
             'capacity' => $event->getCapacity(),
             'owner_id' => $event->getOwnerId(),

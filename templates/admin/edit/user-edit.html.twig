@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Modifier un user
+    Modification d'un utilisateur
 {% endblock %}
 
 {% block body %}
@@ -11,70 +11,58 @@
 
         <form method="POST" enctype="multipart/form-data">
 
-            <div class="row row-cols-2">
+            <div class="row row-cols-sm-1 row-cols-lg-2 d-flex justify-content-center align-items-center">
 
                 <div>
-                    {{ include('shared/form/_input.html.twig', {
-                        label: 'Prénom',
-                        type: 'text',
-                        name: 'firstname',
-                        required: true,
-                        value: item.firstname
-                    }) }}
-                </div>
-                <div>
-                    {{ include('shared/form/_input.html.twig', {
-                        label: 'Nom',
-                        type: 'text',
-                        name: 'lastname',
-                        required: true,
-                        value: item.lastname
-                    }) }}
+                    <div class="d-flex gap-2">
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Prénom *',
+                            type: 'text',
+                            name: 'firstname',
+                            required: true,
+                            value: item.firstname
+                        }) }}
 
-                </div>
-            </div>
+                        {{ include('shared/form/_input.html.twig', {
+                            label: 'Nom *',
+                            type: 'text',
+                            name: 'lastname',
+                            required: true,
+                            value: item.lastname
+                        }) }}
+                    </div>
 
-            <div class="row row-cols-3">
-
-
-                <div>
 
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Email',
+                        label: 'Adresse mail *',
                         type: 'email',
                         name: 'email',
                         required: true,
                         value: item.email
                     }) }}
 
-                </div>
-                <div>
-
                     {{ include('shared/form/_dropdown.html.twig', {
                         choices: roles,
-                        label: 'Roles',
+                        label: 'Rôle *',
                         name: 'role',
                         required: true,
-                        value: item.roles
+                    }) }}
+
+                    {{ include('shared/form/_input.html.twig', {
+                        label: 'Vérifié',
+                        type: 'checkbox',
+                        name: 'isVerified',
+                        required: false,
+                        value: item.isVerified,
+                        class: 'form-check-input'
                     }) }}
                 </div>
-
-
-                {{ include('shared/form/_input.html.twig', {
-                    label: 'Vérifié',
-                    type: 'checkbox',
-                    name: 'isVerified',
-                    required: false,
-                    value: item.isVerified,
-                    class: 'form-check-input'
-                }) }}
             </div>
-
-            <div>
-                <button class="btn btn-primary" type="submit" name="edit-user-submit" value="edit-user">Enregistrer
-                </button>
+            <div class="mt-5 row row-cols-2 offset-4 row-cols-sm-3 offset-sm-5 row-cols-lg-5">
+                <button class="btn btn-primary" type="submit" name="edit-user-submit" value="edit-user">Enregistrer</button>
             </div>
         </form>
+        <a class="px-4 py-1 my-5 btn btn-secondary rounded-pill border-0" href="/admin/user/index">Retour</a>
     </main>
 
 {% endblock %}

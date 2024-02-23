@@ -67,12 +67,12 @@ class IndexController extends AbstractController
                 }
             }
             $events = $filteredEvents;
-            $title = 'Les évenements entre le ' . $startDate->format('d-m-Y') . ' et le ' . $endDate->format('d-m-Y');
+            $title = 'Les évenements entre le ' . $startDate->format('Y-m-d') . ' et le ' . $endDate->format('Y-m-d');
         }
 
         $firstEvent = EventFilter::use($events)->sortBy('date')->return()[0];
         $lastEvent = EventFilter::use($events)->sortBy('date', true)->return()[0];
-        
+
         $capacities = [];
         foreach ($events as $event) {
             $capacities[] = [$event->getId(), $event->getCapacity()];

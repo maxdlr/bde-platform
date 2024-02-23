@@ -20,18 +20,26 @@
                 <div class="d-flex justify-content-between align-items-center mx-lg-5">
                     <div class="">
                         <h2>
-                            Les {{ entityValue|title }}s
+                            Tableau des {{ entityValue|title }}s
                         </h2>
                     </div>
 
-                    {% if entityName is not same as 'user' or currentUser is same as 'admin' %}
+                    {% if currentUser.roles is same as 'admin' %}
                         <div>
-                            <a class="btn btn-primary rounded-pill my-3" href="/{{ entityName }}/new">Ajouter
+                            <a class="btn btn-primary rounded-pill my-3" href="/admin/{{ entityName }}/new">Ajouter
+                                un {{ entityValue }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if currentUser.roles is same as 'manager' and entityName is same as 'event' %}
+                        <div>
+                            <a class="btn btn-primary rounded-pill my-3" href="/admin/{{ entityName }}/new">Ajouter
                                 un {{ entityValue }}</a>
                         </div>
                     {% endif %}
 
                 </div>
+
 
                 {{ include('admin/shared/_data-table.html.twig', {
                     items: items,

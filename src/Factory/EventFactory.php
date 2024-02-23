@@ -129,11 +129,14 @@ class EventFactory
         $users = $userRepository->findAll();
         $user = $faker->randomElement($users);
 
+        $startDate = $faker->dateTimeInInterval('+5 days', '+15 days');
+        $endDate = $faker->dateTimeInInterval($startDate, '+2 days');
+
         $event
             ->setName($eventData->buildTitle())
             ->setDescription($eventData->buildDescription())
-            ->setStartDate($faker->dateTimeThisYear('+6 months'))
-            ->setEndDate($faker->dateTimeThisYear('+6 months'))
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
             ->setTag($faker->randomElement(TagEnum::cases())->value)
             ->setCapacity($faker->randomNumber(2))
             ->setOwnerId($user->getId())

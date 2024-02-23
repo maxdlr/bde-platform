@@ -6,6 +6,7 @@ use App\Attribute\Route;
 use App\Entity\Participant;
 use App\Entity\User;
 use App\Repository\EventRepository;
+use App\Repository\UserRepository;
 use App\Repository\ParticipantRepository;
 use App\Service\Mail\MailManager;
 use Twig\Environment;
@@ -18,6 +19,7 @@ class ParticipantController extends AbstractController
     public function __construct(
         Environment                            $twig,
         private readonly EventRepository       $eventRepository,
+        private readonly UserRepository        $userRepository,
         private readonly ParticipantRepository $participantRepository
     )
     {
@@ -26,23 +28,33 @@ class ParticipantController extends AbstractController
         $this->redirectIfForbidden();
     }
 
+
     #[Route('/event/new/participant/{id}', name: 'app_participant_new', httpMethod: ['GET'])]
-    public function newParticipant(int $idEvent): void
+    public function newParticipant(int $idEvent): ?string
     {
-        $mailManager = new MailManager;
+        $this->clearFlashs();
+
         $event = $this->eventRepository->findOneBy(['id' => $idEvent]);
 
         $participant = new Participant();
         $participantRepository = new ParticipantRepository();
-        $user = $this->currentUser->getId();
+        $user = $this->userRepository->findOneBy(['id' => $this->currentUser->getId()]);
 
-        $participant
-            ->setEventId($event->getId())
-            ->setUserId($this->currentUser->getId());
+        $listParticipant = $participantRepository->findBy(["event_id" => $idEvent]);
+        if (!is_null($listParticipant) && sizeof($listParticipant) >= $event->getCapacity()) {
+            $this->addFlash("danger", "Vous ne pouvez pas vous inscrire à cet évènement : il n'y a plus de place !");
+            $this->redirect('/');
+        } else {
+            $mailManager = new MailManager;
 
-        if ($participantRepository->insertOne($participant)) {
-            $mailManager->sendMailParticipant($user, $event);
-            $this->redirect('/event/show/' . $idEvent);
+            $participant
+                ->setEventId($event->getId())
+                ->setUserId($this->currentUser->getId());
+
+            if ($participantRepository->insertOne($participant)) {
+                $mailManager->sendMailParticipant($user, $event);
+                $this->redirect('/event/show/' . $idEvent);
+            }
         }
     }
 

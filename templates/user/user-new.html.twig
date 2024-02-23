@@ -1,60 +1,78 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Inscription
+    Inscription d'un utilisateur
 {% endblock %}
 
 {% block body %}
 
     <main class="container">
-        <h1 class="my-5">Inscrivez-vous pour profiter de tous nos évènements géniaux !</h1>
+        {% if admin == true %}
+            <h1 class="my-5">Utilisez ce formulaire pour ajouter des utilisateurs sans vérification par mail</h1>
+        {% else %}
+            <h1 class="my-5">Inscrivez-vous pour profiter de tous nos évènements géniaux !</h1>
+        {% endif %}
 
         <form method="POST" enctype="multipart/form-data">
 
-            <div class="row row-cols-sm-2">
+            <div class="row row-cols-sm-1 row-cols-lg-2 d-flex justify-content-center align-items-center">
 
                 <div>
                     <div class="d-flex gap-2">
                         {{ include('shared/form/_input.html.twig', {
-                            label: 'Prénom',
+                            label: 'Prénom *',
                             type: 'text',
                             name: 'firstname',
-                            required: true,
-                            placeholder: "Saisissez votre prénom"
+                            required: true
                         }) }}
 
                         {{ include('shared/form/_input.html.twig', {
-                            label: 'Nom',
+                            label: 'Nom *',
                             type: 'text',
                             name: 'lastname',
-                            required: true,
-                            placeholder: "Saisissez votre nom"
+                            required: true
                         }) }}
                     </div>
 
 
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Adresse mail',
+                        label: 'Adresse mail *',
                         type: 'email',
                         name: 'email',
-                        required: true,
-                        placeholder: "Saisissez votre adresse mail"
+                        required: true
                     }) }}
 
                     {{ include('shared/form/_input.html.twig', {
-                        label: 'Mot de passe',
+                        label: 'Mot de passe *',
                         type: 'password',
                         name: 'password',
-                        required: true,
-                        placeholder: "Saisissez votre mot de passe"
+                        required: true
                     }) }}
 
-                    <button class="mt-4 btn btn-primary" type="submit" name="new-user-submit" value="new-user">Enregistrer</button>
+                    {% if admin == true %}
+                        {{ include('shared/form/_dropdown.html.twig', {
+                            choices: tags,
+                            label: 'Rôle *',
+                            name: 'role',
+                            required: true,
+                        }) }}
+                    {% endif %}
                 </div>
+            </div>
+            <div class="mt-5 row row-cols-2 offset-4 row-cols-sm-3 offset-sm-5 row-cols-lg-5">
+                {% if admin == true %}
+                    <button class="btn btn-primary" type="submit" name="admin-new-user-submit" value="admin-new-user">Enregistrer</button>
+                {% else %}
+                    <button class="btn btn-primary" type="submit" name="new-user-submit" value="new-user">Enregistrer</button>
+                {% endif %}
             </div>
         </form>
 
-        <a class="d-block mt-5" href="/">Retour</a>
+        {% if admin == true %}
+            <a class="px-4 py-1 my-5 btn btn-secondary rounded-pill border-0" href="/admin/user/index">Retour</a>
+        {% else %}
+            <a class="px-4 py-1 my-5 btn btn-secondary rounded-pill border-0" href="/">Retour</a>
+        {% endif %}
     </main>
 
 {% endblock %}

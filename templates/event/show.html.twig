@@ -8,15 +8,15 @@
     <main class="container">
         <article class="p-3">
 
-            <div class="d-flex justify-content-center gap-5 my-5 text-center">
-                <h1 class="fs-1">{{ event.name|title }}</h1>
-                <div>
-                    <div class="fw-bold">
+            <div class="d-flex row row-cols-1 row-cols-md-3 justify-content-center gap-5 my-5 text-center">
+                <h1 class="fs-1 text-nowrap align-self-center">{{ event.name|title }}</h1>
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <div class="fw-bold bg-success rounded-pill px-3 py-2 text-light my-2">
                         <span>Du {{ event.startDate|date("d/m/y") }}</span>
                         <span> à </span>
                         <span>{{ event.startDate|date('H:i') }}</span>
                     </div>
-                    <div class="fw-bold">
+                    <div class="fw-bold fw-bold bg-success rounded-pill px-3 py-2 text-light my-2">
                         <span> au </span>
                         <span>{{ event.endDate|date("d/m/y") }}</span>
                         <span> à </span>
@@ -25,44 +25,56 @@
                 </div>
 
                 {% if currentUser != null %}
-                    <div class="d-lg-none">
-                        {% if userParticipant == true %}
+                    {% if userParticipant == true %}
+                        <div class="d-lg-none">
                             <a href="/event/delete/participant/{{ event.id }}"
-                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me désinscrire</a>
-                        {% else %}
+                               class="btn btn-lg fw-bold fs-6 btn-success rounded-pill">Je souhaite me désinscrire</a>
+                        </div>
+                    {% else %}
+                        <div class="d-lg-none">
                             <a href="/event/new/participant/{{ event.id }}"
-                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
-                        {% endif %}
-                    </div>
-                    <div>
-                        {% if userInterested == true %}
+                               class="btn btn-lg fw-bold fs-6 btn-success rounded-pill">Je participe !</a>
+                        </div>
+                    {% endif %}
+                    {% if userInterested == true %}
+                        <div>
                             <a href="/event/delete/interested/{{ event.id }}"
-                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Retirer de ma liste de voeux</a>
-                        {% else %}
-                            <a href="/event/new/interested/{{ event.id }}"
-                               class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Ajouter à ma liste de voeux</a>
-                        {% endif %}
+                               class="btn btn-lg fw-bold fs-6 btn-success rounded-pill">Retirer de mes voeux</a>
+                        </div>
+                    {% elseif remainingCapacity > 0 %}
+                        <div>
+                        <a href="/event/new/interested/{{ event.id }}"
+                           class="btn btn-lg fw-bold fs-6 btn-success rounded-pill">Ajouter à ma liste de voeux</a>
+                    {% endif %}
                     </div>
                 {% endif %}
             </div>
 
             <div class="row row-cols-lg-2">
                 <div class="position-relative d-inline-block rounded-3 overflow-hidden">
-                    <img src="{{ event.fileName }}" alt="Image de {{ event.name }}" class="img-fluid">
+                    {% if event.fileName %}
+                        <img src="{{ event.fileName }}" alt="Image de {{ event.name }}" class="img-fluid">
+                    {% endif %}
                     <button class="bg-primary border border-0 px-4 py-3 text-light fw-bold rounded-pill position-absolute top-0 start-0 ms-4 mt-4">
                         {{ event.tag|title }}
                     </button>
                     <div class="text-light position-absolute top-0 end-0 me-4 mt-4 fw-bold">
                         {% if userParticipant == true %}
-                            <span>Vous êtes déjà inscrit pour cet évènement !</span>
+                            <span>Déjà inscrit !</span>
                         {% else %}
-                            <span>Plus que </span>
-                            <span class="fs-2 fw-bolder bg-warning px-3 py-2 rounded-pill">{{ remainingCapacity }}</span>
-                            <span>/{{ event.capacity }} places restantes !!! </span>
+                            {% if remainingCapacity <= 0 %}
+                                <div class="bg-success rounded-pill px-3 py-2 fs-6 text-light text-center ">
+                                    Complet !!
+                                </div>
+                            {% else %}
+                                <span>Plus que </span>
+                                <span class="fs-2 fw-bolder bg-warning px-3 py-2 rounded-pill">{{ remainingCapacity }}</span>
+                                <span>/{{ event.capacity }} places restantes !!! </span>
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="position-absolute bottom-0 start-0 ms-4 mb-4 text-dark bg-light rounded-pill py-3 px-5">
-                        <span class="fs-3 fw-bolder">Le {{ event.startDate|date("d/m/y") }}</span>
+                        <span class="fs-6 fw-bolder">Le {{ event.startDate|date("d/m/y") }}</span>
                     </div>
                 </div>
                 <div class="row">
@@ -71,11 +83,11 @@
                         <div class="col-10 offset-1 d-none d-lg-block">
                             {% if userParticipant == true %}
                                 <a href="/event/delete/participant/{{ event.id }}"
-                                   class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je souhaite me
+                                   class="btn btn-lg fw-bold fs-5 btn-success rounded-pill">Me
                                     désinscrire</a>
-                            {% else %}
+                            {% elseif remainingCapacity > 0 %}
                                 <a href="/event/new/participant/{{ event.id }}"
-                                   class="btn btn-lg fw-bold fs-4 btn-success rounded-pill">Je participe !</a>
+                                   class="btn btn-lg fw-bold fs-5 btn-success rounded-pill">Je participe !</a>
                             {% endif %}
                         </div>
                     {% endif %}
