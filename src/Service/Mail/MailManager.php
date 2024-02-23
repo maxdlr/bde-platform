@@ -105,4 +105,26 @@ class MailManager
             }
         }
 
+        public function sendMailToAdmin($user)
+        {
+            $subject = "Nouvel utilisateur inscrit";
+            $message = "Bonjour,
+
+            Un nouvel utilisateur s'est inscrit :
+
+            Nom : ".$user->getFirstName() . " " . $user->getLastName() ." 
+            Adresse e-mail : ". $user->getEmail() . "
+
+            Cordialement,
+            L'administration du BDE";
+
+            $userRepository = new UserRepository;
+            $admins = $userRepository->findBy(["roles" => "admin"]);
+            foreach ($admins as $admin)
+            {
+                $email = $admin->getEmail();
+                $this->sendMail($email, $subject, $message);
+            }
+        }
+
 }
