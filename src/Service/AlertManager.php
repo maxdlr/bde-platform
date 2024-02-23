@@ -47,7 +47,7 @@ public function alert()
             if($j5->diff(\DateTime::createFromFormat('Y-m-j H:i:s', $data['startDate']))->days == 0)
             {
                 $body = $data['name'];
-                $body .= "est l'évènement que vous avez créer, il commence dans 5 jours mais personne n'est inscrit...";
+                $body .= " est l'évènement que vous avez créer, il commence dans 5 jours mais personne n'est inscrit...";
                 $mailManager->sendMail($data['email'], $subject, $body);
             }
 
