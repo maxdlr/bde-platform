@@ -105,7 +105,7 @@ class UserFactory
 
         $user
             ->setEmail($faker->email())
-            ->setRoles($faker->randomElement(RoleEnum::cases())->value)
+            ->setRoles($faker->randomElement([RoleEnum::ROLE_STUDENT, RoleEnum::ROLE_MANAGER])->value)
             ->setFirstname($faker->firstName())
             ->setLastname($faker->lastName())
             ->setPassword('password')
