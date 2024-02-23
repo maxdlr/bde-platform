@@ -93,7 +93,7 @@ class UserController extends AbstractController
                 $verifyHashPassword = password_verify($_POST['password'], $user->getPassword());
                 if ($verifyHashPassword === true) {
                     $_SESSION["user_connected"] = $user->getEmail();
-    
+
                     $this->redirect('/');
                 } else {
                     $this->addFlash("danger", "Le mot de passe saisi ne correspond pas à l'adresse mail");

@@ -133,7 +133,6 @@ class AFixturesTest extends TestCase
         $participantRepository->insertOne($participant);
 
         self::assertNotNull($participantRepository->findOneBy(["user_id" => $moi->getId()]));
-
     }
 
     public function testJ5()
