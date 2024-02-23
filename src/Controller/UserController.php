@@ -58,7 +58,6 @@ class UserController extends AbstractController
                     $token = md5(uniqid(rand(), true));
 
                     $mailManager->sendValidateMail($_POST['email'], $token);
-                    $mailManager->sendMailToAdmin($user);
                     $this->redirect('/admin/user/index');
                 }
             }
