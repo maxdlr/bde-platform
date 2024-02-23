@@ -32,8 +32,7 @@ class IndexController extends AbstractController
     public function home(): string
     {
         $this->clearFlashs();
-        $alertManager = new AlertManager;
-        $alertManager->alert();
+        
         $events = $this->eventRepository->findAll();
         $capacities = [];
         foreach ($events as $event) {
@@ -46,6 +45,9 @@ class IndexController extends AbstractController
         if(!is_null($_SESSION["user_connected"])){
             $connectedUser = $this->getUserConnected();
             $this->addFlash("success", "Vous êtes bien connecté !");
+            $alertManager = new AlertManager;
+            $alertManager->alert();
+            $alertManager->alertj5();
         } else {
             $connectedUser = null;
         }

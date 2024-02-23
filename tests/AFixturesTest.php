@@ -118,4 +118,31 @@ class AFixturesTest extends TestCase
 
         assertIsArray($participants);
     }
+
+    public function testJ1()
+    {
+        $userRepository = new UserRepository;
+        $eventRepository = new EventRepository;
+        $participantRepository = new ParticipantRepository;
+        $event = EventFactory::make()->withStartDate(new DateTime("tomorrow"))->withEndDate(new DateTime("+8 days"))->withName("Soirée league of legends")->generate();
+        $eventRepository->insertOne($event);
+        $eventtrue = $eventRepository->findOneBy(["name" => $event->getName()]);
+        $moi = $userRepository->findOneBy(["email" => "mathieu.moyaerts.pro@gmail.com"]);
+        $participant = ParticipantFactory::make()->withUser($moi)->withEvent($eventtrue)->generate();
+        $participantRepository->insertOne($participant);
+
+        self::assertNotNull($participantRepository->findOneBy(["user_id" => $moi->getId()]));
+
+    }
+
+    public function testJ5()
+    {
+        $eventRepository = new EventRepository;
+        $userRepository = new UserRepository;
+        $moi = $userRepository->findOneBy(["email" => "mathieu.moyaerts.pro@gmail.com"]);
+        $event = EventFactory::make()->withStartDate(new DateTime("+5 days"))->withEndDate(new DateTime("+8 days"))->withOwner($moi)->generate();
+        $eventRepository->insertOne($event);
+
+        self::assertNotNull($eventRepository->findOneBy(["owner_id" => $moi->getId()]));
+    }
 }
