@@ -39,9 +39,9 @@ class IndexController extends AbstractController
     public function home(): string
     {
         $this->clearFlashs();
-        $alertManager = new AlertManager;
+
         $eventFilter = new EventFilter();
-        $alertManager->alert();
+
         $events = $this->eventRepository->findAll();
         $title = 'Les prochains évenements !';
 
@@ -77,7 +77,18 @@ class IndexController extends AbstractController
         foreach ($events as $event) {
             $capacities[] = [$event->getId(), $event->getCapacity()];
             $event->setCapacity($event->getCapacity() - count($this->participantRepository->findBy(['event_id' => $event->getId()])));
+
             $event->setDescription($this->truncate($event->getDescription(), 200, '...'));
+        }
+
+        if(!is_null($_SESSION["user_connected"])){
+            $connectedUser = $this->getUserConnected();
+            $this->addFlash("success", "Vous êtes bien connecté !");
+            $alertManager = new AlertManager;
+            $alertManager->alert();
+            $alertManager->alertj5();
+        } else {
+            $connectedUser = null;
         }
 
         return $this->twig->render('index/home.html.twig', [

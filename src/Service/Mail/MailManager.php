@@ -6,24 +6,21 @@ use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use App\Entity\User;
-
 class MailManager
 {
     public function getPhpMailer(): PHPMailer
     {
-    // Config PHP Mailer
-    $phpmailer = new PHPMailer(true);
+        $phpmailer = new PHPMailer(true);
 
-    $phpmailer->isSMTP();
-    $phpmailer->Host = 'smtp.gmail.com';
-    $phpmailer->SMTPAuth = true;
-    $phpmailer->Username = 'mathieu.moyaerts.pro@gmail.com';
-    $phpmailer->Password = 'evhw tfsv lvxn mdfo';
-    $phpmailer->SMTPSecure = 'tls';
-    $phpmailer->Port = 587;
+        $phpmailer->isSMTP();
+        $phpmailer->Host = 'smtp.gmail.com';
+        $phpmailer->SMTPAuth = true;
+        $phpmailer->Username = 'mathieu.moyaerts.pro@gmail.com';
+        $phpmailer->Password = 'evhw tfsv lvxn mdfo';
+        $phpmailer->SMTPSecure = 'tls';
+        $phpmailer->Port = 587;
 
-    return $phpmailer;
+        return $phpmailer;
     }
 
     public function sendMail($emailTo, $subject, $body)
@@ -49,7 +46,7 @@ class MailManager
     public function sendMailParticipant($user, $event)
     {
         $startDate = $event->getStartDate();
-        $strStartDate = $startDate->format("d-m-Y H:i:s");
+        $strStartDate = $startDate->format("Y-m-d H:i:s");
         $emailto = $user->getEmail();
         $subject = "Confirmation de votre inscription ";
         $message = "Bonjour ". $user->getFirstName() . " " . $user->getLastName() . ",\n\n ";
@@ -84,7 +81,7 @@ class MailManager
                 $this->sendMailToAdmin($userForValidate);
             }
 
-
+ 
         }
 
         public function sendModifDate($event, $startDate)
