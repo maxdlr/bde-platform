@@ -1,28 +1,28 @@
 # Hackathon ESGI
 
 ### Mission
-> "Grad school student office events management app".
 > 5 days
+- "Grad school student office events management app".
 
 ### Must haves
-> - MVC (from scratch)
-> - No Framework
-> - User auth & CRUD
-> - Email notifications
-> - Unit tests
+- MVC (from scratch)
+- No Framework
+- User auth & CRUD
+- Email notifications
+- Unit tests
 
 ### Authors
-> - Louis Cauvet
-> - Mathieu Moyaerts
-> - ``me`` Maxime de la Rocheterie
+- Louis Cauvet
+- Mathieu Moyaerts
+- ``me`` Maxime de la Rocheterie
 
 ### Project Achievements 
-**What we successfully added on top of mission requirements**
-> - Custom ORM
-> - Custom Factories
-> - Custom Entity Management
-> - Dependency Injection Service
-> - Custom Param converter
+> What we successfully added ***on top*** of mission requirements
+- Custom ORM
+- Custom Factories
+- Custom Entity Management
+- Dependency Injection Service
+- Custom Param converter
 
 ## Start the project
 
