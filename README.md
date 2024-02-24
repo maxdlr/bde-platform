@@ -1,29 +1,52 @@
-# MVC from scratch
+# Hackathon ESGI
 
-## Démarrage du projet
+### Mission
+> "Grad school student office events management app".
+> 5 days
 
-### Installer les packages
+### Must haves
+> - MVC (from scratch)
+> - No Framework
+> - User auth & CRUD
+> - Email notifications
+> - Unit tests
+
+### Authors
+> - Louis Cauvet
+> - Mathieu Moyaerts
+> - ``me`` Maxime de la Rocheterie
+
+### Project Achievements 
+**What we successfully added on top of mission requirements**
+> - Custom ORM
+> - Custom Factories
+> - Custom Entity Management
+> - Dependency Injection Service
+> - Custom Param converter
+
+## Start the project
+
+### Install packages
 
 ```shell
 composer install
 ```
 
-### lancer le serveur avec la commande
+### Launch server
 
 ```shell
 composer ss
 ```
 
-### lancer les tests
+### Launch tests
 
 ```shell
 composer tests
 ```
 
-### Créer un fichier ``.env.local`` à la racine du projet
+### Create ``/.env.local``
 
-Avec les paramètre suivant dedans:
-
+Include this.
 ```dotenv
 DB_USER="username"
 DB_PASSWORD="password"
