@@ -1,6 +1,7 @@
 # Hackathon ESGI
+> "École Supérieure de Génie Informatique"
 
-### Mission
+## Mission
 > 5 days
 - "Grad school student office events management app".
 
