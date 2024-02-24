@@ -18,7 +18,7 @@
 - ``me`` Maxime de la Rocheterie
 
 ### Project Achievements 
-> What we successfully added ***on top*** of mission requirements
+> What we successfully developed ***on top*** of mission requirements
 - Custom ORM
 - Custom Factories
 - Custom Entity Management
